@@ -247,7 +247,7 @@ export function VisitorForm({ parentId, guestId, initialData, title, onCancel, o
               name="cpf"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CPF{(requireCpfAndImage || (urlImages && urlImages.length > 0)) ? ' *' : ''}</FormLabel>
+                  <FormLabel>CPF{requireCpfAndImage || (urlImages && urlImages.length > 0) ? ' *' : ''}</FormLabel>
                   <FormControl>
                     <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.cpf} />
                   </FormControl>
