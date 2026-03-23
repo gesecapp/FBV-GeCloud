@@ -55,7 +55,7 @@ function CaptureSlider({
       <div className="text-white [&_svg]:size-5 sm:[&_svg]:size-6">{icon}</div>
       <input
         aria-label={label}
-        className="min-h-0 w-1.5 sm:w-2 flex-1 cursor-pointer appearance-none rounded-full bg-white/30 accent-white [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-5"
+        className="min-h-0 w-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-white/30 accent-white sm:w-2 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-5"
         max={max}
         min={min}
         onChange={(e) => onChange(Number(e.target.value))}
@@ -67,7 +67,6 @@ function CaptureSlider({
     </div>
   );
 }
-
 
 // --- Camera Capture Dialog ---
 
@@ -345,7 +344,7 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
           <canvas ref={canvasRef} className="hidden" />
 
           {/* Status indicators */}
-          <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
+          <div className="absolute top-[18px] left-3 z-20 flex flex-col gap-2">
             <div
               className={`flex items-center gap-2 rounded-full px-3 py-1 font-medium text-[11px] backdrop-blur-md transition-colors duration-300 ${
                 faceQuality.hasGoodLighting ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'
@@ -409,16 +408,6 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             />
           </div>
 
-          {/* Flip camera button */}
-          <Button
-            className="absolute bottom-22.5 left-2 z-20 bg-black/60 text-white backdrop-blur-md hover:bg-black/80 sm:bottom-25 sm:left-3"
-            onClick={() => setFacingMode((p) => (p === 'user' ? 'environment' : 'user'))}
-            size="icon-sm"
-            variant="ghost"
-          >
-            <FlipHorizontal />
-          </Button>
-
           {/* Sliders */}
           <div className="absolute top-1/2 right-1 z-20 flex h-[55%] -translate-y-1/2 flex-col justify-between gap-1 overflow-hidden rounded-2xl bg-black/60 px-1 py-3 backdrop-blur-md sm:right-3 sm:h-[65%] sm:gap-2 sm:px-1.5 sm:py-4">
             <CaptureSlider icon={<ZoomIn />} label="Zoom" max={3} min={1} onChange={setZoom} step={0.1} value={zoom} />
@@ -427,16 +416,27 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             <CaptureSlider icon={<Contrast />} label="WDR" max={100} min={0} onChange={setWdrLevel} step={10} value={wdrLevel} />
           </div>
 
+          {/* Bottom Actions */}
+          <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center justify-center sm:bottom-8">
+            <div className="relative flex items-center justify-center">
+              {/* Capture button */}
+              <button
+                className="flex size-14 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 sm:size-16"
+                onClick={handleCapture}
+                type="button"
+              >
+                <Camera className="size-7 text-black sm:size-8" />
+              </button>
 
-          {/* Capture button */}
-          <div className="absolute bottom-5 left-1/2 z-30 -translate-x-1/2 sm:bottom-8">
-            <button
-              className="flex size-14 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 sm:size-16"
-              onClick={handleCapture}
-              type="button"
-            >
-              <Camera className="size-7 text-black sm:size-8" />
-            </button>
+              {/* Flip camera button */}
+              <button
+                className="absolute left-[calc(100%+1.5rem)] flex size-10 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 sm:left-[calc(100%+2rem)] sm:size-12"
+                onClick={() => setFacingMode((p) => (p === 'user' ? 'environment' : 'user'))}
+                type="button"
+              >
+                <FlipHorizontal className="size-5 text-black sm:size-6" />
+              </button>
+            </div>
           </div>
         </div>
       </DialogContent>
