@@ -51,11 +51,11 @@ function CaptureSlider({
   onChange: (_value: number) => void;
 }) {
   return (
-    <div data-slot="capture-slider" className="flex min-h-0 flex-1 flex-col items-center gap-0.5">
-      <div className="text-white [&_svg]:size-3.5 sm:[&_svg]:size-4">{icon}</div>
+    <div data-slot="capture-slider" className="flex min-h-0 flex-1 flex-col items-center gap-1 sm:gap-2">
+      <div className="text-white [&_svg]:size-5 sm:[&_svg]:size-6">{icon}</div>
       <input
         aria-label={label}
-        className="min-h-0 w-1 flex-1 cursor-pointer appearance-none rounded-full bg-white/30 accent-white [&::-webkit-slider-thumb]:size-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-3"
+        className="min-h-0 w-1.5 sm:w-2 flex-1 cursor-pointer appearance-none rounded-full bg-white/30 accent-white [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-5"
         max={max}
         min={min}
         onChange={(e) => onChange(Number(e.target.value))}
@@ -67,6 +67,7 @@ function CaptureSlider({
     </div>
   );
 }
+
 
 // --- Camera Capture Dialog ---
 
@@ -419,12 +420,13 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
           </Button>
 
           {/* Sliders */}
-          <div className="absolute top-2 right-1 bottom-20 z-20 flex flex-col justify-between gap-1 overflow-hidden rounded-2xl bg-black/60 px-0.5 py-1.5 backdrop-blur-md sm:top-3 sm:right-3 sm:bottom-3 sm:gap-1.5 sm:px-1 sm:py-2">
+          <div className="absolute top-1/2 right-1 z-20 flex h-[55%] -translate-y-1/2 flex-col justify-between gap-1 overflow-hidden rounded-2xl bg-black/60 px-1 py-3 backdrop-blur-md sm:right-3 sm:h-[65%] sm:gap-2 sm:px-1.5 sm:py-4">
             <CaptureSlider icon={<ZoomIn />} label="Zoom" max={3} min={1} onChange={setZoom} step={0.1} value={zoom} />
             <CaptureSlider icon={<MoveVertical />} label="Posição" max={50} min={-50} onChange={setVerticalOffset} step={1} value={verticalOffset} />
             <CaptureSlider icon={<Lightbulb />} label="Brilho" max={150} min={50} onChange={setBrightnessFilter} step={5} value={brightnessFilter} />
             <CaptureSlider icon={<Contrast />} label="WDR" max={100} min={0} onChange={setWdrLevel} step={10} value={wdrLevel} />
           </div>
+
 
           {/* Capture button */}
           <div className="absolute bottom-5 left-1/2 z-30 -translate-x-1/2 sm:bottom-8">
