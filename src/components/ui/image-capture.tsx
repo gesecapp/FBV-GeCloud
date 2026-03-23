@@ -220,7 +220,7 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
   }, [faceDetectorSupported, detectFace]);
 
   useEffect(() => {
-    if (open && streamRef.current) {
+    if (open) {
       const interval = setInterval(analyzeFrame, 1000);
       return () => clearInterval(interval);
     }
