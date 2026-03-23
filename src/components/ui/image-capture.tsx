@@ -1,9 +1,35 @@
-import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, X, ZoomIn } from 'lucide-react';
+import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, ScanFace, Sun, X, Zap, ZoomIn } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { compressImageToBase64 } from '@/lib/image-compression';
+
+// --- Types ---
+
+interface DetectedFace {
+  boundingBox: DOMRectReadOnly;
+}
+
+interface FaceDetectorInstance {
+  detect: (_image: HTMLVideoElement | HTMLCanvasElement | ImageBitmap) => Promise<DetectedFace[]>;
+}
+
+type FaceDetectorConstructor = new (_options?: { fastMode?: boolean; maxDetectedFaces?: number }) => FaceDetectorInstance;
+
+interface FaceBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface FaceQuality {
+  isCentered: boolean;
+  hasGoodLighting: boolean;
+  noBacklight: boolean;
+  faceDetected: boolean;
+}
 
 // --- Slider Control ---
 
@@ -52,7 +78,154 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const faceDetectorRef = useRef<FaceDetectorInstance | null>(null);
+
+  const [faceDetectorSupported, setFaceDetectorSupported] = useState(false);
+  const [faceBounds, setFaceBounds] = useState<FaceBounds | null>(null);
+  const [brightnessValue, setBrightnessValue] = useState(100);
+  const [faceQuality, setFaceQuality] = useState<FaceQuality>({
+    isCentered: false,
+    hasGoodLighting: true,
+    noBacklight: true,
+    faceDetected: false,
+  });
+
+  // Initialize FaceDetector if supported
+  useEffect(() => {
+    const FaceDetectorClass = (window as unknown as { FaceDetector: FaceDetectorConstructor }).FaceDetector;
+    if (FaceDetectorClass) {
+      try {
+        faceDetectorRef.current = new FaceDetectorClass({
+          fastMode: true,
+          maxDetectedFaces: 1,
+        });
+        setFaceDetectorSupported(true);
+      } catch {
+        setFaceDetectorSupported(false);
+      }
+    }
+  }, []);
+
+  const detectFace = useCallback(async () => {
+    if (!videoRef.current || !streamRef.current || !faceDetectorRef.current) return;
+
+    const video = videoRef.current;
+    if (video.readyState !== 4) return;
+
+    try {
+      const faces = await faceDetectorRef.current.detect(video);
+
+      if (faces.length > 0) {
+        const face = faces[0];
+        const box = face.boundingBox;
+
+        const bounds: FaceBounds = {
+          x: (box.x / video.videoWidth) * 100,
+          y: (box.y / video.videoHeight) * 100,
+          width: (box.width / video.videoWidth) * 100,
+          height: (box.height / video.videoHeight) * 100,
+        };
+
+        setFaceBounds(bounds);
+
+        // Center check
+        const faceCenterX = bounds.x + bounds.width / 2;
+        const faceCenterY = bounds.y + bounds.height / 2;
+        const isCentered = faceCenterX > 30 && faceCenterX < 70 && faceCenterY > 25 && faceCenterY < 75;
+        const faceArea = bounds.width * bounds.height;
+        const isGoodSize = faceArea > 200 && faceArea < 4000;
+
+        setFaceQuality((prev) => ({
+          ...prev,
+          faceDetected: true,
+          isCentered: isCentered && isGoodSize,
+        }));
+      } else {
+        setFaceBounds(null);
+        setFaceQuality((prev) => ({
+          ...prev,
+          faceDetected: false,
+          isCentered: false,
+        }));
+      }
+    } catch {
+      // Silently fail face detection
+    }
+  }, []);
+
+  const analyzeFrame = useCallback(() => {
+    if (!videoRef.current || !canvasRef.current || !streamRef.current) return;
+
+    const video = videoRef.current;
+    if (video.videoWidth === 0 || video.videoHeight === 0) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    let totalBrightness = 0;
+    let centerBrightness = 0;
+    let edgeBrightness = 0;
+    let centerPixels = 0;
+    let edgePixels = 0;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const centerRadius = Math.min(canvas.width, canvas.height) * 0.25;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const pixelIndex = i / 4;
+      const x = pixelIndex % canvas.width;
+      const y = Math.floor(pixelIndex / canvas.width);
+      const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+      totalBrightness += brightness;
+
+      const distFromCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+
+      if (distFromCenter < centerRadius) {
+        centerBrightness += brightness;
+        centerPixels++;
+      } else {
+        edgeBrightness += brightness;
+        edgePixels++;
+      }
+    }
+
+    const avgBrightness = totalBrightness / (data.length / 4);
+    const avgCenterBrightness = centerPixels > 0 ? centerBrightness / centerPixels : 0;
+    const avgEdgeBrightness = edgePixels > 0 ? edgeBrightness / edgePixels : 0;
+
+    const hasBacklight = avgEdgeBrightness > avgCenterBrightness * 1.3;
+    const hasGoodLighting = avgBrightness > 80 && avgBrightness < 200;
+
+    setFaceQuality((prev) => ({
+      ...prev,
+      hasGoodLighting,
+      noBacklight: !hasBacklight,
+    }));
+    setBrightnessValue(Math.round(avgBrightness));
+
+    if (faceDetectorSupported) {
+      detectFace();
+    }
+  }, [faceDetectorSupported, detectFace]);
+
+  useEffect(() => {
+    if (open && streamRef.current) {
+      const interval = setInterval(analyzeFrame, 1000);
+      return () => clearInterval(interval);
+    }
+    return () => {};
+  }, [open, analyzeFrame]);
 
   const startCamera = useCallback(async () => {
     for (const track of streamRef.current?.getTracks() ?? []) track.stop();
@@ -168,6 +341,52 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
               filter: `brightness(${brightnessFilter}%) contrast(${100 + wdrLevel * 0.3}%) saturate(${100 + wdrLevel * 0.1}%)`,
             }}
           />
+          <canvas ref={canvasRef} className="hidden" />
+
+          {/* Status indicators */}
+          <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
+            <div
+              className={`flex items-center gap-2 rounded-full px-3 py-1 font-medium text-[11px] backdrop-blur-md transition-colors duration-300 ${
+                faceQuality.hasGoodLighting ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'
+              }`}
+            >
+              <Sun size={14} />
+              Iluminação: {brightnessValue > 150 ? 'Alta' : brightnessValue > 80 ? 'Boa' : 'Baixa'}
+            </div>
+
+            {!faceQuality.noBacklight && (
+              <div className="flex items-center gap-2 rounded-full bg-orange-500/20 px-3 py-1 font-medium text-[11px] text-orange-500 backdrop-blur-md">
+                <Zap size={14} />
+                Luz de fundo detectada
+              </div>
+            )}
+
+            {faceDetectorSupported && (
+              <div
+                className={`flex items-center gap-2 rounded-full px-3 py-1 font-medium text-[11px] backdrop-blur-md transition-colors duration-300 ${
+                  faceQuality.faceDetected ? (faceQuality.isCentered ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500') : 'bg-orange-500/20 text-orange-500'
+                }`}
+              >
+                <ScanFace size={14} />
+                {faceQuality.faceDetected ? (faceQuality.isCentered ? 'Face centralizada ✓' : 'Centralize a face') : 'Procurando face...'}
+              </div>
+            )}
+          </div>
+
+          {/* Auto-detected face box */}
+          {faceBounds && faceDetectorSupported && (
+            <div
+              className={`pointer-events-none absolute z-10 rounded-lg border-2 transition-all duration-100 ${
+                faceQuality.isCentered ? 'border-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+              }`}
+              style={{
+                left: `${100 - faceBounds.x - faceBounds.width}%`,
+                top: `${faceBounds.y}%`,
+                width: `${faceBounds.width}%`,
+                height: `${faceBounds.height}%`,
+              }}
+            />
+          )}
 
           {/* Capture frame 3:4 */}
           <div className="pointer-events-none absolute inset-0 z-6 flex items-center justify-center overflow-hidden">
@@ -180,10 +399,11 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             </div>
           </div>
 
-          {/* Oval face guide */}
           <div className="pointer-events-none absolute inset-0 z-5 flex items-center justify-center">
             <div
-              className="aspect-3/4 w-[min(calc((100%-32px)*0.70),calc((100dvh-100px)*0.75*0.70))] rounded-[50%] border-2 border-white/30 border-dashed transition-colors duration-300"
+              className={`aspect-3/4 w-[min(calc((100%-32px)*0.70),calc((100dvh-100px)*0.75*0.70))] rounded-[50%] border-2 border-dashed transition-colors duration-300 ${
+                faceQuality.isCentered && faceQuality.hasGoodLighting && faceQuality.noBacklight ? 'border-green-500' : 'border-white/30'
+              }`}
               style={{ boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.4)' }}
             />
           </div>
