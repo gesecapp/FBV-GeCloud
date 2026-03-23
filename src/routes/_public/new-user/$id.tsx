@@ -7,17 +7,17 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { NewUserForm } from './@components/new-user-form';
-import { useFinalizeGuestInvite, useGetGuestByInviteToken } from './@hooks/use-new-user-api';
+import { useFinalizeGuestInvite, useGetGuestByInviteId } from './@hooks/use-new-user-api';
 
-export const Route = createFileRoute('/_public/new-user/$token')({
+export const Route = createFileRoute('/_public/new-user/$id')({
   component: NewUserPage,
 });
 
 function NewUserPage() {
-  const { token } = Route.useParams();
+  const { id } = Route.useParams();
   const [success, setSuccess] = useState(false);
 
-  const { data: guestData, isLoading, isError } = useGetGuestByInviteToken(token);
+  const { data: guestData, isLoading, isError } = useGetGuestByInviteId(id);
   const finalizeInvite = useFinalizeGuestInvite();
 
   const guestId = guestData?.id || null;
@@ -30,13 +30,8 @@ function NewUserPage() {
 
     const idToUpdate = guestId || data.id!;
 
-    const payload = {
-      ...data,
-      expires_at: (guestData as any)?.expires_at,
-    };
-
     finalizeInvite.mutate(
-      { guestId: idToUpdate, data: payload },
+      { guestId: idToUpdate, data },
       {
         onSuccess: () => {
           setSuccess(true);
@@ -58,12 +53,12 @@ function NewUserPage() {
     );
   }
 
-  if (isError || !token) {
+  if (isError || !id) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] p-2 md:p-4">
         <Card className="max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-8">
-            <ItemTitle className="text-destructive text-xl">{!token ? 'Token não encontrado.' : 'Token inválido ou expirado.'}</ItemTitle>
+            <ItemTitle className="text-destructive text-xl">{!id ? 'Link não encontrado.' : 'Link inválido ou expirado.'}</ItemTitle>
           </CardContent>
         </Card>
       </div>
@@ -92,7 +87,7 @@ function NewUserPage() {
               <NewUserForm initialData={guestData as any} guestId={guestId} onSubmit={handleSubmit} isLoading={finalizeInvite.isPending} />
             ) : (
               <ItemContent>
-                <ItemDescription className="text-destructive">Não foi possível carregar os dados. Token inválido.</ItemDescription>
+                <ItemDescription className="text-destructive">Não foi possível carregar os dados. Link inválido.</ItemDescription>
               </ItemContent>
             )}
           </CardContent>

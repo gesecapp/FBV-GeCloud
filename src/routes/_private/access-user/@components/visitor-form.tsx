@@ -17,14 +17,29 @@ import { useGetGuestById, useGetUserSyncStatus } from '../@hooks/use-access-user
 import type { CreateGuestProps, GuestProps } from '../@interface/access-user.interface';
 import { RegistrationStatusAlert } from './registration-status-alert';
 
-const visitorFormSchema = z.object({
-  name: z.string().min(1, 'Campo obrigatório'),
-  cpf: z.string().optional(),
-  birthDate: z.string().optional(),
-  email: z.string().email('E-mail inválido').optional().or(z.literal('')),
-  telephones: z.array(z.string()),
-  url_image: z.array(z.string()),
-});
+const visitorFormSchema = z
+  .object({
+    name: z.string().min(1, 'Campo obrigatório'),
+    cpf: z.string().optional(),
+    birthDate: z.string().optional(),
+    email: z.string().email('E-mail inválido').optional().or(z.literal('')),
+    telephones: z.array(z.string()),
+    url_image: z.array(z.string()),
+  })
+  .refine(
+    (data) => {
+      const hasImage = data.url_image && data.url_image.length > 0;
+      if (hasImage) {
+        const cpfClean = data.cpf?.replace(/\D/g, '');
+        return !!cpfClean && cpfClean.length === 11;
+      }
+      return true;
+    },
+    {
+      message: 'CPF é obrigatório ao inserir uma foto',
+      path: ['cpf'],
+    },
+  );
 
 type VisitorFormData = z.infer<typeof visitorFormSchema>;
 
@@ -232,7 +247,7 @@ export function VisitorForm({ parentId, guestId, initialData, title, onCancel, o
               name="cpf"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CPF{requireCpfAndImage ? ' *' : ''}</FormLabel>
+                  <FormLabel>CPF{(requireCpfAndImage || (urlImages && urlImages.length > 0)) ? ' *' : ''}</FormLabel>
                   <FormControl>
                     <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.cpf} />
                   </FormControl>

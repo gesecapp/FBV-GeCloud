@@ -1,6 +1,6 @@
 import { Copy } from 'lucide-react';
 import { useState } from 'react';
-
+import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
 import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
@@ -49,8 +49,8 @@ export function VisitorsTab() {
           if (hasPhoto) {
             toast.success('Visitante cadastrado! Os dados podem levar alguns instantes para refletirem no sistema.');
             setIsFormVisible(false);
-          } else if (responseData.token) {
-            const url = `www.gecloud.com.br/new-user/${responseData.token}`;
+          } else if (responseData.id) {
+            const url = `www.gecloud.com.br/new-user/${responseData.id}`;
             setInvitationLink(url);
             setShowInviteModal(true);
             setIsFormVisible(false);
@@ -107,9 +107,9 @@ export function VisitorsTab() {
             <DialogTitle>Pré-cadastro realizado com sucesso!</DialogTitle>
           </DialogHeader>
           <ItemDescription>Compartilhe o link abaixo para o visitante finalizar o cadastro e inserir a foto.</ItemDescription>
-          {/* <div className="mx-auto my-2 flex justify-center rounded-lg border border-slate-200 bg-white p-4">
+          <div className="mx-auto my-2 flex justify-center rounded-lg border border-slate-200 bg-white p-4">
             <QRCode value={invitationLink} size={160} />
-          </div> */}
+          </div>
           <Input value={invitationLink} readOnly />
           <div className="flex justify-center gap-2">
             <Button onClick={handleCopyUrl} size="sm">

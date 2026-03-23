@@ -6,22 +6,21 @@ import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user
 interface GuestInviteData extends Partial<GuestProps> {
   id?: string;
   parentId?: string;
-  expires_at?: string;
 }
 
 interface FinalizeGuestInviteParams {
   guestId: string;
-  data: CreateGuestProps & { id?: string; expires_at?: string };
+  data: CreateGuestProps & { id?: string };
 }
 
-export function useGetGuestByInviteToken(token: string | null) {
+export function useGetGuestByInviteId(id: string | null) {
   return useQuery({
-    queryKey: ['app-guest-invite', token],
+    queryKey: ['app-guest-invite', id],
     queryFn: async () => {
-      const response = await api.get<{ data: GuestInviteData; statusCode: number }>(`/app/guests/invite/${token}`);
+      const response = await api.get<{ data: GuestInviteData; statusCode: number }>(`/app/guests/invite-by-id/${id}`);
       return response.data.data;
     },
-    enabled: !!token && typeof token === 'string',
+    enabled: !!id && typeof id === 'string',
     retry: false,
   });
 }
