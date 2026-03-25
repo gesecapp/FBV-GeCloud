@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { LogOut, User, UserPlus, Users } from 'lucide-react';
-
+import { z } from 'zod';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,7 +11,12 @@ import { DependentsTab } from './@components/dependents-tab';
 import { EditProfileTab } from './@components/edit-profile-tab';
 import { VisitorsTab } from './@components/visitors-tab';
 
+const accessUserSearchSchema = z.object({
+  tab: z.enum(['edit', 'dependents', 'visitors']).optional().catch('edit'),
+});
+
 export const Route = createFileRoute('/_private/access-user/')({
+  validateSearch: accessUserSearchSchema,
   beforeLoad: () => {
     const { isAuthenticated } = useAppAuth.getState();
 
@@ -26,13 +31,14 @@ export const Route = createFileRoute('/_private/access-user/')({
 });
 
 function AccessUserPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: Route.fullPath });
   const { clearAuth } = useAppAuth();
 
   function handleLogout() {
     clearAuth();
     navigate({ to: '/app-auth' });
   }
+  const { tab = 'edit' } = Route.useSearch();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#1E3A5F] p-2 md:p-4">
@@ -53,7 +59,15 @@ function AccessUserPage() {
               </ItemHeader>
             </ItemContent>
 
-            <Tabs defaultValue="edit">
+            <Tabs
+              value={tab}
+              onValueChange={(value) =>
+                navigate({
+                  search: (prev) => ({ ...prev, tab: value as 'edit' | 'dependents' | 'visitors' }),
+                  replace: true,
+                })
+              }
+            >
               <TabsList className="mb-4 justify-between">
                 <TabsTrigger value="edit" className="gap-2">
                   <User className="size-4" />

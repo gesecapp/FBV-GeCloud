@@ -1,35 +1,8 @@
-import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, ScanFace, Sun, X, Zap, ZoomIn } from 'lucide-react';
+import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, ScanFace, Sun, Zap, ZoomIn } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { compressImageToBase64 } from '@/lib/image-compression';
-
-// --- Types ---
-
-interface DetectedFace {
-  boundingBox: DOMRectReadOnly;
-}
-
-interface FaceDetectorInstance {
-  detect: (_image: HTMLVideoElement | HTMLCanvasElement | ImageBitmap) => Promise<DetectedFace[]>;
-}
-
-type FaceDetectorConstructor = new (_options?: { fastMode?: boolean; maxDetectedFaces?: number }) => FaceDetectorInstance;
-
-interface FaceBounds {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-interface FaceQuality {
-  isCentered: boolean;
-  hasGoodLighting: boolean;
-  noBacklight: boolean;
-  faceDetected: boolean;
-}
 
 // --- Slider Control ---
 
@@ -55,12 +28,18 @@ function CaptureSlider({
       <div className="text-white [&_svg]:size-5 sm:[&_svg]:size-6">{icon}</div>
       <input
         aria-label={label}
-        className="min-h-0 w-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-white/30 accent-white sm:w-2 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-5"
+        className="min-h-0 w-4 flex-1 cursor-pointer appearance-none rounded-full bg-transparent accent-white sm:w-5 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-5"
         max={max}
         min={min}
         onChange={(e) => onChange(Number(e.target.value))}
         step={step}
-        style={{ writingMode: 'vertical-lr', direction: 'rtl' } as React.CSSProperties}
+        style={
+          {
+            writingMode: 'vertical-lr',
+            direction: 'rtl',
+            backgroundImage: 'linear-gradient(to right, transparent 35%, rgba(255, 255, 255, 0.3) 35%, rgba(255, 255, 255, 0.3) 65%, transparent 65%)',
+          } as React.CSSProperties
+        }
         type="range"
         value={value}
       />
@@ -320,13 +299,10 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="flex! h-[min(90vh,800px)] max-w-150 flex-col gap-0 overflow-hidden border-none bg-black p-0 shadow-lg sm:min-w-fit!" showCloseButton={false}>
+      <DialogContent className="flex! h-[min(90vh,800px)] max-w-150 flex-col gap-0 overflow-hidden border-none bg-black p-0 shadow-lg sm:min-w-fit!">
         <DialogHeader className="relative z-30 flex shrink-0 flex-row items-center justify-between bg-black/40 px-2 py-1 text-white backdrop-blur-md sm:px-3 sm:py-2">
           <DialogTitle className="text-sm text-white sm:text-lg">Capturar Foto</DialogTitle>
           <DialogDescription className="sr-only">Posicione seu rosto na área indicada e capture a foto</DialogDescription>
-          <Button className="text-white" onClick={onClose} size="icon-sm" variant="ghost">
-            <X />
-          </Button>
         </DialogHeader>
 
         <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-black">
@@ -452,4 +428,28 @@ interface CameraCaptureDialogProps {
   open: boolean;
   onClose: () => void;
   onCapture: (_image: string) => void;
+}
+
+interface DetectedFace {
+  boundingBox: DOMRectReadOnly;
+}
+
+interface FaceDetectorInstance {
+  detect: (_image: HTMLVideoElement | HTMLCanvasElement | ImageBitmap) => Promise<DetectedFace[]>;
+}
+
+type FaceDetectorConstructor = new (_options?: { fastMode?: boolean; maxDetectedFaces?: number }) => FaceDetectorInstance;
+
+interface FaceBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface FaceQuality {
+  isCentered: boolean;
+  hasGoodLighting: boolean;
+  noBacklight: boolean;
+  faceDetected: boolean;
 }

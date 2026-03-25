@@ -44,7 +44,7 @@ const StatusIndicator = ({ className, status, ...props }: StatusIndicatorProps) 
     pending: 'bg-yellow-500',
     error: 'bg-red-500',
     canceled: 'bg-red-500',
-    info: 'bg-blue-500',
+    info: 'bg-sky-400',
     neutral: 'bg-gray-500',
   };
   const colorClass = status ? statusIndicatorColors[status] : '';

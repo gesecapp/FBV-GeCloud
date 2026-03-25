@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root';
 import { Route as PublicRouteImport } from './routes/_public';
 import { Route as PrivateRouteImport } from './routes/_private';
-import { Route as IndexRouteImport } from './routes/index';
+import { Route as PrivateIndexRouteImport } from './routes/_private/index';
 import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
 import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
 import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
 import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
+import { Route as PrivateAddVisitorIndexRouteImport } from './routes/_private/add-visitor/index';
+import { Route as PrivateAddDependentIndexRouteImport } from './routes/_private/add-dependent/index';
 import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
 import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
 import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
@@ -28,10 +30,10 @@ const PrivateRoute = PrivateRouteImport.update({
   id: '/_private',
   getParentRoute: () => rootRouteImport,
 } as any);
-const IndexRoute = IndexRouteImport.update({
+const PrivateIndexRoute = PrivateIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PrivateRoute,
 } as any);
 const PublicPrivacyPolicyIndexRoute =
   PublicPrivacyPolicyIndexRouteImport.update({
@@ -54,6 +56,17 @@ const PublicAppAuthIndexRoute = PublicAppAuthIndexRouteImport.update({
   path: '/app-auth/',
   getParentRoute: () => PublicRoute,
 } as any);
+const PrivateAddVisitorIndexRoute = PrivateAddVisitorIndexRouteImport.update({
+  id: '/add-visitor/',
+  path: '/add-visitor/',
+  getParentRoute: () => PrivateRoute,
+} as any);
+const PrivateAddDependentIndexRoute =
+  PrivateAddDependentIndexRouteImport.update({
+    id: '/add-dependent/',
+    path: '/add-dependent/',
+    getParentRoute: () => PrivateRoute,
+  } as any);
 const PrivateAccessUserIndexRoute = PrivateAccessUserIndexRouteImport.update({
   id: '/access-user/',
   path: '/access-user/',
@@ -72,9 +85,11 @@ const PublicAppAuthResetPasswordTokenRoute =
   } as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
+  '/': typeof PrivateIndexRoute;
   '/new-user/$id': typeof PublicNewUserIdRoute;
   '/access-user/': typeof PrivateAccessUserIndexRoute;
+  '/add-dependent/': typeof PrivateAddDependentIndexRoute;
+  '/add-visitor/': typeof PrivateAddVisitorIndexRoute;
   '/app-auth/': typeof PublicAppAuthIndexRoute;
   '/contact/': typeof PublicContactIndexRoute;
   '/develop/': typeof PublicDevelopIndexRoute;
@@ -82,9 +97,11 @@ export interface FileRoutesByFullPath {
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
+  '/': typeof PrivateIndexRoute;
   '/new-user/$id': typeof PublicNewUserIdRoute;
   '/access-user': typeof PrivateAccessUserIndexRoute;
+  '/add-dependent': typeof PrivateAddDependentIndexRoute;
+  '/add-visitor': typeof PrivateAddVisitorIndexRoute;
   '/app-auth': typeof PublicAppAuthIndexRoute;
   '/contact': typeof PublicContactIndexRoute;
   '/develop': typeof PublicDevelopIndexRoute;
@@ -93,11 +110,13 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
-  '/': typeof IndexRoute;
   '/_private': typeof PrivateRouteWithChildren;
   '/_public': typeof PublicRouteWithChildren;
+  '/_private/': typeof PrivateIndexRoute;
   '/_public/new-user/$id': typeof PublicNewUserIdRoute;
   '/_private/access-user/': typeof PrivateAccessUserIndexRoute;
+  '/_private/add-dependent/': typeof PrivateAddDependentIndexRoute;
+  '/_private/add-visitor/': typeof PrivateAddVisitorIndexRoute;
   '/_public/app-auth/': typeof PublicAppAuthIndexRoute;
   '/_public/contact/': typeof PublicContactIndexRoute;
   '/_public/develop/': typeof PublicDevelopIndexRoute;
@@ -110,6 +129,8 @@ export interface FileRouteTypes {
     | '/'
     | '/new-user/$id'
     | '/access-user/'
+    | '/add-dependent/'
+    | '/add-visitor/'
     | '/app-auth/'
     | '/contact/'
     | '/develop/'
@@ -120,6 +141,8 @@ export interface FileRouteTypes {
     | '/'
     | '/new-user/$id'
     | '/access-user'
+    | '/add-dependent'
+    | '/add-visitor'
     | '/app-auth'
     | '/contact'
     | '/develop'
@@ -127,11 +150,13 @@ export interface FileRouteTypes {
     | '/app-auth/reset-password/$token';
   id:
     | '__root__'
-    | '/'
     | '/_private'
     | '/_public'
+    | '/_private/'
     | '/_public/new-user/$id'
     | '/_private/access-user/'
+    | '/_private/add-dependent/'
+    | '/_private/add-visitor/'
     | '/_public/app-auth/'
     | '/_public/contact/'
     | '/_public/develop/'
@@ -140,7 +165,6 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
   PrivateRoute: typeof PrivateRouteWithChildren;
   PublicRoute: typeof PublicRouteWithChildren;
 }
@@ -161,12 +185,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    '/': {
-      id: '/';
+    '/_private/': {
+      id: '/_private/';
       path: '/';
       fullPath: '/';
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
+      preLoaderRoute: typeof PrivateIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
     };
     '/_public/privacy-policy/': {
       id: '/_public/privacy-policy/';
@@ -196,6 +220,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicAppAuthIndexRouteImport;
       parentRoute: typeof PublicRoute;
     };
+    '/_private/add-visitor/': {
+      id: '/_private/add-visitor/';
+      path: '/add-visitor';
+      fullPath: '/add-visitor/';
+      preLoaderRoute: typeof PrivateAddVisitorIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
+    };
+    '/_private/add-dependent/': {
+      id: '/_private/add-dependent/';
+      path: '/add-dependent';
+      fullPath: '/add-dependent/';
+      preLoaderRoute: typeof PrivateAddDependentIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
+    };
     '/_private/access-user/': {
       id: '/_private/access-user/';
       path: '/access-user';
@@ -221,11 +259,17 @@ declare module '@tanstack/react-router' {
 }
 
 interface PrivateRouteChildren {
+  PrivateIndexRoute: typeof PrivateIndexRoute;
   PrivateAccessUserIndexRoute: typeof PrivateAccessUserIndexRoute;
+  PrivateAddDependentIndexRoute: typeof PrivateAddDependentIndexRoute;
+  PrivateAddVisitorIndexRoute: typeof PrivateAddVisitorIndexRoute;
 }
 
 const PrivateRouteChildren: PrivateRouteChildren = {
+  PrivateIndexRoute: PrivateIndexRoute,
   PrivateAccessUserIndexRoute: PrivateAccessUserIndexRoute,
+  PrivateAddDependentIndexRoute: PrivateAddDependentIndexRoute,
+  PrivateAddVisitorIndexRoute: PrivateAddVisitorIndexRoute,
 };
 
 const PrivateRouteWithChildren =
@@ -253,7 +297,6 @@ const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   PrivateRoute: PrivateRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
 };
