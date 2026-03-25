@@ -14,7 +14,7 @@ npx cap open ios
 
 npx cap open android
 
-- Gere os ícones e splash screens
+### Gere os ícones e splash screens
 
 `npx @capacitor/assets generate --iconBackgroundColor '#fff' --iconBackgroundColorDark '#fff' --splashBackgroundColor '#fff' --splashBackgroundColorDark '#fff'`
 
