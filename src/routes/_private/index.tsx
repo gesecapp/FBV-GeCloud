@@ -31,7 +31,7 @@ function DashboardPage() {
         <ItemTitle className="font-normal text-xl tracking-wide">GECLOUD</ItemTitle>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
-            <Button variant="link" size="icon" onClick={handleLogout}>
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
               <LogOut className="size-4" />
             </Button>
             <ThemeSwitcher />
