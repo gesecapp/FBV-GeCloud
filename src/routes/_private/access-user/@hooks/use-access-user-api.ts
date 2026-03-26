@@ -38,7 +38,7 @@ export function useGetUserSyncStatus(userId: string | null | undefined) {
   return useQuery({
     queryKey: accessUserKeys.syncStatus(userId || ''),
     queryFn: async () => {
-      const response = await api.get<{ data: any; statusCode: number }>(`/access-user/${userId}/sync-status`, { headers: authHeaders(token) });
+      const response = await api.get<{ data: any; statusCode: number }>(`/app/user/${userId}/sync-status`, { headers: authHeaders(token) });
       return normalizeUserSyncStatus(userId as string, response.data.data);
     },
     enabled: !!token && !!userId,
@@ -52,8 +52,8 @@ export function useGetAllSyncStatuses() {
   return useQuery({
     queryKey: accessUserKeys.allSyncStatuses(),
     queryFn: async () => {
-      const response = await api.get<{ data: UserSyncStatus[]; statusCode: number }>('/access-user/sync-status', { headers: authHeaders(token) });
-      return response.data.data || [];
+      const response = await api.get<{ data: any[]; statusCode: number }>('/app/sync-status', { headers: authHeaders(token) });
+      return (response.data.data || []).map((item: any) => normalizeUserSyncStatus(item.user?.id || '', item));
     },
     enabled: !!token,
     refetchInterval: 10000,
@@ -155,7 +155,7 @@ export function useAccessUserApi() {
 }
 
 function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
-  if ('message' in raw) {
+  if (!raw || 'message' in raw) {
     return {
       user: { id: userId, name: '', cpf: '' },
       sync_status: null,
@@ -163,7 +163,14 @@ function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
     };
   }
 
-  const sensors = (raw.sensors || []).map((s: any) => {
+  // Handle both the old structure (raw = sync_status) and the new structure (raw = { user, sync_status, ... })
+  const syncStatusData = raw.sync_status || raw;
+  const user = raw.user || { id: userId, name: '', cpf: '' };
+
+  const rawSensors = syncStatusData.sensors || {};
+  const sensorsArray = Array.isArray(rawSensors) ? rawSensors : Object.entries(rawSensors).map(([id, s]: [string, any]) => ({ ...s, sensorId: id }));
+
+  const sensors = (sensorsArray || []).map((s: any) => {
     const imageStatus = s.image_status as { accepted?: boolean; reason?: string; rejected?: boolean } | undefined;
     return {
       sensorId: s.sensorId,
@@ -175,11 +182,11 @@ function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
     };
   });
 
-  const synchronized = raw.synchronized ?? (sensors.length > 0 && sensors.every((s: any) => s.registered));
+  const synchronized = raw.synchronized ?? syncStatusData.synchronized ?? (sensors.length > 0 && sensors.every((s: any) => s.registered));
 
   return {
-    user: { id: userId, name: '', cpf: '' },
-    sync_status: { ...raw, sensors, synchronized },
+    user,
+    sync_status: { ...syncStatusData, sensors, synchronized },
     synchronized,
   };
 }

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ChevronRight, FileUser, LogOut, SquarePen, UserPlus, Users } from 'lucide-react';
+import { ChevronRight, CircleAlertIcon, FileUser, LogOut, SquarePen, UserPlus, Users } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { Alert } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -36,10 +37,13 @@ function DashboardPage() {
             </Button>
             <ThemeSwitcher />
           </div>
-          <Avatar className="size-10 border-2 border-primary/20">
-            <AvatarImage src={user?.url_image?.[0]} alt={user?.name} className="object-cover" />
-            <AvatarFallback className="bg-primary text-primary-foreground">{user?.name?.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar className="size-10 border-2 border-primary/20">
+              <AvatarImage src={user?.url_image?.[0]} alt={user?.name} className="object-cover" />
+              <AvatarFallback className="bg-primary text-primary-foreground">{user?.name?.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <StatusIndicator status="error" className="absolute top-1 right-1" />
+          </div>
         </div>
       </Item>
 
@@ -48,15 +52,28 @@ function DashboardPage() {
           <ItemMedia variant="default" className="px-20 md:mb-10">
             <img src="/images/logo.svg" alt="Gesec Logo" className="h-full w-auto" />
           </ItemMedia>
-          <ItemContent>
+          <ItemContent className="items-center">
             <ItemTitle className="font-semibold text-4xl">Bem vindo, {firstName}</ItemTitle>
-            <div className="flex items-baseline justify-center gap-2">
+            <div className="flex items-baseline gap-2">
               <StatusIndicator status="info" />
               <div className="flex items-baseline gap-1">
                 <ItemTitle>Entidade:</ItemTitle>
                 <ItemDescription className="text-lg">Fazenda Boa Vista</ItemDescription>
               </div>
             </div>
+
+            <Link to="/access-user" className="mt-4 block no-underline">
+              <Alert className="cursor-pointer transition-colors hover:bg-muted/50">
+                <CircleAlertIcon className="size-4" />
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-col">
+                    <ItemTitle>Foto inválida para reconhecimento facial.</ItemTitle>
+                    <ItemDescription className="text-yellow-600 underline underline-offset-2">Atualize seu cadastro para continuar</ItemDescription>
+                  </div>
+                  <ChevronRight className="size-5 text-muted-foreground" />
+                </div>
+              </Alert>
+            </Link>
           </ItemContent>
         </ItemGroup>
 

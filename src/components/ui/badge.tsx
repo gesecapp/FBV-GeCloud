@@ -50,7 +50,7 @@ const StatusIndicator = ({ className, status, ...props }: StatusIndicatorProps) 
   const colorClass = status ? statusIndicatorColors[status] : '';
 
   return (
-    <span className="relative flex size-2" {...props}>
+    <span className={cn('relative flex size-2', className)} {...props}>
       <span
         className={cn(
           'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
