@@ -9,18 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
-import { Route as PublicRouteImport } from './routes/_public';
 import { Route as PrivateRouteImport } from './routes/_private';
-import { Route as PrivateIndexRouteImport } from './routes/_private/index';
-import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
-import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
-import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
-import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
-import { Route as PrivateAddVisitorIndexRouteImport } from './routes/_private/add-visitor/index';
-import { Route as PrivateAddDependentIndexRouteImport } from './routes/_private/add-dependent/index';
 import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
-import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateAddDependentIndexRouteImport } from './routes/_private/add-dependent/index';
+import { Route as PrivateAddVisitorIndexRouteImport } from './routes/_private/add-visitor/index';
+import { Route as PrivateIndexRouteImport } from './routes/_private/index';
+import { Route as PublicRouteImport } from './routes/_public';
+import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
 import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
+import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
+import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
+import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',

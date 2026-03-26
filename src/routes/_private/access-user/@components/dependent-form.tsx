@@ -1,15 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CameraCaptureDialog } from '@/components/ui/image-capture';
+import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import UploadImage from '@/components/upload-image';
-import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { useGetGuestById, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
 import type { CreateGuestProps } from '../@interface/access-user.interface';
@@ -38,8 +36,6 @@ interface DependentFormProps {
 export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading }: DependentFormProps) {
   const { data: existingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
-  const [cameraOpen, setCameraOpen] = useState(false);
-
   const form = useForm<DependentFormData>({
     resolver: zodResolver(dependentFormSchema),
     defaultValues: {
@@ -106,18 +102,8 @@ export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading
     onSubmit(payload);
   }
 
-  function handleAddFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      const compressed = await compressImageToBase64(base64);
-      form.setValue('url_image', [compressed], { shouldValidate: true });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleCameraCapture(image: string) {
-    form.setValue('url_image', [image], { shouldValidate: true });
+  function handleImageChange(image: string | undefined) {
+    form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
 
   return (
@@ -217,14 +203,8 @@ export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading
             render={({ fieldState }) => (
               <ItemContent className="gap-3">
                 <FormLabel>Foto *</FormLabel>
-                <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
-                <ItemActions>
-                  <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                    <Camera className="mr-2 size-4" />
-                    Câmera
-                  </Button>
-                </ItemActions>
-                <div className="font-medium text-destructive text-sm">{fieldState.error?.message}</div>
+                <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
+                {fieldState.error?.message && <div className="font-medium text-destructive text-sm">{fieldState.error.message}</div>}
               </ItemContent>
             )}
           />
@@ -240,8 +220,6 @@ export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading
           </ItemActions>
         </form>
       </Form>
-
-      <CameraCaptureDialog open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCameraCapture} />
     </ItemGroup>
   );
 }

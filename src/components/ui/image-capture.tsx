@@ -1,4 +1,4 @@
-import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, ScanFace, Sun, Zap, ZoomIn } from 'lucide-react';
+import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, ScanFace, Sun, X, Zap, ZoomIn } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -299,9 +299,12 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="flex! h-[min(90vh,800px)] max-w-150 flex-col gap-0 overflow-hidden border-none bg-black p-0 shadow-lg sm:min-w-fit!">
-        <DialogHeader className="relative z-30 flex shrink-0 flex-row items-center justify-between bg-black/40 px-2 py-1 text-white backdrop-blur-md sm:px-3 sm:py-2">
-          <DialogTitle className="text-sm text-white sm:text-lg">Capturar Foto</DialogTitle>
+      <DialogContent showCloseButton={false} className="flex! h-[min(90vh,800px)] max-w-150 flex-col gap-0 overflow-hidden border-none bg-black p-0 shadow-lg sm:min-w-fit!">
+        <DialogHeader className="relative z-30 flex shrink-0 flex-row items-center justify-between bg-black/40 px-3 py-2 text-white backdrop-blur-md sm:px-4 sm:py-3">
+          <DialogTitle className="font-medium text-sm text-white sm:text-lg">Capturar Foto</DialogTitle>
+          <button onClick={onClose} className="cursor-pointer rounded-full p-1.5 text-white/70 transition-all hover:bg-white/10 hover:text-white active:scale-95" type="button">
+            <X className="size-5 sm:size-6" />
+          </button>
           <DialogDescription className="sr-only">Posicione seu rosto na área indicada e capture a foto</DialogDescription>
         </DialogHeader>
 

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Loader2, Plus, Share2, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -7,11 +7,9 @@ import { z } from 'zod';
 import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CameraCaptureDialog } from '@/components/ui/image-capture';
+import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import UploadImage from '@/components/upload-image';
-import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { useGetGuestById, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
 import type { CreateGuestProps, GuestProps } from '../@interface/access-user.interface';
@@ -57,7 +55,6 @@ interface VisitorFormProps {
 export function VisitorForm({ parentId, guestId, initialData, title, onCancel, onSubmit, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
   const { data: fetchedGuest, isLoading: isLoadingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
-  const [cameraOpen, setCameraOpen] = useState(false);
   const [phoneInput, setPhoneInput] = useState('');
   const [cooldown, setCooldown] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -202,18 +199,8 @@ export function VisitorForm({ parentId, guestId, initialData, title, onCancel, o
     onSubmit(payload);
   }
 
-  function handleAddFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      const compressed = await compressImageToBase64(base64);
-      form.setValue('url_image', [compressed], { shouldValidate: true });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleCameraCapture(image: string) {
-    form.setValue('url_image', [image], { shouldValidate: true });
+  function handleImageChange(image: string | undefined) {
+    form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
 
   if (isLoadingGuest) return <DefaultLoading />;
@@ -314,13 +301,7 @@ export function VisitorForm({ parentId, guestId, initialData, title, onCancel, o
             render={({ fieldState }) => (
               <ItemContent className="gap-3">
                 <FormLabel>Foto{requireCpfAndImage ? ' *' : ''}</FormLabel>
-                <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
-                <ItemActions>
-                  <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                    <Camera className="mr-2 size-4" />
-                    Câmera
-                  </Button>
-                </ItemActions>
+                <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
                 {fieldState.error?.message && <div className="font-medium text-destructive text-sm">{fieldState.error.message}</div>}
               </ItemContent>
             )}
@@ -338,8 +319,6 @@ export function VisitorForm({ parentId, guestId, initialData, title, onCancel, o
           </ItemActions>
         </form>
       </Form>
-
-      <CameraCaptureDialog open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCameraCapture} />
     </ItemGroup>
   );
 }

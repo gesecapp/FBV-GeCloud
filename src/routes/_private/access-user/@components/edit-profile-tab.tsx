@@ -1,15 +1,12 @@
-import { Camera, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CameraCaptureDialog } from '@/components/ui/image-capture';
+import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import UploadImage from '@/components/upload-image';
 import { useAppAuth } from '@/hooks/use-app-auth';
-import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { useGetAppUser, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
 import { useEditProfileForm } from '../@hooks/use-edit-profile-form';
@@ -19,22 +16,11 @@ export function EditProfileTab() {
   const { data: user, isLoading, isError } = useGetAppUser();
   const { data: syncStatus } = useGetUserSyncStatus(userId);
   const { form, onSubmit, isPending } = useEditProfileForm(user);
-  const [cameraOpen, setCameraOpen] = useState(false);
 
   const urlImages = form.watch('url_image');
 
-  function handleAddFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      const compressed = await compressImageToBase64(base64);
-      form.setValue('url_image', [compressed], { shouldValidate: true });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleCameraCapture(image: string) {
-    form.setValue('url_image', [image], { shouldValidate: true });
+  function handleImageChange(image: string | undefined) {
+    form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
 
   if (isLoading) return <DefaultLoading />;
@@ -149,13 +135,7 @@ export function EditProfileTab() {
 
           <ItemContent className="gap-3">
             <FormLabel>Foto de Perfil</FormLabel>
-            <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
-            <ItemActions>
-              <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                <Camera className="mr-2 size-4" />
-                Câmera Original
-              </Button>
-            </ItemActions>
+            <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
           </ItemContent>
 
           <ItemActions className="justify-end">
@@ -166,8 +146,6 @@ export function EditProfileTab() {
           </ItemActions>
         </form>
       </Form>
-
-      <CameraCaptureDialog open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCameraCapture} />
     </ItemGroup>
   );
 }
