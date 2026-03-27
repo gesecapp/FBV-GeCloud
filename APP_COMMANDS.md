@@ -1,3 +1,11 @@
+### Atualize a versão
+
+[Android](./android/app/build.gradle)
+
+[iOS](./ios/App/App.xcodeproj/project.pbxproj)
+
+[Package.json](./package.json)
+
 ### Faça build
 
 pnpm run build
