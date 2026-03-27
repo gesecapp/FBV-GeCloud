@@ -1,5 +1,3 @@
-'use client';
-
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 
 import { type ChartConfig, ChartContainer, getChartColor } from '@/components/ui/chart';

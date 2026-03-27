@@ -1,5 +1,3 @@
-'use client';
-
 import { Area, AreaChart, XAxis } from 'recharts';
 import { ChartContainer, getChartColor } from '@/components/ui/chart';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';

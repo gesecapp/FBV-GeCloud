@@ -1,5 +1,3 @@
-'use client';
-
 // extraido de https://www.shadcnblocks.com/block/product-specs1
 
 import { Battery, Box, ChevronDown, Cpu, HardDrive, Monitor, Wifi } from 'lucide-react';

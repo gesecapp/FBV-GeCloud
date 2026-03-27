@@ -1,5 +1,3 @@
-'use client';
-
 import { motion, type Transition, useAnimation } from 'framer-motion';
 import { forwardRef, type HTMLAttributes, useCallback, useImperativeHandle, useRef } from 'react';
 

@@ -1,5 +1,3 @@
-'use client';
-
 // extraido de https://rosencharts.com/
 
 import * as React from 'react';

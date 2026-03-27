@@ -1,5 +1,3 @@
-'use client';
-
 import { Link } from '@tanstack/react-router';
 import { motion, useAnimation, type Variants } from 'framer-motion';
 import { PinOff } from 'lucide-react';
