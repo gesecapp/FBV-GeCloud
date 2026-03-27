@@ -23,26 +23,73 @@ function CaptureSlider({
   value: number;
   onChange: (_value: number) => void;
 }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const clamp = (v: number) => Math.min(max, Math.max(min, Math.round(v / step) * step));
+
+  function handleTrackInteraction(e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) {
+    e.preventDefault();
+    if (!trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    const clientY = 'changedTouches' in e ? e.changedTouches[0].clientY : e.clientY;
+    const ratio = 1 - Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+    onChange(clamp(min + ratio * (max - min)));
+  }
+
+  const fillPercent = ((value - min) / (max - min)) * 100;
+
   return (
-    <div data-slot="capture-slider" className="flex min-h-0 flex-1 flex-col items-center gap-1 sm:gap-2">
-      <div className="text-white [&_svg]:size-5 sm:[&_svg]:size-6">{icon}</div>
-      <input
+    <div data-slot="capture-slider" className="flex min-h-0 flex-1 flex-col items-center gap-1">
+      <div className="text-white [&_svg]:size-4 sm:[&_svg]:size-5">{icon}</div>
+
+      {/* Increment button */}
+      <button
+        aria-label={`${label} aumentar`}
+        className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white/20 text-sm text-white transition-colors active:bg-white/50 sm:size-8"
+        onClick={() => onChange(clamp(value + step))}
+        type="button"
+      >
+        +
+      </button>
+
+      {/* Clickable / tappable track */}
+      <div
+        ref={trackRef}
         aria-label={label}
-        className="min-h-0 w-4 flex-1 cursor-pointer appearance-none rounded-full bg-transparent accent-white sm:w-5 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:size-5"
-        max={max}
-        min={min}
-        onChange={(e) => onChange(Number(e.target.value))}
-        step={step}
-        style={
-          {
-            writingMode: 'vertical-lr',
-            direction: 'rtl',
-            backgroundImage: 'linear-gradient(to right, transparent 35%, rgba(255, 255, 255, 0.3) 35%, rgba(255, 255, 255, 0.3) 65%, transparent 65%)',
-          } as React.CSSProperties
-        }
-        type="range"
-        value={value}
-      />
+        aria-valuemax={max}
+        aria-valuemin={min}
+        aria-valuenow={value}
+        className="relative min-h-0 flex-1 w-5 cursor-pointer rounded-full bg-white/20 sm:w-6"
+        onClick={handleTrackInteraction}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowUp') onChange(clamp(value + step));
+          else if (e.key === 'ArrowDown') onChange(clamp(value - step));
+        }}
+        onTouchEnd={handleTrackInteraction}
+        role="slider"
+        tabIndex={0}
+      >
+        {/* Fill */}
+        <div
+          className="absolute bottom-0 left-0 right-0 rounded-full bg-white/60 transition-all duration-100"
+          style={{ height: `${fillPercent}%` }}
+        />
+        {/* Thumb */}
+        <div
+          className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 rounded-full bg-white shadow-md transition-all duration-100 sm:size-5"
+          style={{ bottom: `calc(${fillPercent}% - 8px)` }}
+        />
+      </div>
+
+      {/* Decrement button */}
+      <button
+        aria-label={`${label} diminuir`}
+        className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white/20 text-sm text-white transition-colors active:bg-white/50 sm:size-8"
+        onClick={() => onChange(clamp(value - step))}
+        type="button"
+      >
+        −
+      </button>
     </div>
   );
 }
