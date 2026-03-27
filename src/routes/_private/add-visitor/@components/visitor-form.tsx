@@ -3,43 +3,17 @@ import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { z } from 'zod';
 import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
-import { useGetGuestById, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
-import type { CreateGuestProps, GuestProps } from '../@interface/access-user.interface';
-import { RegistrationStatusAlert } from './registration-status-alert';
-
-const visitorFormSchema = z
-  .object({
-    name: z.string().min(1, 'Campo obrigatório'),
-    cpf: z.string().optional(),
-    birthDate: z.string().optional(),
-    email: z.string().email('E-mail inválido').optional().or(z.literal('')),
-    telephones: z.array(z.string()),
-    url_image: z.array(z.string()),
-  })
-  .refine(
-    (data) => {
-      const hasImage = data.url_image && data.url_image.length > 0;
-      if (hasImage) {
-        const cpfClean = data.cpf?.replace(/\D/g, '');
-        return !!cpfClean && cpfClean.length === 11;
-      }
-      return true;
-    },
-    {
-      message: 'CPF é obrigatório ao inserir uma foto',
-      path: ['cpf'],
-    },
-  );
-
-type VisitorFormData = z.infer<typeof visitorFormSchema>;
+import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import { type VisitorFormData, visitorFormSchema } from '../@interface/add-visitor.schema';
 
 interface VisitorFormProps {
   parentId: string;

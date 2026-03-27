@@ -1,19 +1,15 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ItemActions, ItemContent, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
-import { DependentForm } from '../access-user/@components/dependent-form';
-import { useAccessUserApi } from '../access-user/@hooks/use-access-user-api';
-import type { CreateGuestProps } from '../access-user/@interface/access-user.interface';
-
-const addDependentSearchSchema = z.object({
-  guestId: z.string().optional(),
-});
+import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import { DependentForm } from './@components/dependent-form';
+import { addDependentSearchSchema } from './@interface/add-dependent.schema';
 
 export const Route = createFileRoute('/_private/add-dependent/')({
   validateSearch: addDependentSearchSchema,

@@ -6,9 +6,9 @@ import { StatusIndicator } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
-import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from './access-user/@components/registration-status-alert';
-import { useGetAppUser, useGetUserSyncStatus } from './access-user/@hooks/use-access-user-api';
 
 export const Route = createFileRoute('/_private/')({
   component: DashboardPage,

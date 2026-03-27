@@ -6,11 +6,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { applyDateMask, applyPhoneMask } from '@/lib/masks';
-import { useGetAppUser, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
 import { useEditProfileForm } from '../@hooks/use-edit-profile-form';
-import { RegistrationStatusAlert } from './registration-status-alert';
 
 export function EditProfileTab() {
   const { userId } = useAppAuth();

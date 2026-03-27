@@ -3,21 +3,18 @@ import { ArrowLeft, Copy } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
-import { VisitorForm } from '../access-user/@components/visitor-form';
-import { useAccessUserApi } from '../access-user/@hooks/use-access-user-api';
-import type { CreateGuestProps } from '../access-user/@interface/access-user.interface';
-
-const addVisitorSearchSchema = z.object({
-  guestId: z.string().optional(),
-});
+import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import { VisitorForm } from './@components/visitor-form';
+import { INVITATION_URL_BASE, WHATSAPP_COLOR, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-visitor.consts';
+import { addVisitorSearchSchema } from './@interface/add-visitor.schema';
 
 export const Route = createFileRoute('/_private/add-visitor/')({
   validateSearch: addVisitorSearchSchema,
@@ -72,7 +69,7 @@ function AddVisitorPage() {
             toast.success('Visitante cadastrado! Os dados podem levar alguns instantes para refletirem no sistema.');
             handleBack();
           } else if (responseData.id) {
-            const url = `www.gecloud.com.br/new-user/${responseData.id}`;
+            const url = `${INVITATION_URL_BASE}/${responseData.id}`;
             setInvitationLink(url);
             setShowInviteModal(true);
           }
@@ -90,7 +87,7 @@ function AddVisitorPage() {
   }
 
   function handleShareWhatsApp() {
-    const message = encodeURIComponent(`Olá! Finalize seu cadastro pelo link: ${invitationLink}`);
+    const message = encodeURIComponent(`${WHATSAPP_MESSAGE_PREFIX}${invitationLink}`);
     window.open(`https://wa.me/?text=${message}`, '_blank');
   }
 
@@ -133,7 +130,7 @@ function AddVisitorPage() {
               <Copy className="mr-2 size-4" />
               Copiar Link
             </Button>
-            <Button onClick={handleShareWhatsApp} size="sm" variant="outline" className="bg-[#25D366] text-white hover:bg-[#25D366]/90">
+            <Button onClick={handleShareWhatsApp} size="sm" variant="outline" className={`bg-[${WHATSAPP_COLOR}] text-white hover:bg-[${WHATSAPP_COLOR}]/90`}>
               WhatsApp
             </Button>
           </div>

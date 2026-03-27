@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import DefaultLoading from '@/components/default-loading';
-import { useGetAllSyncStatuses, useGetGuestsByParent } from '../@hooks/use-access-user-api';
+import { useGetAllSyncStatuses, useGetGuestsByParent } from '@/hooks/use-access-user-api';
 import { VisitorList } from './visitor-list';
 
 export function VisitorsTab() {

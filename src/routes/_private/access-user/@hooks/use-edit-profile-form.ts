@@ -3,11 +3,11 @@ import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
+import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { applyCpfMask, applyPhoneMask } from '@/lib/masks';
 import type { GuestProps } from '../@interface/access-user.interface';
 import { type EditProfileFormData, editProfileSchema } from '../@interface/access-user.interface';
-import { useAccessUserApi } from './use-access-user-api';
 
 export function useEditProfileForm(user: GuestProps | undefined) {
   const { userId } = useAppAuth();

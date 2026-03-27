@@ -9,10 +9,10 @@ import { CameraCaptureDialog } from '@/components/ui/image-capture';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
 import UploadImage from '@/components/upload-image';
+import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
-import { RegistrationStatusAlert } from '@/routes/_private/access-user/@components/registration-status-alert';
-import { useGetUserSyncStatus } from '@/routes/_private/access-user/@hooks/use-access-user-api';
 import type { GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type NewUserFormData, newUserFormSchema } from '../@interface/new-user.interface';
 

@@ -27,8 +27,8 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ItemActions, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { applyCpfMask } from '@/lib/masks';
-import { useAccessUserApi } from '../@hooks/use-access-user-api';
 import type { GuestProps, UserSyncStatus } from '../@interface/access-user.interface';
 
 interface VisitorListProps {

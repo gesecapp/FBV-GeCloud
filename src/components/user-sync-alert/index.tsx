@@ -3,7 +3,7 @@ import { AlertCircle, CheckCircle2, ChevronRight, Clock, Info, Loader2 } from 'l
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { StatusVariant } from '@/components/ui/badge';
-import type { UserSyncStatus } from '../@interface/access-user.interface';
+import type { UserSyncStatus } from '@/routes/_private/access-user/@interface/access-user.interface';
 
 interface RegistrationStatusAlertProps {
   syncStatus?: UserSyncStatus;

@@ -2,28 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
-import { useGetGuestById, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
-import type { CreateGuestProps } from '../@interface/access-user.interface';
-import { RegistrationStatusAlert } from './registration-status-alert';
-
-const dependentFormSchema = z.object({
-  name: z.string().min(1, 'Campo obrigatório'),
-  cpf: z.string().min(14, 'CPF obrigatório e deve ser válido'),
-  birthDate: z.string().optional(),
-  email: z.string().email('E-mail inválido').optional().or(z.literal('')),
-  primaryPhone: z.string().optional(),
-  secondaryPhone: z.string().optional(),
-  url_image: z.array(z.string()).min(1, 'Pelo menos uma foto é obrigatória'),
-});
-
-type DependentFormData = z.infer<typeof dependentFormSchema>;
+import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import { type DependentFormData, dependentFormSchema } from '../@interface/add-dependent.schema';
 
 interface DependentFormProps {
   parentId: string;

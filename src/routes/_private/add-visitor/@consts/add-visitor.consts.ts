@@ -1,0 +1,5 @@
+export const INVITATION_URL_BASE = 'www.gecloud.com.br/new-user';
+
+export const WHATSAPP_MESSAGE_PREFIX = 'Olá! Finalize seu cadastro pelo link: ';
+
+export const WHATSAPP_COLOR = '#25D366';
