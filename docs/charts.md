@@ -9,7 +9,7 @@ O projeto usa **Recharts** como biblioteca de graficos, encapsulado pelo compone
 - **NUNCA** use `mx-auto` no `ChartContainer` — quebra o `ResponsiveContainer` interno
 - **SEMPRE** use `getChartColor(index)` de `@/components/ui/chart` para cores
 - Os arquivos de exemplo em `src/components/graph-*.tsx` sao **modelos de referencia** — NAO devem ser importados diretamente
-- Graficos ficam dentro de componentes comuns, portanto use `Item`, `ItemTitle`, `ItemDescription` — NUNCA `Card`
+- Graficos ficam dentro de componentes comuns, portanto use `Item`, `ItemTitle`, `ItemDescription`
 
 ## Cores — `getChartColor(index)`
 

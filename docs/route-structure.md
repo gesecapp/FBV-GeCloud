@@ -6,28 +6,31 @@ Toda rota segue esta estrutura dentro de `src/routes/_private/{module}/`:
 
 ```
 src/routes/_private/{feature}/
-├── index.tsx           # Pagina principal (listagem)
-├── add.tsx             # Pagina de criacao/edicao
-├── $id.tsx             # Pagina de detalhe (opcional)
-├── @components/        # Componentes especificos da rota
+├── index.tsx                # Pagina principal (listagem)
+├── add/                     # Pagina de criacao (diretório)
+│   └── index.tsx
+├── details.tsx              # Pagina de detalhe (ID via search params)
+├── @components/             # Componentes especificos da rota
 │   └── {feature}-form.tsx
-├── @consts/            # Valores fixos, enums, configs
+├── @consts/                 # Valores fixos, enums, configs
 │   └── {feature}.consts.ts
-├── @hooks/             # Hooks especificos da rota
+├── @hooks/                  # Hooks especificos da rota
 │   ├── use-{feature}-form.ts
 │   └── use-{feature}-api.ts  # (se nao for global)
-├── @interface/         # Types, Interfaces, Schemas Zod
+├── @interface/              # Types, Interfaces, Schemas Zod
 │   ├── {feature}.interface.ts
 │   └── {feature}.schema.ts
-└── @utils/             # Funcoes auxiliares (opcional)
+└── @utils/                  # Funcoes auxiliares (opcional)
 ```
 
 ## Regras de Roteamento
 
 - PROIBIDO usar `.` para criar rotas (ex: `edit.$id.tsx`)
+- PROIBIDO criar rotas como arquivos flat (`add.tsx`, `$id.tsx`). Usar **diretórios** com `index.tsx` (exceção: `details.tsx` que utiliza search params)
 - Toda pasta de rota DEVE ter `index.tsx`
-- Estrutura valida: `index.tsx`, `add.tsx`, `$id.tsx`
-- Rotas baseadas em diretorios com `index.tsx` obrigatorio
+- Estrutura valida: `index.tsx`, `add/index.tsx`, `details.tsx`
+- Rotas baseadas em diretorios com `index.tsx` obrigatorio (exceção para detalhes que usam search parameters para não quebrar o Breadcrumb)
+- ROTAS de Detalhes ou Edição que recebem ID amigável devem usar `details.tsx` e `search: { id: string }`
 
 ## Hooks: Global vs Local
 

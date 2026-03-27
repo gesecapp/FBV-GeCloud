@@ -1,109 +1,209 @@
-# Project Rules
+# GeCloud Front-End — Regras do Projeto
+
+Sistema de gerenciamento de acesso de usuários. Permite cadastro, edição, atualização, inserção e exclusão de dados, além de convite de novos usuários.
 
 ## Stack
-- React + Vite + TanStack Router + TanStack Query + Zustand
 
-## UI & Estilizacao
-- Use ShadCN UI (`src/components/ui`)
-- NUNCA use tags HTML puras estilizadas - use componentes ShadCN
-- **PROIBIDO**: `<h1-6>`, `<p>`, `<span>` com classes de tipografia em componentes comuns — usar `<ItemTitle>`, `<ItemDescription>`
-- **PROIBIDO**: `<div className="flex flex-col gap-*">` para listas/layout — usar `<ItemGroup>`, `<ItemContent>`, `<ItemHeader>`, `<ItemFooter>`, `<ItemActions>`
-- Documentacao completa do padrao: `docs/item-pattern.md`
-- Para cores de graficos: `getChartColor(index)` de `src/components/ui/chart`
-- NUNCA use `mx-auto` no ChartContainer
+React 19 + Vite 7 + TypeScript 5 + TanStack Router 1 + TanStack Query 5 + Zustand 5 + ShadCN UI + Radix + Tailwind 4 + react-hook-form 7 + Zod 3 + Recharts 2 + Biome 2
+
+## Regras Absolutas
+
+### UI — ShadCN Sempre, HTML Nunca
+
+- **Proibido** usar tags HTML estilizadas (`<div className="font-bold">`, `<p>`, `<h1>`, `<span>` com estilo)
+- Para texto use `<ItemTitle>` e `<ItemDescription>` de `@/components/ui/item`
+- Para alinhar/agrupar use `<Item>`, `<ItemGroup>`, `<ItemContent>` de `@/components/ui/item`
+- Para botões use `<Button>`, para inputs use `<Input>`, para labels use `<FormLabel>` — tudo de `@/components/ui/`
+- Ícones: usar **Lucide Icons** — `import { IconName } from 'lucide-react'`
+
+### Componentes Obrigatórios
+
+| Situação | Componente | Import |
+|----------|-----------|--------|
+| Loading/requisição pendente | `<DefaultLoading />` | `@/components/default-loading` |
+| Dados vazios/busca sem resultado | `<DefaultEmptyData />` | `@/components/default-empty-data` |
+| Formulários (criar/editar) | `<DefaultFormLayout sections={[...]} />` | `@/components/default-form-layout` |
+
+### Listagens — DataTable Obrigatório
+
+- Toda listagem de registros usa `<DataTable>` de `@/components/ui/data-table` — **nunca** `ItemGroup`/`Item` para listas de dados
+- Colunas declaradas com `useMemo<DataTableColumn<TEntity>[]>`
+- Quando paginação/busca é via URL: `searchable={false} showPagination={false}`
 
 ## Roteamento
-- Rotas baseadas em diretorios com `index.tsx` obrigatorio
-- PROIBIDO usar `.` para criar rotas aninhadas (ex: `edit.$id.tsx`)
-- Estrutura valida: `index.tsx`, `add.tsx`, `$id.tsx`
 
-## Estado Global
-- Usar Zustand com middleware `persist` para persistencia
-- NUNCA usar `localStorage.setItem` diretamente
+- Rotas baseadas em **diretórios** com `index.tsx` obrigatório
+- **Proibido** usar `.` para rotas aninhadas (`edit.$id.tsx`)
+- **Proibido** rotas dinâmicas `$id` para detalhes — use `details.tsx` com `search: { id }` via search params (preserva Breadcrumb)
+- Estrutura válida: `index.tsx`, `add/index.tsx`, `details.tsx`
 
-## Componentes Obrigatorios
-- Dados vazios: `<DefaultEmptyData />` de `src/components/default-empty-data.tsx`
-- Loading: `<DefaultLoading />` de `src/components/default-loading.tsx`
-- Formularios: `<DefaultFormLayout />` de `src/components/default-form-layout.tsx`
+### Definição de Rota
 
-## Estrutura de Pagina
 ```tsx
-<Card>
-  <CardHeader>
-    {/* Acoes: botoes, filtros */}
-  </CardHeader>
-  <CardContent>
-    {/* Conteudo */}
-  </CardContent>
-  <CardFooter layout="multi | single">
-    {/* Paginacao */}
-  </CardFooter>
-</Card>
+export const Route = createFileRoute('/_private/feature/')({
+  component: FeatureListPage,
+  staticData: {
+    title: 'Nome da Página',
+    description: 'Descrição para breadcrumb/tooltip',
+  },
+  validateSearch: (search: Record<string, unknown>): SearchParams => searchSchema.parse(search),
+});
 ```
 
-## Componentes Comuns (nao paginas)
-- NUNCA usar Card.tsx em componentes comuns
-- Usar `<Item>`, `<ItemTitle>`, `<ItemDescription>`, `<ItemContent>`, `<ItemHeader>`, `<ItemFooter>`, `<ItemActions>` de `src/components/ui/item.tsx`
-- NUNCA `<h1-6>`, `<p>`, `<span>` com classes de tipografia — usar `<ItemTitle>` e `<ItemDescription>`
-- NUNCA `<div className="flex flex-col gap-*">` para layout composicional — usar subcomponentes do Item
+## Estrutura de Pastas por Rota
 
-## Hooks de API (Padrao TanStack Query)
+```
+src/routes/_private/{module}/
+├── index.tsx           # Página principal (listagem)
+├── add/
+│   └── index.tsx       # Formulário criar/editar
+├── details.tsx         # Detalhe (ID via search params)
+├── @components/        # Componentes específicos da rota
+│   └── {feature}-form.tsx
+├── @consts/            # Valores fixos, enums, configs
+│   └── {feature}.consts.ts
+├── @hooks/             # Hooks específicos da rota
+│   ├── use-{feature}-form.ts
+│   └── use-{feature}-api.ts
+├── @interface/         # Types, Interfaces, Schemas Zod
+│   ├── {feature}.interface.ts
+│   └── {feature}.schema.ts
+└── @utils/             # Funções auxiliares
+    └── columns.tsx     # Colunas do DataTable
+```
+
+## Hooks — Verificar Antes de Criar
+
+**Antes de criar qualquer hook**, verificar se já existe:
+1. **Hooks globais** em `src/hooks/` (auth, user, favorites, mobile, sidebar)
+2. **Query hooks** em `src/query/` (users, invites, permissions, roles)
+
+Hooks específicos de rota ficam em `@hooks/` da rota. Consulte `docs/available-resources.md` para a lista completa.
+
+## Data-Inputs Globais
+
+Comboboxes e selects prontos em `src/components/data-inputs/`. Verificar aqui antes de criar novos.
+
+| Componente | Uso |
+|-----------|-----|
+| `DatePickerButton` | Botão com popover de calendário |
+| `DateTimePicker` | Seletor data/hora com intervalo |
+
+## Tradução
+
+- Textos do sistema devem ter chave em `src/lib/config/translations.json`
+- Usar `t('chave')` de `@/lib/helpers/translate.helper` para traduzir
+- Se a chave não existir, retorna a própria chave como fallback
+
 ```tsx
-// src/hooks/use-{feature}-api.ts
+import { t } from '@/lib/helpers/translate.helper';
+t('pending') // → "Pendente"
+```
+
+## Formatação de Datas
+
+- **Sempre** usar `formatDate()` de `@/lib/helpers/formatDate.helper`
+- **Nunca** importar `format` diretamente do `date-fns`
+- Formato default (sem parâmetro): `dd MMM yyyy` → "01 jan 2026"
+
+```tsx
+import { formatDate, formatDistanceToNow } from '@/lib/helpers/formatDate.helper';
+
+formatDate(new Date())                    // "01 jan 2026"
+formatDate(new Date(), 'PP')              // "1 de jan. de 2026"
+formatDate(null, 'dd MMM yyyy', '-')      // "-"
+formatDistanceToNow(date)                 // "há 2 horas"
+```
+
+## Estado Global — Zustand
+
+- **Proibido** `localStorage.setItem` — usar Zustand com middleware `persist`
+- TanStack Query é dono da verdade para dados da API
+- Zustand guarda apenas estado de UI e utilitários puros
+- **Nunca** sincronizar TanStack Query → Zustand via useEffect
+
+```tsx
+// CORRETO — Zustand para UI persistente
+export const useFilterStore = create<FilterStore>()(
+  persist(
+    (set) => ({
+      filter: '',
+      setFilter: (f) => set({ filter: f }),
+    }),
+    { name: 'filter-storage' },
+  ),
+);
+```
+
+## TanStack Query — Padrão de API
+
+```tsx
+// src/query/{feature}.ts
 export const featureKeys = {
   all: ['feature'] as const,
   lists: () => [...featureKeys.all, 'list'] as const,
-  detail: (id: string) => [...featureKeys.all, 'detail', id] as const,
+  list: () => [...featureKeys.lists()] as const,
+  partials: () => [...featureKeys.all, 'partial'] as const,
+  partial: () => [...featureKeys.partials()] as const,
+  details: () => [...featureKeys.all, 'detail'] as const,
+  detail: (id: string) => [...featureKeys.details(), id] as const,
 };
-
-export function useFeature() {
-  return useQuery({
-    queryKey: featureKeys.lists(),
-    queryFn: async () => (await api.get('/feature/list')).data,
-  });
-}
 ```
 
-## Hooks de Formulario (react-hook-form + zod)
-- Criar em `@hooks/use-{feature}-form.ts` da rota
-- Usar `zodResolver` para validacao
+- Fetch functions privadas usando `request()` + `GET()`/`POST()` de `@/lib/api/client.api`
+- Mutations agrupadas num único hook com `invalidateQueries` no `onSuccess`
+- Ao criar/atualizar/deletar: invalidar as keys corretas para que o TanStack Query gerencie o cache sem refresh manual
 
-## Antes de Criar Hooks
-- VERIFICAR se ja existe em `src/hooks/` (hooks globais)
-- Hooks especificos de rota: criar em `@hooks/` da rota
+## Formulários — react-hook-form + Zod
 
-## Estrutura de Pastas da Rota
-```
-src/routes/_private/{module}/
-├── index.tsx          # Pagina principal
-├── @components/       # Componentes especificos da rota
-├── @consts/           # Valores fixos, enums
-├── @hooks/            # Hooks especificos
-├── @interface/        # Types, Interfaces, Schemas Zod
-└── @utils/            # Funcoes auxiliares
-```
+- Hook em `@hooks/use-{feature}-form.ts` com `zodResolver`
+- Componente em `@components/{feature}-form.tsx` usando `useFormContext`
+- Layout com `<DefaultFormLayout sections={[...]} />`
+- Cada section tem: `{ title, description?, fields: ReactNode[] }`
+
+## Gráficos — Recharts
+
+- **Sempre** usar `getChartColor(index)` de `@/components/ui/chart`
+- **Nunca** usar `mx-auto` no `ChartContainer`
+- Modelos em `src/components/graph-*.tsx` são referência — **não importar**
+- Gráficos ficam em componentes comuns → usar `Item`/`ItemContent`
+
+Consulte `docs/charts.md` para exemplos detalhados de cada tipo de gráfico.
+
+## Back-End (Referência)
+
+- **Arquitetura**: Route → Controller → Service → Repository → MongoDB
+- **Padrão de response**: `{ success: boolean, data?: any, message?: string }`
+- Rotas `/partial` retornam dados resumidos para preencher selects/comboboxes com ID para busca completa posterior
+- Validação via Zod nos middlewares
+
+## Padrões React
+
+- **Sempre** `function` declarations (nunca `const Component = () =>`)
+- Ordem interna: hooks de contexto → zustand → query → useState → useMemo → useCallback → useEffect → early returns → render
+- Early returns: loading → error → empty → conteúdo
 
 ## Antes de Commitar
+
 ```bash
-pnpm run format  # Biome
-pnpm run check   # TypeScript
+pnpm run format  # Biome formatter
+pnpm run check   # TypeScript type-check
 ```
 
-## Documentacao Detalhada (sob demanda)
+## Documentação Detalhada (sob demanda)
 
-Para padroes detalhados com exemplos completos, consulte os docs conforme o cenario:
+Para padrões detalhados com exemplos completos, consulte os docs conforme o cenário:
 
-| Cenario | Documento |
+| Cenário | Documento |
 |---------|-----------|
 | Iniciar nova feature / criar pastas | `docs/route-structure.md`, `docs/checklist.md` |
-| Criar pagina de listagem ou formulario | `docs/page-patterns.md` |
-| Criar hooks de API (TanStack Query) | `docs/api-hooks.md` |
-| Criar formularios (react-hook-form) | `docs/form-hooks.md` |
+| Criar página de listagem ou formulário | `docs/page-patterns.md` |
+| Criar queries de API (TanStack Query) | `docs/api-hooks.md`, `src/query/PATTERN.md` |
+| Criar formulários (react-hook-form) | `docs/form-hooks.md` |
 | Criar schemas Zod, interfaces, consts | `docs/schemas-types.md` |
 | Gerenciar estado global (Zustand) | `docs/state-management.md` |
-| Padroes de componentes React | `docs/react-patterns.md` |
-| Graficos (Recharts, cores, tipos) | `docs/charts.md` |
-| Buscar selects, hooks ou componentes existentes | `docs/available-resources.md` |
-| Máscaras e Funções de Utilidade (CPF, Tel, Data) | `docs/masks.md` |
-| Consultar tech stack e versoes | `docs/stack.md` |
-| **Padrao Item e tipagem de componentes UI** | **`docs/item-pattern.md`** |
+| Padrões de componentes React | `docs/react-patterns.md` |
+| Gráficos (Recharts, cores, tipos) | `docs/charts.md` |
+| Buscar comboboxes, hooks, componentes existentes | `docs/available-resources.md` |
+| Consultar tech stack e versões | `docs/stack.md` |
+| Estrutura e rotas do back-end | `docs/backend-reference.md` |

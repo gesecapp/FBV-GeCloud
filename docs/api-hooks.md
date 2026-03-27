@@ -1,110 +1,101 @@
-# Padrao de Hook de API (TanStack Query)
+# Padrao de Query (TanStack Query)
 
-Arquivo: `src/hooks/use-{feature}-api.ts`
+Arquivo: `src/query/{feature}.ts`
 
-## Estrutura Completa
+Consulte `src/query/PATTERN.md` para referencia rapida da estrutura.
+
+## Estrutura do Arquivo
+
+Cada arquivo segue esta ordem:
+
+```
+1. Imports
+2. Types locais (se necessario)
+3. Query Keys
+4. Fetch functions (privadas)
+5. Query Hooks
+6. Mutation Hooks (se houver)
+7. Cache Helpers (se necessario)
+8. Utilitarios puros (mappers, getters)
+```
+
+## Exemplo Completo — Lista + Detalhe
 
 ```tsx
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api/client';
-import type { Geofence, GeofenceFormData } from '@/routes/_private/register/geofences/@interface/geofence.interface';
+import { useQuery } from '@tanstack/react-query';
+import { GET, request } from '@/lib/api/client';
+import type { FinancialList, FullFinancial } from '@/lib/interfaces/financial';
 
 // 1. Query Keys centralizadas
-export const geofencesKeys = {
-  all: ['geofences'] as const,
-  lists: () => [...geofencesKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...geofencesKeys.lists(), filters] as const,
-  details: () => [...geofencesKeys.all, 'detail'] as const,
-  detail: (id: string) => [...geofencesKeys.details(), id] as const,
+export const financialsKeys = {
+  all: ['financials'] as const,
+  lists: () => [...financialsKeys.all, 'list'] as const,
+  list: () => [...financialsKeys.lists()] as const,
+  details: () => [...financialsKeys.all, 'detail'] as const,
+  detail: (id: string) => [...financialsKeys.details(), id] as const,
+  byPatient: (patientId: string) => [...financialsKeys.all, 'patient', patientId] as const,
 };
 
-// 2. Funcoes de API (privadas)
-async function fetchGeofences(params?: Record<string, unknown>): Promise<{ data: Geofence[]; totalCount: number }> {
-  const response = await api.get<{ data: Geofence[]; pageInfo: [{ count: number }] }>('/geofence/list', { params });
-  return {
-    data: response.data.data,
-    totalCount: response.data.pageInfo?.[0]?.count || 0,
-  };
+// 2. Fetch functions (privadas)
+async function fetchFinancials(): Promise<FinancialList[]> {
+  const res = await request('financial/list', GET());
+  if (!res.success) throw new Error(res.message);
+  return res.data as FinancialList[];
 }
 
-async function fetchGeofence(id: string): Promise<Geofence> {
-  const response = await api.get<Geofence>(`/geofence/find?id=${id}`);
-  return response.data;
+async function fetchFinancial(id: string): Promise<FullFinancial> {
+  const res = await request(`financial/${id}`, GET());
+  if (!res.success) throw new Error(res.message);
+  return res.data as FullFinancial;
 }
 
-async function createGeofence(data: GeofenceFormData): Promise<Geofence> {
-  const response = await api.post<Geofence>('/geofence', data);
-  return response.data;
-}
-
-async function updateGeofence(data: GeofenceFormData & { id: string }): Promise<Geofence> {
-  const response = await api.post<Geofence>('/geofence', data);
-  return response.data;
-}
-
-async function deleteGeofence(id: string): Promise<void> {
-  await api.delete(`/geofence?id=${id}`);
-}
-
-// 3. Hook de Query - Listagem
-export function useGeofences(params?: Record<string, unknown>) {
+// 3. Query Hooks
+export function useFinancialsQuery() {
   return useQuery({
-    queryKey: geofencesKeys.list(params),
-    queryFn: () => fetchGeofences(params),
+    queryKey: financialsKeys.list(),
+    queryFn: fetchFinancials,
   });
 }
 
-// 4. Hook de Query - Detalhe
-export function useGeofence(id?: string) {
+export function useFinancialDetailQuery(id?: string) {
   return useQuery({
-    queryKey: geofencesKeys.detail(id ?? ''),
-    queryFn: () => fetchGeofence(id ?? ''),
+    queryKey: financialsKeys.detail(id ?? ''),
+    queryFn: () => fetchFinancial(id!),
     enabled: !!id,
   });
-}
-
-// 5. Hook de Mutations
-export function useGeofencesApi() {
-  const queryClient = useQueryClient();
-
-  const createGeofenceMutation = useMutation({
-    mutationFn: createGeofence,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: geofencesKeys.lists() });
-    },
-  });
-
-  const updateGeofenceMutation = useMutation({
-    mutationFn: updateGeofence,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: geofencesKeys.lists() });
-      if (data.id) {
-        queryClient.invalidateQueries({ queryKey: geofencesKeys.detail(data.id) });
-      }
-    },
-  });
-
-  const deleteGeofenceMutation = useMutation({
-    mutationFn: deleteGeofence,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: geofencesKeys.lists() });
-    },
-  });
-
-  return {
-    createGeofence: createGeofenceMutation,
-    updateGeofence: updateGeofenceMutation,
-    deleteGeofence: deleteGeofenceMutation,
-  };
 }
 ```
 
 ## Resumo do Padrao
 
-1. **Query Keys**: Objeto centralizado com hierarquia (`all > lists > list > details > detail`)
-2. **Funcoes de API**: Funcoes privadas async que usam `api` client
+1. **Query Keys**: Objeto hierarquico com `as const` (`all > lists > list > details > detail`)
+2. **Fetch functions**: Funcoes `async` privadas usando `request()` + `GET()`/`POST()` de `@/lib/api/client`
 3. **useQuery**: Hooks separados para listagem e detalhe, com `enabled` para queries condicionais
 4. **useMutation**: Hook agrupado retornando todas as mutations com `invalidateQueries` no `onSuccess`
+
+## Variacoes de Keys
+
+```tsx
+// Somente lista (sem detalhe)
+export const featureKeys = {
+  all: ['feature'] as const,
+  lists: () => [...featureKeys.all, 'list'] as const,
+  list: () => [...featureKeys.lists()] as const,
+};
+
+// Somente detalhe (singleton: clinic, user)
+export const featureKeys = {
+  all: ['feature'] as const,
+  detail: () => [...featureKeys.all, 'detail'] as const,
+};
+
+// Lista com parametros (schedule, reminders)
+export const featureKeys = {
+  all: ['feature'] as const,
+  lists: () => [...featureKeys.all, 'list'] as const,
+  list: (params: Params) => [...featureKeys.lists(), params] as const,
+};
+```
 
 ---
 
@@ -132,170 +123,124 @@ export function useFeaturePaginated(params: SearchParams) {
 }
 ```
 
-### Select Hook (para combobox/select em formularios)
+### Mutation Hook
 
-Todo hook que alimenta selects deve exportar uma versao `Select` e um mapper:
+Agrupar todas as mutations num unico hook:
 
 ```tsx
-// Hook otimizado para select
-export function useFeatureSelect(idEnterprise?: string) {
-  return useQuery({
-    queryKey: [...featureKeys.all, 'select', idEnterprise],
-    queryFn: async () => {
-      const response = await api.get<Feature[]>('/feature', {
-        params: { idEnterprise },
-      });
-      return response.data;
+export function useFeatureMutations() {
+  const queryClient = useQueryClient();
+
+  const create = useMutation({
+    mutationFn: createFeature,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: featureKeys.lists() });
     },
-    enabled: !!idEnterprise,
   });
-}
 
-// Mapper: transforma dados para o formato { value, label, data }
-export function mapFeaturesToOptions(items: Feature[]) {
-  if (!Array.isArray(items)) return [];
-  return items
-    .map((item) => ({
-      value: item.id,
-      label: item.name,
-      data: item,
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+  const update = useMutation({
+    mutationFn: updateFeature,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: featureKeys.lists() });
+    },
+  });
+
+  return { create, update };
 }
 ```
 
-### Enterprise Filtering
-
-A maioria dos hooks precisa do `idEnterprise` do store global:
+### Cache Helper (atualizacao manual)
 
 ```tsx
-import { useEnterpriseFilter } from '@/hooks/use-enterprise-filter';
+export function useFeatureCache() {
+  const queryClient = useQueryClient();
 
-async function fetchUsers(params?: Record<string, unknown>) {
-  const idEnterprise =
-    (params?.idEnterprise as string) ||
-    useEnterpriseFilter.getState().idEnterprise ||
-    '';
-  const queryParams = { ...params, idEnterprise };
-  const response = await api.get('/user/list', { params: queryParams });
-  return response.data;
-}
-```
-
-### Upload de Arquivo (FormData)
-
-```tsx
-const uploadImage = useMutation({
-  mutationFn: ({ id, file }: { id: string; file: File }) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    return api.post(`/upload/feature?id=${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+  const setCache = (updater: (old: Feature) => Feature) => {
+    queryClient.setQueryData<Feature>(featureKeys.detail(), (old) => {
+      if (!old) return old;
+      return updater(old);
     });
-  },
-  onSuccess: () => {
+  };
+
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: featureKeys.all });
-  },
-});
+  };
+
+  return { setCache, invalidate };
+}
 ```
 
-### Download de Arquivo (Blob / CSV / Excel)
+### Utilitarios Puros (mappers, getters)
+
+Funcoes que recebem dados como argumento — nao chamam hooks:
 
 ```tsx
-const exportFeature = useMutation({
-  mutationFn: async (params: ExportParams) => {
-    const response = await api.get('/feature/export', {
-      params,
-      responseType: 'blob',
-    });
-    return response.data as Blob;
-  },
-  onSuccess: (data) => {
-    const url = window.URL.createObjectURL(data);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `export_${new Date().toISOString().split('T')[0]}.xlsx`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  },
-});
-```
+export function mapFeaturesToCombobox(features: Feature[] | undefined) {
+  if (!features?.length) return [];
+  return features.map((f) => valueAndLabel(f._id, f.name));
+}
 
-### Ativacao / Desativacao (toggle de status)
-
-```tsx
-const activateFeature = useMutation({
-  mutationFn: (id: string) => api.patch(`/feature/active?id=${id}`),
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: featureKeys.all });
-  },
-});
-
-const deactivateFeature = useMutation({
-  mutationFn: (id: string) => api.patch(`/feature/deactive?id=${id}`),
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: featureKeys.all });
-  },
-});
-```
-
-### URLSearchParams para arrays
-
-Quando o backend espera parametros repetidos (ex: `ids[]=1&ids[]=2`):
-
-```tsx
-async function fetchByIds(ids: string[], idEnterprise: string) {
-  const params = new URLSearchParams();
-  params.append('idEnterprise', idEnterprise);
-  ids.forEach((id) => params.append('ids[]', id));
-  const response = await api.get(`/feature/list?${params.toString()}`);
-  return response.data;
+export function getFeatureName(features: Feature[] | undefined, id: string | undefined): string {
+  if (!id || !features) return '';
+  return features.find((f) => f._id === id)?.name || '';
 }
 ```
 
 ---
 
-## Estruturas de Resposta Comuns
+## Uso em Componentes
 
-### Lista Paginada
+### Consumindo dados com useQuery
 
-```typescript
-interface PaginatedResponse<T> {
-  data: T[];
-  pageInfo: Array<{
-    count: number;
-    page?: number;
-    size?: number;
-  }>;
-}
+```tsx
+function FeatureList() {
+  const { data, isLoading } = useFeaturesQuery();
 
-// Extrair na funcao de fetch:
-return {
-  data: response.data.data,
-  totalCount: response.data.pageInfo?.[0]?.count || 0,
-};
-```
+  if (isLoading) return <DefaultLoading />;
+  if (!data?.length) return <DefaultEmptyData />;
 
-### Select Option
-
-```typescript
-interface SelectOption<T = unknown> {
-  value: string;
-  label: string;
-  data?: T;
+  return data.map((item) => <div key={item._id}>{item.name}</div>);
 }
 ```
 
-### Search Params padrao
+### Detalhe com ID condicional
 
-```typescript
-interface SearchParams {
-  page?: number;
-  size?: number;
-  search?: string;
-  idEnterprise?: string;
+```tsx
+function FeatureDetail({ id }: { id?: string }) {
+  const { data, isLoading } = useFeatureDetailQuery(id);
+  // query so executa quando id existe (enabled: !!id)
+}
+```
+
+### Usando utilitarios puros com dados de query
+
+```tsx
+function PatientSelect() {
+  const { data: patients } = usePatientsQuery();
+  const options = mapPatientsToCombobox(patients);
+
+  return <Combobox options={options} />;
+}
+```
+
+### Integracao com Zustand
+
+TanStack Query e o dono da verdade para dados da API. Zustand guarda apenas estado de UI e utilitarios puros.
+
+```tsx
+// Zustand: logica pura (nao armazena dados do servidor)
+export const useClinicStore = create<ClinicStore>()(() => ({
+  getRoomName: (clinic, id) => {
+    if (!id || !clinic) return '';
+    return clinic.rooms.find((r) => r._id === id)?.name.trim() || '';
+  },
+}));
+
+// Componente: TanStack fornece dados, Zustand fornece logica
+function RoomLabel({ roomId }: { roomId: string }) {
+  const { data: clinic } = useClinicApi();
+  const getRoomName = useClinicStore((s) => s.getRoomName);
+  return <span>{getRoomName(clinic, roomId)}</span>;
 }
 ```
 
@@ -306,25 +251,3 @@ interface SearchParams {
 Para estado global persistido, use Zustand com middleware `persist`. Nao use `localStorage.setItem` diretamente.
 
 Consulte `docs/state-management.md` para o padrao completo.
-
-```tsx
-// Exemplo: acessar store fora de componente (em funcoes de API)
-import { useEnterpriseFilter } from '@/hooks/use-enterprise-filter';
-const idEnterprise = useEnterpriseFilter.getState().idEnterprise;
-
-// Exemplo: usar store em componente
-const { idEnterprise, setIdEnterprise } = useEnterpriseFilter();
-
-// Exemplo: usar store de auth em componente
-const { isAuthenticated, user } = useAuth();
-```
-
-**Stores globais disponíveis:**
-
-| Hook | Proposito |
-|------|-----------|
-| `useAuth` | Token JWT, usuario, tipo de login, estado de bloqueio |
-| `useEnterpriseFilter` | Empresa selecionada globalmente (`idEnterprise`) |
-| `usePermissions` | Cache de permissoes do usuario |
-| `useFavorites` | Links favoritos do usuario |
-| `useSidebar` | Estado expandido/colapsado do sidebar |

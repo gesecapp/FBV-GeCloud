@@ -56,7 +56,7 @@ export interface Geofence {
 Arquivo: `@consts/{feature}.consts.ts`
 
 ```tsx
-import { Anchor, Box, MapPin, Navigation } from 'lucide-react';
+import { BuildingIcon, PackageIcon, MapPinIcon, SendIcon } from 'lucide-react';
 
 // Enum de tipos
 export const TYPE_GEOFENCE = {
@@ -69,19 +69,19 @@ export const TYPE_GEOFENCE = {
 // Config de tipos com icones e cores
 export const GEOFENCE_TYPES_CONFIG = {
   [TYPE_GEOFENCE.PORT]: {
-    icon: Anchor,
+    icon: Clinic,
     color: 'text-success-500',
   },
   [TYPE_GEOFENCE.PIER]: {
-    icon: Box,
+    icon: Package,
     color: 'text-info-500',
   },
   [TYPE_GEOFENCE.ROUTE]: {
-    icon: Navigation,
+    icon: Send,
     color: 'text-destructive',
   },
   [TYPE_GEOFENCE.OTHER]: {
-    icon: MapPin,
+    icon: Point,
     color: 'text-primary-600',
   },
 } as const;

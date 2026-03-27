@@ -72,9 +72,9 @@ function UserProfile({ userId }: { userId?: string }) {
   if (!user) return <DefaultEmptyData />;
 
   return (
-    <Card>
-      <CardContent>{user.name}</CardContent>
-    </Card>
+    <Item>
+      <ItemTitle>{user.name}</ItemTitle>
+    </Item>
   );
 }
 ```
@@ -103,7 +103,7 @@ function StatusBadge({ status }: { status: Status }) {
 ## Conditional Classes
 
 ```tsx
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn.util';
 
 className={cn(
   'rounded-md font-medium',
@@ -113,73 +113,7 @@ className={cn(
 )}
 ```
 
-## Padrao Item — PROIBIDO Tags HTML Puras Estilizadas
-
-Veja documentacao completa em [`docs/item-pattern.md`](../docs/item-pattern.md).
-
-**Regra**: Toda tipografia e layout composicional em componentes comuns deve usar os componentes do `Item`.
-
-```tsx
-// ❌ EVITAR: Tags HTML puras com classes Tailwind
-<div className="flex flex-col gap-4">
-  <h3 className="font-semibold text-lg">{title}</h3>
-  <p className="text-muted-foreground text-sm">{description}</p>
-</div>
-
-// ✅ CORRETO: Componentes Item
-<ItemContent>
-  <ItemTitle className="text-base">{title}</ItemTitle>
-  <ItemDescription>{description}</ItemDescription>
-</ItemContent>
-```
-
-| EVITE | USE |
-|-------|-----|
-| `<h1-6 className="font-...">` | `<ItemTitle>` |
-| `<p className="text-muted-foreground">` | `<ItemDescription>` |
-| `<div className="flex flex-col gap-*">` (lista) | `<ItemGroup>` ou `<ItemContent>` |
-| `<div className="flex items-center justify-between">` | `<ItemHeader>` ou `<ItemFooter>` |
-| `<div className="flex items-center gap-2">` (acoes) | `<ItemActions>` |
-
-## Padrao de Tipagem de Componentes UI
-
-Todo componente em `src/components/ui/` segue o padrao do `Item.tsx`:
-
-```tsx
-// 1. Props baseadas em React.ComponentProps
-function MyComponent({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="my-component"     // 2. data-slot para identificacao
-      className={cn('estilos-base', className)}  // 3. cn() com className no final
-      {...props}                    // 4. Spread de props
-    />
-  );
-}
-
-// Com variantes
-function MyVariantComponent({
-  className,
-  variant,
-  ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof myVariants>) {
-  return <div className={cn(myVariants({ variant, className }))} {...props} />;
-}
-```
-
 ## Anti-Patterns
-
-### Tags HTML puras estilizadas -> usar componentes Item
-```tsx
-// EVITAR: <h3 className="font-semibold text-lg">{title}</h3>
-// CORRETO: <ItemTitle className="text-base">{title}</ItemTitle>
-
-// EVITAR: <p className="text-muted-foreground text-sm">{desc}</p>
-// CORRETO: <ItemDescription>{desc}</ItemDescription>
-
-// EVITAR: <div className="flex items-center gap-2">...botoes...</div>
-// CORRETO: <ItemActions>...botoes...</ItemActions>
-```
 
 ### Props Drilling -> usar Zustand ou Context
 ```tsx

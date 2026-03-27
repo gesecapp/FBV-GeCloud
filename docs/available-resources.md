@@ -1,103 +1,100 @@
-# Recursos Disponiveis no Projeto
+# Recursos Disponíveis no Projeto
 
-## Componentes de Select (68 em `src/components/selects/`)
+## Componentes de Data Inputs (`src/components/data-inputs/`)
 
-Usar os componentes prontos ao inves de criar Select do zero. Ja encapsulam API, loading e erro.
+Usar os componentes prontos ao invés de criar comboboxes e selects do zero. Já encapsulam estado, loading, busca e erro.
 
-```tsx
-import { EnterpriseSelect, MachineByEnterpriseSelect, UserSelect } from '@/components/selects';
+| Componente | Import | Descrição |
+|------------|--------|-----------|
+| `DatePickerButton` | `@/components/data-inputs/date-picker-button` | Botão com popover de calendário |
+| `DateTimePicker` | `@/components/data-inputs/date-time-picker` | Seletor de data/hora com dia inteiro, intervalo e horários em 15min |
 
-// Single select
-<EnterpriseSelect mode="single" value={idEnterprise} onChange={setIdEnterprise} />
+**Props padrão dos comboboxes:** `controller` (react-hook-form), `disabled?`, `fetchFn` (async que retorna `{ value, label }[]`)
 
-// Multi select
-<MachineByEnterpriseSelect
-  mode="multi"
-  idEnterprise={idEnterprise}
-  value={selectedMachines}
-  onChange={setSelectedMachines}
-/>
-```
+## Componentes de Domínio
 
-**Props padrao:** `mode`, `value`, `onChange`, `disabled?`, `clearable?`, `label?`, `placeholder?`
+| Componente | Import | Descrição |
+|------------|--------|-----------|
+| `UploadImage` | `@/components/upload-image` | Upload de imagem |
+| `MobileDock` | `@/components/mobile-dock` | Navegação mobile |
 
-**TOP 10 mais usados:**
+## Componentes Obrigatórios
 
-| Componente | Usos |
-|------------|------|
-| `MachineByEnterpriseSelect` | 28 |
-| `EnterpriseSelect` | 27 |
-| `MachineSelect` | 9 |
-| `UserSelect` | 8 |
-| `UnitSelect` | 5 |
-| `SensorByMachineSelect` | 5 |
-| `MaintenancePlanSelect` | 4 |
-| `CustomerSelect` | 4 |
-| `ConsumptionMachineSelect` | 4 |
-| `ModelMachineSelect` | 4 |
+| Componente | Import | Quando Usar |
+|------------|--------|-------------|
+| `DefaultEmptyData` | `@/components/default-empty-data` | Dados vazios ou busca sem resultado |
+| `DefaultLoading` | `@/components/default-loading` | Qualquer loading/requisição pendente |
+| `DefaultFormLayout` | `@/components/default-form-layout` | Layout de formulários com seções |
+| `DefaultKPI` | `@/components/default-KPI` | Exibição de números e KPIs |
+| `DefaultStatsSection` | `@/components/default-stats-section` | Seção de estatísticas |
 
-## Hooks Globais (258 em `src/hooks/`)
+## Componentes de UI (ShadCN)
 
-**TOP 15 mais usados:**
+Todos em `src/components/ui/`. Os mais usados:
 
-| Hook | Usos | Descricao |
-|------|------|-----------|
-| `useEnterpriseFilter` | 90 | idEnterprise do filtro global |
-| `useHasPermission` | 35 | Verifica permissoes do usuario |
-| `useSidebar` | 7 | Estado da sidebar |
-| `useSidebarToggle` | 7 | Toggle da sidebar |
-| `useCMMSKPIs` | 6 | KPIs do CMMS |
-| `useIsMobile` | 5 | Detecta dispositivo mobile |
-| `useMachinesByEnterpriseSelect` | 5 | Maquinas por empresa |
-| `useEnterprisesSelect` | 4 | Empresas para select |
-| `useUsersApi` | 4 | CRUD usuarios |
-| `usePartsApi` | 3 | CRUD pecas |
-| `useModelMachinesApi` | 3 | CRUD modelos |
-| `usePlatformsApi` | 3 | CRUD plataformas |
-| `useAuth` | 3 | Sessao e login |
-| `useSensorsApi` | 3 | CRUD sensores |
-| `useMachinesApi` | 3 | CRUD maquinas |
+**Componentes comuns:** `Item`, `ItemGroup`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemMedia`, `ItemActions`, `ItemHeader`, `ItemFooter`
+**Dados:** `DataTable`, `DataTableColumn`, `DataTableColumnHeader`, `DataTablePagination`
+**Formulários:** `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`
+**Inputs:** `Input`, `Select`, `Checkbox`, `Switch`, `Textarea`, `RadioGroup`
+**Feedback:** `Badge`, `Spinner`, `Skeleton`, `Progress`, `Timeline`
+**Overlays:** `Dialog`, `AlertDialog`, `Sheet`, `Drawer`, `Popover`, `DropdownMenu`, `Tooltip`
+**Navegação:** `Tabs`, `Accordion`, `Breadcrumb`, `Pagination`
 
-**ANTES de criar um hook**, verifique se ja existe em `src/hooks/`!
+## Hooks Globais (`src/hooks/`)
 
-## Componentes Obrigatorios
+**Verificar aqui ANTES de criar um hook novo.**
 
-| Componente | Import | Uso |
-|------------|--------|-----|
-| `DefaultEmptyData` | `@/components/default-empty-data` | Dados vazios |
-| `DefaultLoading` | `@/components/default-loading` | Loading |
-| `DefaultFormLayout` | `@/components/default-form-layout` | Layout de formularios |
+| Hook | Arquivo | Descrição |
+|------|---------|-----------|
+| `useAuth` | `auth.ts` | Sessão, login, logout, token |
+| `useUserStore` | `user.ts` | Dados do usuário autenticado (persist) |
+| `useFavorites` | `use-favorites.ts` | Favoritos persistentes |
+| `useIsMobile` | `use-mobile.ts` | Detecta dispositivo mobile |
+| `useSidebar` | `use-sidebar-toggle.ts` | Estado da sidebar |
 
-## Componentes de UI
+## Query Hooks (`src/query/`)
 
-- **Paginas**: Usar `Card`, `CardHeader`, `CardContent`, `CardFooter`
-- **Componentes comuns**: NUNCA Card. Usar componentes `Item` de `@/components/ui/item`
-- **Charts**: `getChartColor(index)` de `src/components/ui/chart`. NUNCA `mx-auto` no ChartContainer
+| Arquivo | Keys | Hooks Principais |
+|---------|------|-----------------|
+| `users.ts` | `usersKeys` | `useUsersQuery`, `useUserDetailQuery`, `useUserMutations` |
+| `invites.ts` | `invitesKeys` | `useInvitesQuery`, `useInviteMutations` |
 
-### Componentes Item Disponiveis (OBRIGATORIO em componentes comuns)
+## Helpers (`src/lib/helpers/`)
 
-Documentacao completa: [`docs/item-pattern.md`](./item-pattern.md)
+| Arquivo | Funções Principais |
+|---------|-------------------|
+| `translate.ts` | `t(key)` — traduz chave via `translations.json` |
+| `formatDate.utils.ts` | `formatDate(date, pattern?, fallback?)`, `formatDistanceToNow(date)`, `getLocalizedMonths()` |
+| `formatter.helper.ts` | `formatPhone()`, `formatCPF()`, `formatCurrency()`, `formatCEP()` |
+| `calendar.utils.ts` | Utilitários de calendário |
+| `regex.helper.ts` | Regex patterns |
+| `upload.helper.ts` | Upload de arquivos |
+| `validade.helper.ts` | Validações |
+| `zodMessage.helper.ts` | Mensagens de erro Zod customizadas |
+| `dataManager.helper.ts` | Utilitários de dados |
 
-| Componente | Substitui | Descricao |
-|------------|-----------|----------|
-| `Item` | `<div className="flex gap-4 p-4">` | Container principal com variantes (default, outline, muted) |
-| `ItemGroup` | `<ul>` / `<div className="flex flex-col gap-2">` | Lista vertical de Items |
-| `ItemContent` | `<div className="flex flex-col gap-1">` | Bloco de conteudo |
-| `ItemTitle` | `<h1-6 className="font-...">` | Titulo padrao (font-mono, text-sm, font-medium) |
-| `ItemDescription` | `<p className="text-muted-foreground text-sm">` | Descricao padrao (font-mono, text-muted-foreground) |
-| `ItemHeader` | `<div className="flex justify-between">` | Cabecalho com justify-between |
-| `ItemFooter` | `<div className="flex justify-between">` | Rodape com justify-between |
-| `ItemActions` | `<div className="flex items-center gap-2">` | Area de acoes (botoes, badges) |
-| `ItemMedia` | N/A | Area de icone/imagem com variantes |
-| `ItemSeparator` | `<hr>` | Separador horizontal |
+## Ícones (Lucide Icons)
 
-### Padrao de Tipagem (Referencia: `Item.tsx`)
+Usar exclusivamente o pacote **lucide-react**.
 
 ```tsx
-// Todos os componentes UI seguem este padrao:
-function MyComponent({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="my-component" className={cn('estilos-base', className)} {...props} />;
-}
+import { UserIcon, TrashIcon, PencilIcon, SearchIcon } from 'lucide-react';
 ```
 
-**Regras**: `React.ComponentProps<'element'>` para props, `cn()` para merge, `data-slot` para DOM, `cva` + `VariantProps` para variantes.
+## API Client (`src/lib/api/client.ts`)
+
+```tsx
+import { GET, POST, PUT, PATCH, DELETE, request, api } from '@/lib/api/client';
+
+// Fetch direto
+const res = await request('patient', GET());
+const res = await request('patient', POST(body));
+
+// Estilo axios (retorna { data: Response<T> })
+const { data } = await api.get<Patient[]>('patient');
+const { data } = await api.post<Patient>('patient', body);
+```
+
+- Auth automático via token do Zustand store
+- Header: `Authorization: Ease ${token}`
+- Base URL: `import.meta.env.VITE_CORE_URL`
