@@ -1,72 +1,114 @@
-import { AlertCircle, CheckCircle2, Clock, Info, Loader2 } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { AlertCircle, CheckCircle2, ChevronRight, Clock, Info, Loader2 } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import type { StatusVariant } from '@/components/ui/badge';
 import type { UserSyncStatus } from '../@interface/access-user.interface';
 
 interface RegistrationStatusAlertProps {
   syncStatus?: UserSyncStatus;
   isLoading?: boolean;
+  linkTo?: string;
 }
 
-export function RegistrationStatusAlert({ syncStatus, isLoading }: RegistrationStatusAlertProps) {
-  if (isLoading) {
-    return (
-      <Alert>
-        <Loader2 className="size-4 animate-spin" />
-        <AlertTitle>Verificando Status de Integração...</AlertTitle>
-        <AlertDescription>Consultando o status atual da imagem nos sensores de segurança.</AlertDescription>
-      </Alert>
-    );
-  }
+type SyncState = 'loading' | 'queued' | 'rejected' | 'synchronized' | 'pending' | null;
 
+interface SyncStateInfo {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  variant?: 'default' | 'destructive';
+  className?: string;
+  statusIndicator: StatusVariant;
+}
+
+export function getSyncState(syncStatus?: UserSyncStatus, isLoading?: boolean): SyncState {
+  if (isLoading) return 'loading';
   if (!syncStatus) return null;
 
   const syncData = syncStatus.sync_status;
-  const isFullySynchronized = syncStatus.synchronized;
 
-  if (!syncData) {
-    return (
-      <Alert>
-        <Info className="size-4" />
-        <AlertTitle>Integração em Fila</AlertTitle>
-        <AlertDescription>Este cadastro foi recebido e aguarda processamento automático para ser enviado aos sensores.</AlertDescription>
-      </Alert>
-    );
-  }
+  if (!syncData) return 'queued';
 
   const { sensors } = syncData;
   const rejectedSensors = sensors?.filter((s) => s.image_accepted === false) || [];
-  const pendingSensors = sensors?.filter((s) => !s.registered && s.image_accepted !== false) || [];
 
-  if (rejectedSensors.length > 0) {
+  if (rejectedSensors.length > 0) return 'rejected';
+  if (syncStatus.synchronized) return 'synchronized';
+
+  return 'pending';
+}
+
+export function getSyncStateInfo(state: SyncState): SyncStateInfo | null {
+  switch (state) {
+    case 'loading':
+      return {
+        icon: <Loader2 className="size-4 animate-spin" />,
+        title: 'Verificando Status de Integração...',
+        description: 'Consultando o status atual da imagem nos sensores de segurança.',
+        statusIndicator: 'pending',
+      };
+    case 'queued':
+      return {
+        icon: <Info className="size-4" />,
+        title: 'Integração em Fila',
+        description: 'Este cadastro foi recebido e aguarda processamento automático para ser enviado aos sensores.',
+        statusIndicator: 'info',
+      };
+    case 'rejected':
+      return {
+        icon: <AlertCircle className="size-4" />,
+        title: 'Ação Necessária',
+        description: 'A imagem enviada não se enquadra nos parâmetros aceitos para autenticação nas catracas, por favor envie uma nova imagem.',
+        variant: 'destructive',
+        statusIndicator: 'error',
+      };
+    case 'synchronized':
+      return {
+        icon: <CheckCircle2 className="size-4" />,
+        title: 'Imagem Sincronizada com Sucesso',
+        description: 'A integração da imagem e os dados do usuário estão 100% operacionais em todos os sensores da unidade.',
+        className: 'border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200',
+        statusIndicator: 'success',
+      };
+    case 'pending':
+      return {
+        icon: <Clock className="size-4" />,
+        title: 'Sincronização em Andamento',
+        description: 'O cadastro está sendo enviado para os sensores da unidade. Aguarde a finalização do processo.',
+        statusIndicator: 'pending',
+      };
+    default:
+      return null;
+  }
+}
+
+export function RegistrationStatusAlert({ syncStatus, isLoading, linkTo }: RegistrationStatusAlertProps) {
+  const state = getSyncState(syncStatus, isLoading);
+  const info = getSyncStateInfo(state);
+
+  if (!info) return null;
+
+  const alertContent = (
+    <Alert variant={info.variant} className={info.className}>
+      {info.icon}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col">
+          <AlertTitle>{info.title}</AlertTitle>
+          <AlertDescription>{info.description}</AlertDescription>
+        </div>
+        {linkTo && <ChevronRight className="size-5 shrink-0 text-muted-foreground" />}
+      </div>
+    </Alert>
+  );
+
+  if (linkTo) {
     return (
-      <Alert variant="destructive">
-        <AlertCircle className="size-4" />
-        <AlertTitle>Ação Necessária</AlertTitle>
-        <AlertDescription>A imagem enviada não se enquadra nos parâmetros aceitos para autenticação nas catracas, por favor envie uma nova imagem.</AlertDescription>
-      </Alert>
+      <Link to={linkTo} className="block no-underline">
+        {alertContent}
+      </Link>
     );
   }
 
-  if (isFullySynchronized) {
-    return (
-      <Alert className="border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200">
-        <CheckCircle2 className="size-4" />
-        <AlertTitle>Imagem Sincronizada com Sucesso</AlertTitle>
-        <AlertDescription>A integração da imagem e os dados do usuário estão 100% operacionais em todos os sensores da unidade.</AlertDescription>
-      </Alert>
-    );
-  }
-
-  if (!isFullySynchronized || pendingSensors.length > 0) {
-    return (
-      <Alert>
-        <Clock className="size-4" />
-        <AlertTitle>Sincronização em Andamento</AlertTitle>
-        <AlertDescription>O cadastro está sendo enviado para os sensores da unidade. Aguarde a finalização do processo.</AlertDescription>
-      </Alert>
-    );
-  }
-
-  return null;
+  return alertContent;
 }

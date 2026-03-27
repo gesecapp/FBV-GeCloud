@@ -10,11 +10,12 @@ import { useAppAuth } from '@/hooks/use-app-auth';
 import { applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { useGetAppUser, useGetUserSyncStatus } from '../@hooks/use-access-user-api';
 import { useEditProfileForm } from '../@hooks/use-edit-profile-form';
+import { RegistrationStatusAlert } from './registration-status-alert';
 
 export function EditProfileTab() {
   const { userId } = useAppAuth();
   const { data: user, isLoading, isError } = useGetAppUser();
-  const { data: syncStatus } = useGetUserSyncStatus(userId);
+  const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(userId);
   const { form, onSubmit, isPending } = useEditProfileForm(user);
 
   const urlImages = form.watch('url_image');
@@ -31,9 +32,7 @@ export function EditProfileTab() {
         <ItemTitle className="text-lg">Editar Perfil</ItemTitle>
       </ItemHeader>
 
-      {syncStatus?.sync_status && (
-        <div className="rounded-md border bg-muted/50 p-3 text-sm">{syncStatus.synchronized ? 'Cadastro sincronizado com sucesso.' : 'Cadastro pendente de sincronização.'}</div>
-      )}
+      <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />
 
       {isError && <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-destructive text-sm">Erro ao carregar seus dados.</div>}
 

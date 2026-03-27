@@ -1,14 +1,14 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ChevronRight, CircleAlertIcon, FileUser, LogOut, SquarePen, UserPlus, Users } from 'lucide-react';
+import { ChevronRight, FileUser, LogOut, SquarePen, UserPlus, Users } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
-import { Alert } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { useAppAuth } from '@/hooks/use-app-auth';
-import { useGetAppUser } from './access-user/@hooks/use-access-user-api';
+import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from './access-user/@components/registration-status-alert';
+import { useGetAppUser, useGetUserSyncStatus } from './access-user/@hooks/use-access-user-api';
 
 export const Route = createFileRoute('/_private/')({
   component: DashboardPage,
@@ -16,10 +16,15 @@ export const Route = createFileRoute('/_private/')({
 
 function DashboardPage() {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { clearAuth } = useAppAuth();
+  const { clearAuth, userId } = useAppAuth();
   const { data: user } = useGetAppUser();
+  const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(userId);
 
   const firstName = user?.name?.split(' ')[0] || '';
+
+  const syncState = getSyncState(syncStatus, isLoadingSync);
+  const syncInfo = getSyncStateInfo(syncState);
+  const showStatusIndicator = syncState && syncState !== 'synchronized';
 
   function handleLogout() {
     clearAuth();
@@ -42,7 +47,7 @@ function DashboardPage() {
               <AvatarImage src={user?.url_image?.[0]} alt={user?.name} className="object-cover" />
               <AvatarFallback className="bg-primary text-primary-foreground">{user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
-            <StatusIndicator status="error" className="absolute top-1 right-1" />
+            {showStatusIndicator && syncInfo && <StatusIndicator status={syncInfo.statusIndicator} className="absolute top-1 right-1" />}
           </div>
         </div>
       </Item>
@@ -62,18 +67,7 @@ function DashboardPage() {
               </div>
             </div>
 
-            <Link to="/access-user" className="mt-4 block no-underline">
-              <Alert className="cursor-pointer transition-colors hover:bg-muted/50">
-                <CircleAlertIcon className="size-4" />
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex flex-col">
-                    <ItemTitle>Foto inválida para reconhecimento facial.</ItemTitle>
-                    <ItemDescription className="text-yellow-600 underline underline-offset-2">Atualize seu cadastro para continuar</ItemDescription>
-                  </div>
-                  <ChevronRight className="size-5 text-muted-foreground" />
-                </div>
-              </Alert>
-            </Link>
+            <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} linkTo="/access-user" />
           </ItemContent>
         </ItemGroup>
 
