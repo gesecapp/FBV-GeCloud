@@ -6,7 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { applyDateMask, applyPhoneMask } from '@/lib/masks';
@@ -16,6 +16,7 @@ export function EditProfileTab() {
   const { userId } = useAppAuth();
   const { data: user, isLoading, isError } = useGetAppUser();
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(userId);
+  const syncState = getSyncState(syncStatus, isLoadingSync);
   const { form, onSubmit, isPending } = useEditProfileForm(user);
 
   const urlImages = form.watch('url_image');
@@ -32,7 +33,7 @@ export function EditProfileTab() {
         <ItemTitle className="text-lg">Editar Perfil</ItemTitle>
       </ItemHeader>
 
-      <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />
+      {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       {isError && <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-destructive text-sm">Erro ao carregar seus dados.</div>}
 

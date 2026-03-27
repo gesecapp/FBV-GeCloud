@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
@@ -29,6 +29,7 @@ interface VisitorFormProps {
 export function VisitorForm({ parentId, guestId, initialData, title, onCancel, onSubmit, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
   const { data: fetchedGuest, isLoading: isLoadingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
+  const syncState = getSyncState(syncStatus, isLoadingSync);
   const [phoneInput, setPhoneInput] = useState('');
   const [cooldown, setCooldown] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -185,7 +186,7 @@ export function VisitorForm({ parentId, guestId, initialData, title, onCancel, o
         <ItemTitle className="text-lg">{title || (guestId ? 'Editar Visitante' : 'Adicionar Visitante')}</ItemTitle>
       </ItemHeader>
 
-      <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />
+      {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">

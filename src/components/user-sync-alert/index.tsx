@@ -1,9 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { AlertCircle, CheckCircle2, ChevronRight, Clock, Info, Loader2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ChevronRight, Clock, Info, Loader2, X } from 'lucide-react';
+import { useState } from 'react';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert } from '@/components/ui/alert';
 import type { StatusVariant } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import type { UserSyncStatus } from '@/routes/_private/access-user/@interface/access-user.interface';
+import { ItemDescription, ItemTitle } from '../ui/item';
 
 interface RegistrationStatusAlertProps {
   syncStatus?: UserSyncStatus;
@@ -84,19 +87,38 @@ export function getSyncStateInfo(state: SyncState): SyncStateInfo | null {
 }
 
 export function RegistrationStatusAlert({ syncStatus, isLoading, linkTo }: RegistrationStatusAlertProps) {
+  const [dismissed, setDismissed] = useState(false);
+
   const state = getSyncState(syncStatus, isLoading);
   const info = getSyncStateInfo(state);
 
   if (!info) return null;
 
+  const isDismissable = state !== 'rejected';
+
+  if (dismissed && isDismissable) return null;
+
   const alertContent = (
     <Alert variant={info.variant} className={info.className}>
       {info.icon}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-2">
         <div className="flex flex-col">
-          <AlertTitle>{info.title}</AlertTitle>
-          <AlertDescription>{info.description}</AlertDescription>
+          <ItemTitle>{info.title}</ItemTitle>
+          <ItemDescription>{info.description}</ItemDescription>
         </div>
+        {isDismissable && !linkTo && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-6 shrink-0"
+            onClick={(e) => {
+              e.preventDefault();
+              setDismissed(true);
+            }}
+          >
+            <X className="size-4" />
+          </Button>
+        )}
         {linkTo && <ChevronRight className="size-5 shrink-0 text-muted-foreground" />}
       </div>
     </Alert>

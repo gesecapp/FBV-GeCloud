@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import { RegistrationStatusAlert } from '@/components/user-sync-alert';
+import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
@@ -24,6 +24,7 @@ interface DependentFormProps {
 export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading }: DependentFormProps) {
   const { data: existingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
+  const syncState = getSyncState(syncStatus, isLoadingSync);
   const form = useForm<DependentFormData>({
     resolver: zodResolver(dependentFormSchema),
     defaultValues: {
@@ -100,7 +101,7 @@ export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading
         <ItemTitle className="text-lg">{guestId ? 'Editar' : 'Adicionar'} Dependente</ItemTitle>
       </ItemHeader>
 
-      <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />
+      {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">

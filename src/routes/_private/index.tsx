@@ -67,7 +67,9 @@ function DashboardPage() {
               </div>
             </div>
 
-            <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} linkTo="/access-user" />
+            {syncState !== null && ['loading', 'queued', 'pending', 'rejected'].includes(syncState) && (
+              <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} linkTo="/access-user" />
+            )}
           </ItemContent>
         </ItemGroup>
 
