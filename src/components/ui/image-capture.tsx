@@ -59,7 +59,7 @@ function CaptureSlider({
         aria-valuemax={max}
         aria-valuemin={min}
         aria-valuenow={value}
-        className="relative min-h-0 flex-1 w-5 cursor-pointer rounded-full bg-white/20 sm:w-6"
+        className="relative min-h-0 w-5 flex-1 cursor-pointer rounded-full bg-white/20 sm:w-6"
         onClick={handleTrackInteraction}
         onKeyDown={(e) => {
           if (e.key === 'ArrowUp') onChange(clamp(value + step));
@@ -70,10 +70,7 @@ function CaptureSlider({
         tabIndex={0}
       >
         {/* Fill */}
-        <div
-          className="absolute bottom-0 left-0 right-0 rounded-full bg-white/60 transition-all duration-100"
-          style={{ height: `${fillPercent}%` }}
-        />
+        <div className="absolute right-0 bottom-0 left-0 rounded-full bg-white/60 transition-all duration-100" style={{ height: `${fillPercent}%` }} />
         {/* Thumb */}
         <div
           className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 rounded-full bg-white shadow-md transition-all duration-100 sm:size-5"

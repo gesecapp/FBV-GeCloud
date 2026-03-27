@@ -33,11 +33,17 @@ export function getSyncState(syncStatus?: UserSyncStatus, isLoading?: boolean): 
 
   if (!syncData) return 'queued';
 
-  const { sensors } = syncData;
-  const rejectedSensors = sensors?.filter((s) => s.image_accepted === false) || [];
-
+  const sensors = syncData.sensors || [];
+  const hasAnySensor = sensors.length > 0;
+  const rejectedSensors = sensors.filter((s) => s.image_accepted === false);
   if (rejectedSensors.length > 0) return 'rejected';
-  if (syncStatus.synchronized) return 'synchronized';
+
+  if (!hasAnySensor) return 'pending';
+
+  const allRegistered = sensors.every((s) => s.registered);
+  const allImagesAccepted = sensors.every((s) => s.image_accepted !== false);
+
+  if (allRegistered && allImagesAccepted && syncStatus.synchronized) return 'synchronized';
 
   return 'pending';
 }

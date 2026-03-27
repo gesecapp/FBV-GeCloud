@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
@@ -27,13 +27,12 @@ export const Route = createFileRoute('/_private/add-dependent/')({
 });
 
 function AddDependentPage() {
-  const navigate = useNavigate({ from: Route.fullPath });
   const { guestId } = Route.useSearch();
   const { userId } = useAppAuth();
   const { createGuest, updateGuest } = useAccessUserApi();
 
   function handleBack() {
-    navigate({ to: '/access-user', search: { tab: 'dependents' } });
+    window.history.back();
   }
 
   function handleSubmit(data: CreateGuestProps & { id?: string }) {
@@ -85,7 +84,7 @@ function AddDependentPage() {
               </ItemHeader>
             </ItemContent>
 
-            <DependentForm parentId={userId || ''} guestId={guestId} onCancel={handleBack} onSubmit={handleSubmit} isLoading={createGuest.isPending || updateGuest.isPending} />
+            <DependentForm parentId={userId || ''} guestId={guestId} onSubmit={handleSubmit} onCancel={handleBack} isLoading={createGuest.isPending || updateGuest.isPending} />
           </CardContent>
         </Card>
       </div>

@@ -20,13 +20,13 @@ interface VisitorFormProps {
   guestId?: string | null;
   initialData?: Partial<GuestProps>;
   title?: string;
-  onCancel: () => void;
   onSubmit: (data: CreateGuestProps & { id?: string }) => void;
+  onCancel: () => void;
   isLoading?: boolean;
   requireCpfAndImage?: boolean;
 }
 
-export function VisitorForm({ parentId, guestId, initialData, title, onCancel, onSubmit, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
+export function VisitorForm({ parentId, guestId, initialData, title, onSubmit, onCancel, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
   const { data: fetchedGuest, isLoading: isLoadingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
   const syncState = getSyncState(syncStatus, isLoadingSync);

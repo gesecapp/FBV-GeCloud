@@ -183,7 +183,7 @@ function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
     };
   });
 
-  const synchronized = raw.synchronized ?? syncStatusData.synchronized ?? (sensors.length > 0 && sensors.every((s: any) => s.registered));
+  const synchronized = raw.synchronized ?? syncStatusData.synchronized ?? (sensors.length > 0 && sensors.every((s: any) => s.registered && s.image_accepted !== false));
 
   return {
     user,

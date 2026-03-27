@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
-import { Home, LogOut, User, UserPlus, Users } from 'lucide-react';
+import { ArrowLeft, Home, LogOut, User, UserPlus, Users } from 'lucide-react';
 import { z } from 'zod';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Button } from '@/components/ui/button';
@@ -51,14 +51,17 @@ function AccessUserPage() {
                 <ItemTitle className="text-2xl">Meus Dados</ItemTitle>
                 <ItemActions>
                   <ThemeSwitcher />
-                  <Button variant="ghost" asChild>
+                  <Button variant="ghost" asChild title="Início">
                     <Link to="/">
                       <Home className="size-4" />
                     </Link>
                   </Button>
-                  <Button variant="outline" onClick={handleLogout}>
-                    Sair
+                  <Button variant="ghost" onClick={handleLogout}>
                     <LogOut className="size-4" />
+                  </Button>
+                  <Button variant="outline" onClick={() => window.history.back()}>
+                    <ArrowLeft className="size-4" />
+                    Voltar
                   </Button>
                 </ItemActions>
               </ItemHeader>

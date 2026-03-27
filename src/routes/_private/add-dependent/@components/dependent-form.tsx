@@ -16,12 +16,12 @@ import { type DependentFormData, dependentFormSchema } from '../@interface/add-d
 interface DependentFormProps {
   parentId: string;
   guestId?: string | null;
-  onCancel: () => void;
   onSubmit: (data: CreateGuestProps & { id?: string }) => void;
+  onCancel: () => void;
   isLoading?: boolean;
 }
 
-export function DependentForm({ parentId, guestId, onCancel, onSubmit, isLoading }: DependentFormProps) {
+export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading }: DependentFormProps) {
   const { data: existingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
   const syncState = getSyncState(syncStatus, isLoadingSync);

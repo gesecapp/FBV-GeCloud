@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { ArrowLeft, Copy } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
@@ -32,7 +32,6 @@ export const Route = createFileRoute('/_private/add-visitor/')({
 });
 
 function AddVisitorPage() {
-  const navigate = useNavigate({ from: Route.fullPath });
   const { guestId } = Route.useSearch();
   const { userId } = useAppAuth();
   const { createGuest, updateGuest } = useAccessUserApi();
@@ -41,7 +40,7 @@ function AddVisitorPage() {
   const [invitationLink, setInvitationLink] = useState('');
 
   function handleBack() {
-    navigate({ to: '/access-user', search: { tab: 'visitors' } });
+    window.history.back();
   }
 
   function handleSubmit(data: CreateGuestProps & { id?: string }) {
@@ -110,7 +109,7 @@ function AddVisitorPage() {
               </ItemHeader>
             </ItemContent>
 
-            <VisitorForm parentId={userId || ''} guestId={guestId} onCancel={handleBack} onSubmit={handleSubmit} isLoading={createGuest.isPending || updateGuest.isPending} />
+            <VisitorForm parentId={userId || ''} guestId={guestId} onSubmit={handleSubmit} onCancel={handleBack} isLoading={createGuest.isPending || updateGuest.isPending} />
           </CardContent>
         </Card>
       </div>
