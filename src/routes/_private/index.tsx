@@ -16,7 +16,8 @@ export const Route = createFileRoute('/_private/')({
 
 function DashboardPage() {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { clearAuth, userId } = useAppAuth();
+  const { clearAuth, userId, userType } = useAppAuth();
+  const isMorador = userType === 'morador';
   const { data: user } = useGetAppUser();
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(userId);
 
@@ -86,17 +87,19 @@ function DashboardPage() {
             </Item>
           </Link>
 
-          <Link to="/add-dependent" className="no-underline">
-            <Item className="items-center rounded-lg bg-secondary transition-colors hover:bg-muted">
-              <ItemMedia variant="icon" className="size-12 rounded-md bg-muted">
-                <UserPlus className="size-5 text-sky-400" />
-              </ItemMedia>
-              <ItemContent className="ml-4 justify-center">
-                <ItemTitle className="font-semibold text-lg">Incluir Dependente</ItemTitle>
-              </ItemContent>
-              <ChevronRight className="size-5 text-muted-foreground" />
-            </Item>
-          </Link>
+          {isMorador && (
+            <Link to="/add-dependent" className="no-underline">
+              <Item className="items-center rounded-lg bg-secondary transition-colors hover:bg-muted">
+                <ItemMedia variant="icon" className="size-12 rounded-md bg-muted">
+                  <UserPlus className="size-5 text-sky-400" />
+                </ItemMedia>
+                <ItemContent className="ml-4 justify-center">
+                  <ItemTitle className="font-semibold text-lg">Incluir Dependente</ItemTitle>
+                </ItemContent>
+                <ChevronRight className="size-5 text-muted-foreground" />
+              </Item>
+            </Link>
+          )}
 
           <Link to="/add-visitor" className="no-underline">
             <Item className="items-center rounded-lg bg-secondary transition-colors hover:bg-muted">

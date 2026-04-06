@@ -32,13 +32,17 @@ export const Route = createFileRoute('/_private/access-user/')({
 
 function AccessUserPage() {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { clearAuth } = useAppAuth();
+  const { clearAuth, userType } = useAppAuth();
+
+  const isMorador = userType === 'morador';
 
   function handleLogout() {
     clearAuth();
     navigate({ to: '/app-auth' });
   }
+
   const { tab = 'edit' } = Route.useSearch();
+  const activeTab = tab === 'dependents' && !isMorador ? 'edit' : tab;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#1E3A5F] p-2 md:p-4">
@@ -68,7 +72,7 @@ function AccessUserPage() {
             </ItemContent>
 
             <Tabs
-              value={tab}
+              value={activeTab}
               onValueChange={(value) =>
                 navigate({
                   search: (prev) => ({ ...prev, tab: value as 'edit' | 'dependents' | 'visitors' }),
@@ -81,10 +85,12 @@ function AccessUserPage() {
                   <User className="size-4" />
                   Editar Dados
                 </TabsTrigger>
-                <TabsTrigger value="dependents" className="gap-2">
-                  <Users className="size-4" />
-                  Dependentes
-                </TabsTrigger>
+                {isMorador && (
+                  <TabsTrigger value="dependents" className="gap-2">
+                    <Users className="size-4" />
+                    Dependentes
+                  </TabsTrigger>
+                )}
                 <TabsTrigger value="visitors" className="gap-2">
                   <UserPlus className="size-4" />
                   Visitantes
@@ -93,9 +99,11 @@ function AccessUserPage() {
               <TabsContent value="edit">
                 <EditProfileTab />
               </TabsContent>
-              <TabsContent value="dependents">
-                <DependentsTab />
-              </TabsContent>
+              {isMorador && (
+                <TabsContent value="dependents">
+                  <DependentsTab />
+                </TabsContent>
+              )}
               <TabsContent value="visitors">
                 <VisitorsTab />
               </TabsContent>

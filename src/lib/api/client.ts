@@ -3,7 +3,7 @@
  * Fetch configurado para substituir o axios seguindo o padrão do código legado
  */
 
-import { useAuth } from '@/hooks/use-auth';
+import { useAppAuth } from '@/hooks/use-app-auth';
 
 const coreUrl = import.meta.env.VITE_CORE_URL || 'http://localhost:3001';
 
@@ -13,7 +13,7 @@ interface ApiRequestOptions extends RequestInit {
 }
 
 async function fetcher(baseURL: string, endpoint: string, options: ApiRequestOptions = {}) {
-  const token = useAuth.getState().token;
+  const token = useAppAuth.getState().token;
   const { params, body, headers: customHeaders, ...rest } = options;
 
   // Montagem da URL com Query Params

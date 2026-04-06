@@ -8,13 +8,14 @@ export const useAppAuth = create<AppAuthStore>()(
       token: null,
       userId: null,
       cpf: null,
+      userType: null,
 
-      setAuth: (token: string, userId: string, cpf: string) => {
-        set({ isAuthenticated: true, token, userId, cpf });
+      setAuth: (token: string, userId: string, cpf: string, userType: string) => {
+        set({ isAuthenticated: true, token, userId, cpf, userType });
       },
 
       clearAuth: () => {
-        set({ isAuthenticated: false, token: null, userId: null, cpf: null });
+        set({ isAuthenticated: false, token: null, userId: null, cpf: null, userType: null });
       },
     }),
     {
@@ -25,6 +26,7 @@ export const useAppAuth = create<AppAuthStore>()(
         token: state.token,
         userId: state.userId,
         cpf: state.cpf,
+        userType: state.userType,
       }),
     },
   ),
@@ -35,6 +37,7 @@ type AppAuthStore = {
   token: string | null;
   userId: string | null;
   cpf: string | null;
-  setAuth: (token: string, userId: string, cpf: string) => void;
+  userType: string | null;
+  setAuth: (token: string, userId: string, cpf: string, userType: string) => void;
   clearAuth: () => void;
 };

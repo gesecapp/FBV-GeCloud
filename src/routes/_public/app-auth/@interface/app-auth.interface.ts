@@ -26,7 +26,7 @@ export const resetPasswordSchema = z
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export interface AppLoginResponse {
-  data: { token: string; id: string };
+  data: { token: string; id: string; userType: string };
   statusCode: number;
   message: string;
 }
