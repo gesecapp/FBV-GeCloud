@@ -65,9 +65,10 @@
 /* =========================================================
    THEME VARIANTS
    ========================================================= */
-@custom-variant dark (&:is(.dark, [data-theme="dark"]));
-@custom-variant ocean-blue (&:is(.ocean-blue, [data-theme="ocean-blue"]));
-@custom-variant sunset (&:is(.sunset, [data-theme="sunset"]));
+/* ocean-blue também dispara o operador dark: por ser um tema escuro */
+@custom-variant dark (&:where(.dark, .dark *, .ocean-blue, .ocean-blue *));
+@custom-variant ocean-blue (&:where(.ocean-blue, .ocean-blue *));
+@custom-variant sunset (&:where(.sunset, .sunset *));
 
 /* =========================================================
    CSS VARIABLES — LIGHT (DEFAULT)

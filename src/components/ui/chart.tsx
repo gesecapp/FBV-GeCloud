@@ -5,7 +5,12 @@ import { cn } from '@/lib/utils';
 import { ItemDescription } from './item';
 
 // Format: { THEME_NAME: CSS_SELECTOR }
-const THEMES = { light: '', dark: '.dark' } as const;
+const THEMES = {
+  light: '',
+  dark: '.dark',
+  'ocean-blue': '.ocean-blue',
+  sunset: '.sunset',
+} as const;
 
 export type ChartConfig = {
   [k in string]: {
