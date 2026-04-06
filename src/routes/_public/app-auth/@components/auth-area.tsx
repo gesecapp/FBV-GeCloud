@@ -88,7 +88,9 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
       </Form>
 
       <button className="w-full" onClick={onGuestMode} type="button">
-        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Visitante? Clique aqui para atualizar sua imagem</ItemDescription>
+        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">
+          Visitante? Clique aqui para atualizar sua imagem
+        </ItemDescription>
       </button>
       <button className="w-full" onClick={onForgotPassword} type="button">
         <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Esqueceu a senha?</ItemDescription>
