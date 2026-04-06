@@ -73,7 +73,7 @@ export function ForgotPasswordArea({ onClose }: ForgotPasswordAreaProps) {
       )}
 
       <button className="w-full" onClick={onClose} type="button">
-        <ItemDescription className="text-muted-foreground underline underline-offset-4 hover:text-foreground">Voltar ao Login</ItemDescription>
+        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Voltar ao Login</ItemDescription>
       </button>
     </ItemGroup>
   );

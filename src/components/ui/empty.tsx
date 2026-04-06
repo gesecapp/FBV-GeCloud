@@ -40,7 +40,7 @@ function EmptyDescription({ className, ...props }: React.ComponentProps<'p'>) {
   return (
     <div
       data-slot="empty-description"
-      className={cn('text-muted-foreground text-sm/relaxed [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4', className)}
+      className={cn('text-muted-foreground text-sm/relaxed [&>a:hover]:text-primary [&>a]:underline [&>a]:decoration-dashed [&>a]:underline-offset-4', className)}
       {...props}
     />
   );

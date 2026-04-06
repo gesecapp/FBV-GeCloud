@@ -15,7 +15,7 @@ const buttonVariants = cva(
           'relative inset-shadow-2xs inset-shadow-background flex border border-destructive bg-destructive text-white shadow-zinc-950/10 ring-0 duration-150 hover:bg-destructive/90',
         outline: 'border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
         ghost: 'transition-colors hover:bg-foreground/10',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'text-primary underline-offset-4 hover:underline hover:decoration-dashed hover:underline-offset-4',
         blue: 'border-none bg-linear-to-r from-blue-600 to-blue-500 text-white transition-all duration-200 hover:scale-[1.02] hover:from-blue-500 hover:to-blue-600 hover:text-white active:scale-[0.98]',
         green:
           'border-none bg-linear-to-r from-green-600 to-green-500 text-white transition-all duration-200 hover:scale-[1.02] hover:from-green-500 hover:to-green-600 hover:text-white active:scale-[0.98]',
