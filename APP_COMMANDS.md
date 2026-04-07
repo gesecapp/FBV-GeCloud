@@ -1,3 +1,7 @@
+### Faça build
+
+pnpm run build
+
 ### Atualize a versão
 
 [Android](./android/app/build.gradle)
@@ -6,9 +10,17 @@
 
 [Package.json](./package.json)
 
-### Faça build
+### Atualize a versão
 
-pnpm run build
+[capacitor.config](./capacitor.config.ts)
+
+appId: 'com.gesec'
+
+> Apple
+
+appId: 'br.com.gecloud'
+
+> Android
 
 ### Syncronize com o Capacitor
 
