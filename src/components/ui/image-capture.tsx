@@ -4,85 +4,59 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { compressImageToBase64 } from '@/lib/image-compression';
 
-// --- Slider Control ---
+// --- Compact Adjustment Control (no slider, just +/− with % indicator) ---
 
-function CaptureSlider({
+function AdjustControl({
   icon,
   label,
-  min,
-  max,
-  step,
   value,
-  onChange,
+  displayValue,
+  onIncrement,
+  onDecrement,
 }: {
   icon: React.ReactNode;
   label: string;
-  min: number;
-  max: number;
-  step: number;
   value: number;
-  onChange: (_value: number) => void;
+  displayValue: string;
+  onIncrement: () => void;
+  onDecrement: () => void;
 }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  const clamp = (v: number) => Math.min(max, Math.max(min, Math.round(v / step) * step));
-
-  function handleTrackInteraction(e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) {
-    e.preventDefault();
-    if (!trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    const clientY = 'changedTouches' in e ? e.changedTouches[0].clientY : e.clientY;
-    const ratio = 1 - Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
-    onChange(clamp(min + ratio * (max - min)));
-  }
-
-  const fillPercent = ((value - min) / (max - min)) * 100;
-
   return (
-    <div data-slot="capture-slider" className="flex min-h-0 flex-1 flex-col items-center gap-1">
-      <div className="text-white [&_svg]:size-4 sm:[&_svg]:size-5">{icon}</div>
+    <div data-slot="adjust-control" className="flex flex-col items-center gap-1">
+      {/* Icon */}
+      <div className="text-white/70 [&_svg]:size-4">{icon}</div>
 
-      {/* Increment button */}
+      {/* Increment */}
       <button
         aria-label={`${label} aumentar`}
-        className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white/20 text-sm text-white transition-colors active:bg-white/50 sm:size-8"
-        onClick={() => onChange(clamp(value + step))}
+        className="flex size-7 shrink-0 select-none items-center justify-center rounded-full bg-white/20 font-bold text-sm text-white transition-colors active:bg-white/50"
+        onPointerDown={(e) => {
+          e.preventDefault();
+          onIncrement();
+        }}
         type="button"
       >
         +
       </button>
 
-      {/* Clickable / tappable track */}
+      {/* Percentage indicator */}
       <div
-        ref={trackRef}
-        aria-label={label}
-        aria-valuemax={max}
-        aria-valuemin={min}
+        aria-label={`${label}: ${displayValue}`}
         aria-valuenow={value}
-        className="relative min-h-0 w-5 flex-1 cursor-pointer rounded-full bg-white/20 sm:w-6"
-        onClick={handleTrackInteraction}
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowUp') onChange(clamp(value + step));
-          else if (e.key === 'ArrowDown') onChange(clamp(value - step));
-        }}
-        onTouchEnd={handleTrackInteraction}
-        role="slider"
-        tabIndex={0}
+        className="flex min-w-[2.2rem] items-center justify-center rounded-md bg-white/10 px-1 py-0.5 text-center font-mono text-[10px] text-white"
+        role="status"
       >
-        {/* Fill */}
-        <div className="absolute right-0 bottom-0 left-0 rounded-full bg-white/60 transition-all duration-100" style={{ height: `${fillPercent}%` }} />
-        {/* Thumb */}
-        <div
-          className="pointer-events-none absolute left-1/2 size-4 -translate-x-1/2 rounded-full bg-white shadow-md transition-all duration-100 sm:size-5"
-          style={{ bottom: `calc(${fillPercent}% - 8px)` }}
-        />
+        {displayValue}
       </div>
 
-      {/* Decrement button */}
+      {/* Decrement */}
       <button
         aria-label={`${label} diminuir`}
-        className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white/20 text-sm text-white transition-colors active:bg-white/50 sm:size-8"
-        onClick={() => onChange(clamp(value - step))}
+        className="flex size-7 shrink-0 select-none items-center justify-center rounded-full bg-white/20 font-bold text-sm text-white transition-colors active:bg-white/50"
+        onPointerDown={(e) => {
+          e.preventDefault();
+          onDecrement();
+        }}
         type="button"
       >
         −
@@ -341,12 +315,31 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
 
   const isMirrored = facingMode === 'user';
 
+  // Helpers: clamp + step functions for each control
+  const clampZoom = (v: number) => Math.round(Math.min(3, Math.max(1, v)) * 10) / 10;
+  const clampOffset = (v: number) => Math.min(50, Math.max(-50, Math.round(v)));
+  const clampBrightness = (v: number) => Math.min(150, Math.max(50, Math.round(v / 5) * 5));
+  const clampWdr = (v: number) => Math.min(100, Math.max(0, Math.round(v / 10) * 10));
+
+  // Display values as percentage-like labels
+  const zoomDisplay = `${Math.round(((zoom - 1) / 2) * 100)}%`;
+  const offsetDisplay = `${verticalOffset > 0 ? '+' : ''}${verticalOffset}%`;
+  const brightnessDisplay = `${brightnessFilter}%`;
+  const wdrDisplay = `${wdrLevel}%`;
+
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent showCloseButton={false} className="flex! h-[min(90vh,800px)] max-w-150 flex-col gap-0 overflow-hidden border-none bg-black p-0 shadow-lg sm:min-w-fit!">
         <DialogHeader className="relative z-30 flex shrink-0 flex-row items-center justify-between bg-black/40 px-3 py-2 text-white backdrop-blur-md sm:px-4 sm:py-3">
           <DialogTitle className="font-medium text-sm text-white sm:text-lg">Capturar Foto</DialogTitle>
-          <button onClick={onClose} className="cursor-pointer rounded-full p-1.5 text-white/70 transition-all hover:bg-white/10 hover:text-white active:scale-95" type="button">
+          <button
+            onPointerDown={(e) => {
+              e.preventDefault();
+              onClose();
+            }}
+            className="cursor-pointer rounded-full p-1.5 text-white/70 transition-all hover:bg-white/10 hover:text-white active:scale-95"
+            type="button"
+          >
             <X className="size-5 sm:size-6" />
           </button>
           <DialogDescription className="sr-only">Posicione seu rosto na área indicada e capture a foto</DialogDescription>
@@ -431,12 +424,40 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             />
           </div>
 
-          {/* Sliders */}
-          <div className="absolute top-1/2 right-1 z-20 flex h-[55%] -translate-y-1/2 flex-col justify-between gap-1 overflow-hidden rounded-2xl bg-black/60 px-1 py-3 backdrop-blur-md sm:right-3 sm:h-[65%] sm:gap-2 sm:px-1.5 sm:py-4">
-            <CaptureSlider icon={<ZoomIn />} label="Zoom" max={3} min={1} onChange={setZoom} step={0.1} value={zoom} />
-            <CaptureSlider icon={<MoveVertical />} label="Posição" max={50} min={-50} onChange={setVerticalOffset} step={1} value={verticalOffset} />
-            <CaptureSlider icon={<Lightbulb />} label="Brilho" max={150} min={50} onChange={setBrightnessFilter} step={5} value={brightnessFilter} />
-            <CaptureSlider icon={<Contrast />} label="WDR" max={100} min={0} onChange={setWdrLevel} step={10} value={wdrLevel} />
+          {/* Adjustment controls (compact — no sliders) */}
+          <div className="absolute top-1/2 right-1 z-20 flex -translate-y-1/2 flex-col gap-3 rounded-2xl bg-black/60 px-2 py-3 backdrop-blur-md sm:right-3 sm:gap-4 sm:px-3 sm:py-4">
+            <AdjustControl
+              icon={<ZoomIn />}
+              label="Zoom"
+              value={zoom}
+              displayValue={zoomDisplay}
+              onIncrement={() => setZoom((v) => clampZoom(v + 0.1))}
+              onDecrement={() => setZoom((v) => clampZoom(v - 0.1))}
+            />
+            <AdjustControl
+              icon={<MoveVertical />}
+              label="Posição"
+              value={verticalOffset}
+              displayValue={offsetDisplay}
+              onIncrement={() => setVerticalOffset((v) => clampOffset(v + 5))}
+              onDecrement={() => setVerticalOffset((v) => clampOffset(v - 5))}
+            />
+            <AdjustControl
+              icon={<Lightbulb />}
+              label="Brilho"
+              value={brightnessFilter}
+              displayValue={brightnessDisplay}
+              onIncrement={() => setBrightnessFilter((v) => clampBrightness(v + 5))}
+              onDecrement={() => setBrightnessFilter((v) => clampBrightness(v - 5))}
+            />
+            <AdjustControl
+              icon={<Contrast />}
+              label="WDR"
+              value={wdrLevel}
+              displayValue={wdrDisplay}
+              onIncrement={() => setWdrLevel((v) => clampWdr(v + 10))}
+              onDecrement={() => setWdrLevel((v) => clampWdr(v - 10))}
+            />
           </div>
 
           {/* Bottom Actions */}
@@ -445,7 +466,10 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
               {/* Capture button */}
               <button
                 className="flex size-14 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 sm:size-16"
-                onClick={handleCapture}
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  handleCapture();
+                }}
                 type="button"
               >
                 <Camera className="size-7 text-black sm:size-8" />
@@ -454,7 +478,10 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
               {/* Flip camera button */}
               <button
                 className="absolute left-[calc(100%+1.5rem)] flex size-10 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 sm:left-[calc(100%+2rem)] sm:size-12"
-                onClick={() => setFacingMode((p) => (p === 'user' ? 'environment' : 'user'))}
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  setFacingMode((p) => (p === 'user' ? 'environment' : 'user'));
+                }}
                 type="button"
               >
                 <FlipHorizontal className="size-5 text-black sm:size-6" />
