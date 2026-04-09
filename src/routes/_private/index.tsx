@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ChevronRight, FileUser, LogOut, SquarePen, UserPlus, Users } from 'lucide-react';
+import { ChevronRight, FileUser, LogOut, RefreshCw, SquarePen, UserPlus, Users } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
@@ -120,6 +120,18 @@ function DashboardPage() {
               </ItemMedia>
               <ItemContent className="ml-4 justify-center">
                 <ItemTitle className="font-semibold text-lg">Meus Visitantes</ItemTitle>
+              </ItemContent>
+              <ChevronRight className="size-5 text-muted-foreground" />
+            </Item>
+          </Link>
+
+          <Link to="/sync-status" className="no-underline">
+            <Item className="items-center rounded-lg bg-secondary transition-colors hover:bg-muted">
+              <ItemMedia variant="icon" className="size-12 rounded-md bg-muted">
+                <RefreshCw className="size-5 text-sky-400" />
+              </ItemMedia>
+              <ItemContent className="ml-4 justify-center">
+                <ItemTitle className="font-semibold text-lg">Status de Sincronização</ItemTitle>
               </ItemContent>
               <ChevronRight className="size-5 text-muted-foreground" />
             </Item>
