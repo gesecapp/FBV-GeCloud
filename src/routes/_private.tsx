@@ -12,9 +12,9 @@ function PrivateLayout() {
 
 export const Route = createFileRoute('/_private')({
   beforeLoad: async () => {
-    const { isAuthenticated } = useAppAuth.getState();
+    const authStore = useAppAuth.getState();
 
-    if (!isAuthenticated) {
+    if (!authStore.isAuthenticated || !authStore.checkTokenValidity()) {
       throw redirect({
         to: '/app-auth',
       });

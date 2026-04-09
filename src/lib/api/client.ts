@@ -65,6 +65,12 @@ async function fetcher(baseURL: string, endpoint: string, options: ApiRequestOpt
     };
 
     if (!response.ok) {
+      if (response.status === 401) {
+        useAppAuth.getState().clearAuth();
+        if (window.location.pathname !== '/app-auth') {
+          window.location.href = '/app-auth';
+        }
+      }
       // Propaga erro como no interceptor do axios (error.response)
       return Promise.reject({
         response: result,

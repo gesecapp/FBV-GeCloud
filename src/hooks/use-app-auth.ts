@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 export const useAppAuth = create<AppAuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isAuthenticated: false,
       token: null,
       userId: null,
@@ -17,6 +17,36 @@ export const useAppAuth = create<AppAuthStore>()(
       clearAuth: () => {
         set({ isAuthenticated: false, token: null, userId: null, cpf: null, userType: null });
       },
+      checkTokenValidity: () => {
+        const { token, clearAuth } = get();
+        if (!token) {
+          if (get().isAuthenticated) clearAuth();
+          return false;
+        }
+
+        try {
+          const payloadBase64 = token.split('.')[1];
+          if (!payloadBase64) return true;
+
+          const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split('')
+              .map((c) => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`)
+              .join(''),
+          );
+          const payload = JSON.parse(jsonPayload);
+
+          if (payload.exp && payload.exp * 1000 < Date.now()) {
+            clearAuth();
+            return false;
+          }
+          return true;
+        } catch {
+          clearAuth();
+          return false;
+        }
+      },
     }),
     {
       name: 'app-auth-storage',
@@ -28,6 +58,11 @@ export const useAppAuth = create<AppAuthStore>()(
         cpf: state.cpf,
         userType: state.userType,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.checkTokenValidity();
+        }
+      },
     },
   ),
 );
@@ -40,4 +75,5 @@ type AppAuthStore = {
   userType: string | null;
   setAuth: (token: string, userId: string, cpf: string, userType: string) => void;
   clearAuth: () => void;
+  checkTokenValidity: () => boolean;
 };
