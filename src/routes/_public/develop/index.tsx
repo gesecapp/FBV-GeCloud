@@ -186,7 +186,7 @@ function Test3_CapacitorCameraBase64() {
         }}
       />
       {error && <p className="text-destructive text-xs">Erro: {error}</p>}
-      <Button onClick={takePhoto} variant="secondary" className="w-full gap-2">
+      <Button onClick={takePhoto} variant="primary" className="w-full gap-2">
         <Camera className="size-4" />
         getPhoto — Base64 (Câmera)
       </Button>
@@ -424,7 +424,7 @@ function Test7_ReactWebcamFront() {
           setStatus('idle');
         }}
       />
-      <Button onClick={() => setOpen(true)} variant="secondary" className="w-full gap-2">
+      <Button onClick={() => setOpen(true)} variant="primary" className="w-full gap-2">
         <Video className="size-4" />
         react-webcam — Frontal
       </Button>
@@ -642,7 +642,7 @@ function Test10_InputCaptureUser() {
         }}
       />
       <input ref={inputRef} type="file" accept="image/*" capture="user" onChange={handleFile} className="hidden" />
-      <Button onClick={() => inputRef.current?.click()} variant="secondary" className="w-full gap-2">
+      <Button onClick={() => inputRef.current?.click()} variant="primary" className="w-full gap-2">
         <Smartphone className="size-4" />
         Input capture="user" (Frontal)
       </Button>
@@ -864,7 +864,7 @@ function Test13_GetUserMediaFront() {
           setStatus('idle');
         }}
       />
-      <Button onClick={() => setOpen(true)} variant="secondary" className="w-full gap-2">
+      <Button onClick={() => setOpen(true)} variant="primary" className="w-full gap-2">
         <Video className="size-4" />
         getUserMedia — Frontal
       </Button>
@@ -1296,7 +1296,7 @@ function Test17_CapgoFrontCircle() {
           setStatus('idle');
         }}
       />
-      <Button onClick={() => setOpen(true)} variant="secondary" className="w-full gap-2">
+      <Button onClick={() => setOpen(true)} variant="primary" className="w-full gap-2">
         <Camera className="size-4" /> Capgo Frontal + Circle
       </Button>
       <Dialog open={open} onOpenChange={(v) => !v && setOpen(false)}>

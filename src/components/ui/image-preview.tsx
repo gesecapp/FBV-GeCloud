@@ -1,6 +1,5 @@
 import { Camera, X } from 'lucide-react';
 import { useState } from 'react';
-
 import { CameraCaptureDialog } from '@/components/ui/image-capture';
 import { ItemDescription, ItemMedia } from '@/components/ui/item';
 import { cn } from '@/lib/utils';

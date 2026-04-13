@@ -2,7 +2,6 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { CheckIcon } from 'lucide-react';
 import type * as React from 'react';
-
 import { cn } from '@/lib/utils';
 
 const checkboxVariants = cva(
@@ -10,7 +9,7 @@ const checkboxVariants = cva(
     'peer size-4 shrink-0 rounded-[4px]',
     'cursor-pointer border border-input',
     'bg-background text-foreground',
-    'dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
+    'dark:border-input dark:bg-secondary dark:hover:bg-secondary/50',
     'hover:bg-accent',
 
     'outline-none transition-all',
@@ -21,7 +20,7 @@ const checkboxVariants = cva(
   {
     variants: {
       variant: {
-        default: 'data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+        default: 'data-[state=checked]:border-input data-[state=checked]:bg-sky-400 data-[state=checked]:text-primary-foreground',
         blue: 'data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white',
         green: 'data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-white',
       },

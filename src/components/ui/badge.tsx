@@ -13,13 +13,16 @@ const badgeVariants = cva(
         outline: 'bg-transparent text-foreground ring-border dark:ring-border',
         // Semantic status variants
         success: 'bg-emerald-50 text-emerald-900 ring-emerald-600/30 dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-emerald-400/20',
+        online: 'bg-emerald-50 text-emerald-900 ring-emerald-600/30 dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-emerald-400/20',
         active: 'bg-emerald-50 text-emerald-900 ring-emerald-600/30 dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-emerald-400/20',
         warning: 'bg-yellow-50 text-yellow-900 ring-yellow-600/30 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/20',
         pending: 'bg-yellow-50 text-yellow-900 ring-yellow-600/30 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/20',
         error: 'bg-red-50 text-red-900 ring-red-600/20 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20',
         canceled: 'bg-red-50 text-red-900 ring-red-600/20 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20',
+        offline: 'bg-red-50 text-red-900 ring-red-600/20 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20',
         info: 'bg-blue-50 text-blue-900 ring-blue-500/30 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30',
         neutral: 'bg-gray-50 text-gray-900 ring-gray-500/30 dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20',
+        orange: 'bg-orange-50 text-orange-900 ring-orange-500/30 dark:bg-orange-400/10 dark:text-orange-400 dark:ring-orange-400/20',
       },
     },
     defaultVariants: {
@@ -44,13 +47,13 @@ const StatusIndicator = ({ className, status, ...props }: StatusIndicatorProps) 
     pending: 'bg-yellow-500',
     error: 'bg-red-500',
     canceled: 'bg-red-500',
-    info: 'bg-sky-400',
+    info: 'bg-blue-500',
     neutral: 'bg-gray-500',
   };
   const colorClass = status ? statusIndicatorColors[status] : '';
 
   return (
-    <span className={cn('relative flex size-2', className)} {...props}>
+    <span className="relative flex size-2" {...props}>
       <span
         className={cn(
           'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',

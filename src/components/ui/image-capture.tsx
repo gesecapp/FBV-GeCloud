@@ -1,6 +1,5 @@
 import { Camera, Contrast, FlipHorizontal, Lightbulb, MoveVertical, ScanFace, Sun, X, Zap, ZoomIn } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { compressImageToBase64 } from '@/lib/image-compression';
 

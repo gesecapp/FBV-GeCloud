@@ -1,7 +1,6 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -23,7 +22,9 @@ interface DataSelectProps<TQuery = unknown, TMapped = TQuery> {
   /** Callback when selection changes */
   onChange: (value: string | number | undefined, option?: DataSelectOption<TMapped>) => void;
   /** TanStack Query result containing the data */
-  query: UseQueryResult<TQuery[], Error>;
+  query?: UseQueryResult<TQuery[], Error>;
+  /** Direct options to show (alternative to query) */
+  options?: DataSelectOption<TMapped>[];
   /** Function to map query data to select options (optional if valueKey/labelKey provided) */
   mapToOptions?: (data: TQuery[]) => DataSelectOption<TMapped>[];
   /** Key to use as value from data objects (default: 'id') */
@@ -52,6 +53,7 @@ export function DataSelect<TQuery = unknown, TMapped = TQuery>({
   value,
   onChange,
   query,
+  options: optionsProp,
   mapToOptions,
   valueKey = 'id',
   labelKey = 'name',
@@ -64,19 +66,20 @@ export function DataSelect<TQuery = unknown, TMapped = TQuery>({
   searchPlaceholder = 'Search...',
 }: DataSelectProps<TQuery, TMapped>) {
   const [open, setOpen] = useState(false);
-
-  const { data, isLoading, isError } = query;
+  const { data, isLoading = false, isError = false } = query || {};
 
   // Auto-map if mapToOptions not provided
-  const options = data
-    ? mapToOptions
-      ? mapToOptions(data)
-      : (data as any[]).map((item) => ({
-          value: item[valueKey],
-          label: item[labelKey],
-          data: item,
-        }))
-    : [];
+  const options =
+    optionsProp ||
+    (data
+      ? mapToOptions
+        ? mapToOptions(data)
+        : (data as any[]).map((item) => ({
+            value: item[valueKey],
+            label: item[labelKey],
+            data: item,
+          }))
+      : []);
 
   const selectedOption = options.find((opt) => opt.value === value);
 
@@ -107,7 +110,7 @@ export function DataSelect<TQuery = unknown, TMapped = TQuery>({
         <PopoverTrigger asChild>
           <Button
             id={id}
-            variant="outline"
+            variant="default"
             role="combobox"
             aria-expanded={open}
             disabled={isDisabled || isLoading}
