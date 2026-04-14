@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
-import { ItemActions, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { ItemActions, ItemContent, ItemDescription, ItemGroup } from '@/components/ui/item';
 import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
@@ -295,18 +295,14 @@ export function VisitorForm({ parentId, guestId, initialData, title, onSubmit, o
   ];
 
   return (
-    <ItemGroup className="gap-4">
-      <ItemHeader>
-        <ItemTitle className="text-lg">{title || (guestId ? 'Editar Visitante' : 'Adicionar Visitante')}</ItemTitle>
-      </ItemHeader>
-
+    <ItemGroup className="gap-6">
       {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)}>
           <DefaultFormLayout sections={sections} />
 
-          <ItemActions className="justify-end gap-2">
+          <ItemActions className="flex justify-end py-6">
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>

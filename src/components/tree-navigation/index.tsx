@@ -28,7 +28,7 @@ export function TreeNavigation() {
   const treeNodes = useMemo(() => renderTreeNodes(buildNavRoutes(), handleNavigate), [handleNavigate]);
 
   return (
-    <div className="flex w-full gap-2 pb-4">
+    <div className="flex w-full gap-2 bg-card pb-4">
       <Button onClick={handleBack} className="h-12">
         <ArrowLeft className="size-4" />
         Voltar

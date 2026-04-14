@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
-import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { ItemActions, ItemContent, ItemGroup } from '@/components/ui/item';
 import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
@@ -207,22 +207,19 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
   ];
 
   return (
-    <ItemGroup className="gap-4">
-      <ItemHeader>
-        <ItemTitle className="text-lg">{guestId ? 'Editar' : 'Adicionar'} Dependente</ItemTitle>
-      </ItemHeader>
-
+    <ItemGroup className="gap-6">
       {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)}>
           <DefaultFormLayout sections={sections} />
-          <ItemActions className="justify-end gap-2">
+          <ItemActions className="flex justify-end py-6">
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+              {isLoading && <Loader2 className="size-4 animate-spin" />}
+              {!isLoading && <Save className="size-4"></Save>}
               Salvar
             </Button>
           </ItemActions>

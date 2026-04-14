@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 export default function DefaultFormLayout({ sections, layout = 'horizontal' }: DefaultFormLayoutProps) {
   return (
-    <div className="flex flex-col gap-10 py-6">
+    <div className="flex flex-col gap-10 px-2 py-6 md:px-0">
       {sections.map((section, index) => {
         const sectionLayout = section.layout || layout;
         return (
