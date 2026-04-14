@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ArrowUpRight, FileUser, LogOut, UserPlus, Users } from 'lucide-react';
+import { ArrowUpRight, LogOut, UserPlus, Users } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
@@ -76,68 +76,52 @@ function DashboardPage() {
         </ItemGroup>
 
         <div className="grid grid-cols-2 gap-4">
-          <Item variant={'outline'} className="group h-full hover:bg-secondary">
-            <Link to="/access-user" className="no-underline">
-              <Item className="items-start justify-between">
-                <ItemContent className="space-y-1.5">
+          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+            <Link to="/access-user" className="flex w-full flex-col no-underline">
+              <ItemContent>
+                <div className="flex justify-between">
                   <ItemTitle className="font-medium text-base">Editar meu cadastro</ItemTitle>
-                  <ItemDescription>Atualize seus dados pessoais e de contato.</ItemDescription>
-                </ItemContent>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </Item>
-              <ItemGroup aria-hidden className="flex h-16 flex-col justify-between">
-                <div className="relative flex h-8 items-center gap-12 px-6">
-                  <div className="absolute inset-0 my-auto h-px bg-border"></div>
-                  <div className="relative flex items-center rounded-full bg-background px-2 group-hover:bg-secondary">
-                    <Users className="size-3.5" />
-                  </div>
-                  <div className="relative flex items-center rounded-full bg-background px-2 group-hover:bg-secondary">
-                    <FileUser className="size-3.5 text-muted-foreground group-hover:text-sky-300" />
-                  </div>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
                 </div>
-                <div className="relative flex h-10 items-center justify-between gap-12 pr-6 pl-16">
-                  <div className="absolute inset-0 my-auto h-px bg-border"></div>
-                  <div className="relative flex items-center rounded-full bg-background px-2 group-hover:bg-secondary">
-                    <UserPlus className="size-3.5 text-muted-foreground" />
-                  </div>
-                  <div className="relative flex items-center rounded-full bg-background px-2 group-hover:bg-secondary">
-                    <Users className="size-3.5 text-primary" />
-                  </div>
-                </div>
+                <ItemDescription>Atualize seus dados pessoais e de contato.</ItemDescription>
+              </ItemContent>
+              <ItemGroup aria-hidden className="flex h-16 flex-col justify-center gap-4">
+                <div className="h-px w-full bg-sky-500/40"></div>
+                <div className="h-px w-full bg-border transition-colors group-hover:bg-sky-500"></div>
               </ItemGroup>
             </Link>
           </Item>
 
-          <Item variant="outline" className="group h-full hover:bg-secondary">
-            <Link to="/add-visitor" className="no-underline">
-              <Item className="items-start justify-between">
-                <ItemContent className="space-y-1.5">
+          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+            <Link to="/add-visitor" className="flex w-full flex-col no-underline">
+              <ItemContent>
+                <div className="flex justify-between">
                   <ItemTitle className="font-medium text-base">Incluir Visitante</ItemTitle>
-                  <ItemDescription>Registre visitantes para acesso ao condomínio.</ItemDescription>
-                </ItemContent>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </Item>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </div>
+                <ItemDescription>Registre visitantes para acesso ao condomínio.</ItemDescription>
+              </ItemContent>
               <ItemGroup aria-hidden className="pointer-events-none relative flex h-16 items-center justify-center overflow-hidden">
                 <div className="absolute size-24 rounded-full border border-border opacity-60"></div>
                 <div className="absolute size-16 rounded-full border border-sky-500 opacity-60"></div>
-                <div className="absolute size-10 rounded-full border group-hover:border-sky-300"></div>
+                <div className="absolute size-10 rounded-full border group-hover:border-sky-500"></div>
                 <div className="flex size-7 items-center justify-center rounded-full">
-                  <Users className="size-4 text-sky-500 group-hover:text-sky-400" />
+                  <Users className="size-4 text-sky-500 group-hover:text-sky-500" />
                 </div>
               </ItemGroup>
             </Link>
           </Item>
 
           {isMorador && (
-            <Item variant="outline" className="group h-full hover:bg-secondary">
-              <Link to="/add-dependent" className="no-underline">
-                <Item className="items-start justify-between">
-                  <ItemContent className="space-y-1.5">
+            <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+              <Link to="/add-dependent" className="flex w-full flex-col no-underline">
+                <ItemContent>
+                  <div className="flex justify-between">
                     <ItemTitle className="font-medium text-base">Incluir Dependente</ItemTitle>
-                    <ItemDescription>Cadastre dependentes vinculados ao seu perfil.</ItemDescription>
-                  </ItemContent>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-                </Item>
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  </div>
+                  <ItemDescription>Cadastre dependentes vinculados ao seu perfil.</ItemDescription>
+                </ItemContent>
                 <ItemGroup aria-hidden className="pointer-events-none relative flex h-16 items-center justify-center overflow-hidden">
                   <div className="absolute size-24 rounded-full border border-border opacity-40"></div>
                   <div className="absolute size-16 rounded-full border border-border opacity-80 group-hover:border-sky-500"></div>
@@ -150,15 +134,15 @@ function DashboardPage() {
             </Item>
           )}
 
-          <Item variant="outline" className="group h-full hover:bg-secondary">
-            <Link to="/access-user" search={{ tab: 'visitors' }} className="no-underline">
-              <Item className="items-start justify-between">
-                <ItemContent className="space-y-1.5">
+          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+            <Link to="/access-user" search={{ tab: 'visitors' }} className="flex w-full flex-col no-underline">
+              <ItemContent>
+                <div className="flex justify-between">
                   <ItemTitle className="font-medium text-base">Meus Visitantes</ItemTitle>
-                  <ItemDescription>Visualize e gerencie seus visitantes cadastrados.</ItemDescription>
-                </ItemContent>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </Item>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </div>
+                <ItemDescription>Visualize e gerencie seus visitantes cadastrados.</ItemDescription>
+              </ItemContent>
               <div aria-hidden className="flex h-16 items-end justify-between overflow-hidden pb-2 *:w-px *:bg-foreground/15">
                 <div style={{ height: '55%' }} className="bg-sky-500!"></div>
                 <div style={{ height: '35%' }}></div>
@@ -182,15 +166,15 @@ function DashboardPage() {
             </Link>
           </Item>
 
-          <Item variant="outline" className="group h-full hover:bg-secondary">
-            <Link to="/sync-status" className="no-underline">
-              <Item className="items-start justify-between">
-                <ItemContent className="space-y-1.5">
+          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+            <Link to="/sync-status" className="flex w-full flex-col no-underline">
+              <ItemContent>
+                <div className="flex justify-between">
                   <ItemTitle className="font-medium text-base">Status de Sincronização</ItemTitle>
-                  <ItemDescription>Acompanhe o estado de sincronização dos seus dados.</ItemDescription>
-                </ItemContent>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </Item>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </div>
+                <ItemDescription>Acompanhe o estado de sincronização dos seus dados.</ItemDescription>
+              </ItemContent>
               <ItemGroup aria-hidden className="relative flex h-16 items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 mx-auto w-0.5 bg-foreground/15"></div>
                 <div className="absolute -inset-x-8 top-2 aspect-square rounded-full border group-hover:border-sky-500"></div>
