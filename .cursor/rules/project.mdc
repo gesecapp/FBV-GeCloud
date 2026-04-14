@@ -23,12 +23,25 @@ React 19 + Vite 7 + TanStack Router + TanStack Query + Zustand + ShadCN UI + Tai
 
 ## Estrutura de Pagina
 ```tsx
-<Card>
-  <CardHeader>{/* acoes */}</CardHeader>
-  <CardContent>{/* conteudo */}</CardContent>
-  <CardFooter layout="multi | single">{/* paginacao */}</CardFooter>
+<Card className="min-h-screen rounded-none border-none">
+  <CardHeader>
+    <CardTitle>TITULO DA PAGINA</CardTitle>
+    <CardAction>
+      {/* botoes de acao do header (ex: criar, exportar, logout) */}
+    </CardAction>
+  </CardHeader>
+  <CardContent>
+    {isLoading && <DefaultLoading />}
+    {!isLoading && isEmpty && <DefaultEmptyData />}
+    {!isLoading && !isEmpty && (
+      {/* conteudo da pagina */}
+    )}
+  </CardContent>
 </Card>
 ```
+- `Card` sempre com `min-h-screen rounded-none border-none` nas paginas `_private`
+- `CardHeader`: `CardTitle` com nome da pagina + `CardAction` com botoes de acao
+- `CardContent`: renderizar `DefaultLoading` enquanto carrega, `DefaultEmptyData` quando vazio, conteudo quando pronto
 
 ## Estrutura de Pastas da Rota
 ```
