@@ -10,7 +10,6 @@ import {
 } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, FileCheck, FileClock, ImageOff, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-
 import { toast } from 'sonner';
 import DefaultEmptyData from '@/components/default-empty-data';
 import {
@@ -30,15 +29,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { applyCpfMask } from '@/lib/masks';
 import type { GuestProps, UserSyncStatus } from '@/routes/_private/access-user/@interface/access-user.interface';
-
-interface DependentListProps {
-  guests: GuestProps[];
-  syncStatuses?: UserSyncStatus[];
-  onAdd: () => void;
-  onEdit: (id: string) => void;
-}
-
-type DependentItem = GuestProps & { _resolvedId: string; syncStatus?: UserSyncStatus };
 
 export function DependentList({ guests, syncStatuses, onAdd, onEdit }: DependentListProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -242,3 +232,12 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
     </>
   );
 }
+
+interface DependentListProps {
+  guests: GuestProps[];
+  syncStatuses?: UserSyncStatus[];
+  onAdd: () => void;
+  onEdit: (id: string) => void;
+}
+
+type DependentItem = GuestProps & { _resolvedId: string; syncStatus?: UserSyncStatus };

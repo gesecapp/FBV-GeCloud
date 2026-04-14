@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, Copy, Home } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
@@ -37,11 +37,12 @@ function AddVisitorPage() {
   const { userId } = useAppAuth();
   const { createGuest, updateGuest } = useAccessUserApi();
 
+  const navigate = useNavigate();
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [invitationLink, setInvitationLink] = useState('');
 
   function handleBack() {
-    window.history.back();
+    navigate({ to: '/visitors' });
   }
 
   function handleSubmit(data: CreateGuestProps & { id?: string }) {
@@ -97,13 +98,15 @@ function AddVisitorPage() {
         <CardHeader>
           <CardTitle>{guestId ? 'Editar Visitante' : 'Novo Visitante'}</CardTitle>
           <CardAction>
-            <Button variant="outline" onClick={handleBack}>
+            <Button size={'sm'} onClick={handleBack}>
               <ArrowLeft className="size-4" />
               Voltar
             </Button>
-            <Link to="/">
-              <Home className="size-4" />
-            </Link>
+            <Button size={'sm'}>
+              <Link to="/">
+                <Home className="size-4" />
+              </Link>
+            </Button>
             <UserAvatarMenu />
           </CardAction>
         </CardHeader>

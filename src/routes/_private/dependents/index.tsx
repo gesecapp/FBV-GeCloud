@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
-import { Home, UserPlus } from 'lucide-react';
+import { Home } from 'lucide-react';
 import DefaultLoading from '@/components/default-loading';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
@@ -35,13 +35,11 @@ function DependentsPage() {
       <CardHeader>
         <CardTitle>Meus Dependentes</CardTitle>
         <CardAction>
-          <Button onClick={() => navigate({ to: '/dependents/add' })}>
-            <UserPlus className="size-4" />
-            Incluir Dependente
+          <Button size={'sm'}>
+            <Link to="/">
+              <Home className="size-4" />
+            </Link>
           </Button>
-          <Link to="/">
-            <Home className="size-4" />
-          </Link>
           <UserAvatarMenu />
         </CardAction>
       </CardHeader>

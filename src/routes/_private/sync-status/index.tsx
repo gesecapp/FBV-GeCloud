@@ -28,17 +28,17 @@ function SyncStatusPage() {
       <CardHeader>
         <CardTitle>Status de Sincronização</CardTitle>
         <CardAction>
-          <Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
-            <RefreshCw className={`size-4 ${isFetching ? 'animate-spin' : ''}`} />
-            Atualizar
-          </Button>
-          <Button variant="outline" onClick={() => window.history.back()}>
+          <Button size={'sm'} onClick={() => window.history.back()}>
             <ArrowLeft className="size-4" />
             Voltar
           </Button>
-          <Link to="/">
-            <Home className="size-4" />
-          </Link>
+
+          <Button size={'sm'}>
+            <Link to="/">
+              <Home className="size-4" />
+            </Link>
+          </Button>
+
           <UserAvatarMenu />
         </CardAction>
       </CardHeader>
@@ -50,6 +50,12 @@ function SyncStatusPage() {
           <EmptyData />
         ) : (
           <ItemGroup className="w-full gap-4">
+            <div className="flex w-full justify-end">
+              <Button onClick={() => refetch()} disabled={isFetching}>
+                <RefreshCw className={`size-4 ${isFetching ? 'animate-spin' : ''}`} />
+                Atualizar
+              </Button>
+            </div>
             {sensors.map((sensor) => {
               const isRegistered = sensor.registered;
               const isImageAccepted = sensor.image_accepted === true;

@@ -1,5 +1,5 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router';
-import { Home } from 'lucide-react';
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
+import { ArrowLeft, Home } from 'lucide-react';
 import { toast } from 'sonner';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
@@ -31,8 +31,10 @@ function AddDependentPage() {
   const { userId } = useAppAuth();
   const { createGuest, updateGuest } = useAccessUserApi();
 
+  const navigate = useNavigate();
+
   function handleBack() {
-    window.history.back();
+    navigate({ to: '/dependents' });
   }
 
   function handleSubmit(data: CreateGuestProps & { id?: string }) {
@@ -70,6 +72,10 @@ function AddDependentPage() {
       <CardHeader>
         <CardTitle>{guestId ? 'Editar Dependente' : 'Novo Dependente'}</CardTitle>
         <CardAction>
+          <Button size={'sm'} onClick={handleBack}>
+            <ArrowLeft className="size-4" />
+            Voltar
+          </Button>
           <Button size={'sm'}>
             <Link to="/">
               <Home className="size-4" />

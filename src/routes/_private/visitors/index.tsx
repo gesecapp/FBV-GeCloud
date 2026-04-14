@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
-import { Home, UserPlus } from 'lucide-react';
+import { Home } from 'lucide-react';
 import DefaultLoading from '@/components/default-loading';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
@@ -33,12 +33,10 @@ function VisitorsPage() {
       <CardHeader>
         <CardTitle>Meus Visitantes</CardTitle>
         <CardAction>
-          <Button onClick={() => navigate({ to: '/visitors/add' })}>
-            <UserPlus className="size-4" />
-            Incluir Visitante
-          </Button>
           <Link to="/">
-            <Home className="size-4" />
+            <Button size={'sm'}>
+              <Home className="size-4" />
+            </Button>
           </Link>
           <UserAvatarMenu />
         </CardAction>

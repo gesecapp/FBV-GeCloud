@@ -24,7 +24,7 @@ function AccessUserPage() {
   return (
     <Card className="min-h-screen rounded-none border-none">
       <CardHeader>
-        <CardTitle className="font-bebas text-2xl">Editar Perfil</CardTitle>
+        <CardTitle>Editar Perfil</CardTitle>
         <CardAction>
           <Link to="/">
             <Home className="size-4" />
