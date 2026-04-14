@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { Home } from 'lucide-react';
 import DefaultLoading from '@/components/default-loading';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
@@ -33,11 +33,9 @@ function VisitorsPage() {
       <CardHeader>
         <CardTitle>Meus Visitantes</CardTitle>
         <CardAction>
-          <Link to="/">
-            <Button size={'sm'}>
-              <Home className="size-4" />
-            </Button>
-          </Link>
+          <Button size={'sm'} onClick={() => navigate({ to: '/' })}>
+            <Home className="size-4" />
+          </Button>
           <UserAvatarMenu />
         </CardAction>
       </CardHeader>

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, Copy, Home } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
@@ -102,10 +102,8 @@ function AddVisitorPage() {
               <ArrowLeft className="size-4" />
               Voltar
             </Button>
-            <Button size={'sm'}>
-              <Link to="/">
-                <Home className="size-4" />
-              </Link>
+            <Button size={'sm'} onClick={() => navigate({ to: '/' })}>
+              <Home className="size-4" />
             </Button>
             <UserAvatarMenu />
           </CardAction>

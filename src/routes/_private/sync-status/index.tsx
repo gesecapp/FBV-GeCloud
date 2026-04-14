@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ArrowLeft, Home, RefreshCw, ShieldCheck, ShieldOff, UserCheck, UserX } from 'lucide-react';
@@ -18,6 +18,7 @@ export const Route = createFileRoute('/_private/sync-status/')({
 });
 
 function SyncStatusPage() {
+  const navigate = useNavigate();
   const { userId } = useAppAuth();
   const { data: syncStatus, isLoading, isFetching, refetch } = useGetUserSyncStatusManual(userId);
 
@@ -32,13 +33,9 @@ function SyncStatusPage() {
             <ArrowLeft className="size-4" />
             Voltar
           </Button>
-
-          <Button size={'sm'}>
-            <Link to="/">
-              <Home className="size-4" />
-            </Link>
+          <Button size={'sm'} onClick={() => navigate({ to: '/' })}>
+            <Home className="size-4" />
           </Button>
-
           <UserAvatarMenu />
         </CardAction>
       </CardHeader>

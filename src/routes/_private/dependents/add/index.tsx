@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, Home } from 'lucide-react';
 import { toast } from 'sonner';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
@@ -76,10 +76,8 @@ function AddDependentPage() {
             <ArrowLeft className="size-4" />
             Voltar
           </Button>
-          <Button size={'sm'}>
-            <Link to="/">
-              <Home className="size-4" />
-            </Link>
+          <Button size={'sm'} onClick={() => navigate({ to: '/' })}>
+            <Home className="size-4" />
           </Button>
           <UserAvatarMenu />
         </CardAction>
