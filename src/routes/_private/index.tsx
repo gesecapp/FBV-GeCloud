@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { ArrowUpRight, LogOut, UserPlus, Users } from 'lucide-react';
-import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
@@ -94,7 +94,7 @@ function DashboardPage() {
           </Item>
 
           <Item variant="outline" className="group h-full items-start hover:bg-secondary">
-            <Link to="/add-visitor" className="flex w-full flex-col no-underline">
+            <Link to="/visitors/add" className="flex w-full flex-col no-underline">
               <ItemContent>
                 <div className="flex justify-between">
                   <ItemTitle className="font-medium text-base">Incluir Visitante</ItemTitle>
@@ -115,7 +115,7 @@ function DashboardPage() {
 
           {isMorador && (
             <Item variant="outline" className="group h-full items-start hover:bg-secondary">
-              <Link to="/add-dependent" className="flex w-full flex-col no-underline">
+              <Link to="/dependents/add" className="flex w-full flex-col no-underline">
                 <ItemContent>
                   <div className="flex justify-between">
                     <ItemTitle className="font-medium text-base">Incluir Dependente</ItemTitle>

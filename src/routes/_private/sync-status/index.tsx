@@ -4,7 +4,7 @@ import { ptBR } from 'date-fns/locale';
 import { ArrowLeft, Home, LogOut, RefreshCw, ShieldCheck, ShieldOff, UserCheck, UserX } from 'lucide-react';
 import EmptyData from '@/components/default-empty-data';
 import DefaultLoading from '@/components/default-loading';
-import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

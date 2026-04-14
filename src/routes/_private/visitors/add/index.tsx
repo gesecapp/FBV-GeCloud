@@ -3,7 +3,7 @@ import { ArrowLeft, Copy } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
-import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,7 @@ import { VisitorForm } from './@components/visitor-form';
 import { INVITATION_URL_BASE, WHATSAPP_COLOR, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-visitor.consts';
 import { addVisitorSearchSchema } from './@interface/add-visitor.schema';
 
-export const Route = createFileRoute('/_private/add-visitor/')({
+export const Route = createFileRoute('/_private/visitors/add/')({
   validateSearch: addVisitorSearchSchema,
   beforeLoad: () => {
     const { isAuthenticated } = useAppAuth.getState();

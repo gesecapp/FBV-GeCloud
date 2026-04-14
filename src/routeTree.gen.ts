@@ -9,21 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
-import { Route as PrivateRouteImport } from './routes/_private';
-import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
-import { Route as PrivateAddDependentIndexRouteImport } from './routes/_private/add-dependent/index';
-import { Route as PrivateAddVisitorIndexRouteImport } from './routes/_private/add-visitor/index';
-import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
-import { Route as PrivateIndexRouteImport } from './routes/_private/index';
-import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
-import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visitors/index';
 import { Route as PublicRouteImport } from './routes/_public';
-import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
-import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
-import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
-import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
-import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateRouteImport } from './routes/_private';
+import { Route as PrivateIndexRouteImport } from './routes/_private/index';
 import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
+import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
+import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
+import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
+import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visitors/index';
+import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
+import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
+import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
+import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateVisitorsAddIndexRouteImport } from './routes/_private/visitors/add/index';
+import { Route as PrivateDependentsAddIndexRouteImport } from './routes/_private/dependents/add/index';
+import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -74,17 +74,6 @@ const PrivateDependentsIndexRoute = PrivateDependentsIndexRouteImport.update({
   path: '/dependents/',
   getParentRoute: () => PrivateRoute,
 } as any);
-const PrivateAddVisitorIndexRoute = PrivateAddVisitorIndexRouteImport.update({
-  id: '/add-visitor/',
-  path: '/add-visitor/',
-  getParentRoute: () => PrivateRoute,
-} as any);
-const PrivateAddDependentIndexRoute =
-  PrivateAddDependentIndexRouteImport.update({
-    id: '/add-dependent/',
-    path: '/add-dependent/',
-    getParentRoute: () => PrivateRoute,
-  } as any);
 const PrivateAccessUserIndexRoute = PrivateAccessUserIndexRouteImport.update({
   id: '/access-user/',
   path: '/access-user/',
@@ -95,6 +84,17 @@ const PublicNewUserIdRoute = PublicNewUserIdRouteImport.update({
   path: '/new-user/$id',
   getParentRoute: () => PublicRoute,
 } as any);
+const PrivateVisitorsAddIndexRoute = PrivateVisitorsAddIndexRouteImport.update({
+  id: '/visitors/add/',
+  path: '/visitors/add/',
+  getParentRoute: () => PrivateRoute,
+} as any);
+const PrivateDependentsAddIndexRoute =
+  PrivateDependentsAddIndexRouteImport.update({
+    id: '/dependents/add/',
+    path: '/dependents/add/',
+    getParentRoute: () => PrivateRoute,
+  } as any);
 const PublicAppAuthResetPasswordTokenRoute =
   PublicAppAuthResetPasswordTokenRouteImport.update({
     id: '/app-auth/reset-password/$token',
@@ -106,8 +106,6 @@ export interface FileRoutesByFullPath {
   '/': typeof PrivateIndexRoute;
   '/new-user/$id': typeof PublicNewUserIdRoute;
   '/access-user/': typeof PrivateAccessUserIndexRoute;
-  '/add-dependent/': typeof PrivateAddDependentIndexRoute;
-  '/add-visitor/': typeof PrivateAddVisitorIndexRoute;
   '/dependents/': typeof PrivateDependentsIndexRoute;
   '/sync-status/': typeof PrivateSyncStatusIndexRoute;
   '/visitors/': typeof PrivateVisitorsIndexRoute;
@@ -116,13 +114,13 @@ export interface FileRoutesByFullPath {
   '/develop/': typeof PublicDevelopIndexRoute;
   '/privacy-policy/': typeof PublicPrivacyPolicyIndexRoute;
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
+  '/dependents/add/': typeof PrivateDependentsAddIndexRoute;
+  '/visitors/add/': typeof PrivateVisitorsAddIndexRoute;
 }
 export interface FileRoutesByTo {
   '/': typeof PrivateIndexRoute;
   '/new-user/$id': typeof PublicNewUserIdRoute;
   '/access-user': typeof PrivateAccessUserIndexRoute;
-  '/add-dependent': typeof PrivateAddDependentIndexRoute;
-  '/add-visitor': typeof PrivateAddVisitorIndexRoute;
   '/dependents': typeof PrivateDependentsIndexRoute;
   '/sync-status': typeof PrivateSyncStatusIndexRoute;
   '/visitors': typeof PrivateVisitorsIndexRoute;
@@ -131,6 +129,8 @@ export interface FileRoutesByTo {
   '/develop': typeof PublicDevelopIndexRoute;
   '/privacy-policy': typeof PublicPrivacyPolicyIndexRoute;
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
+  '/dependents/add': typeof PrivateDependentsAddIndexRoute;
+  '/visitors/add': typeof PrivateVisitorsAddIndexRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
@@ -139,8 +139,6 @@ export interface FileRoutesById {
   '/_private/': typeof PrivateIndexRoute;
   '/_public/new-user/$id': typeof PublicNewUserIdRoute;
   '/_private/access-user/': typeof PrivateAccessUserIndexRoute;
-  '/_private/add-dependent/': typeof PrivateAddDependentIndexRoute;
-  '/_private/add-visitor/': typeof PrivateAddVisitorIndexRoute;
   '/_private/dependents/': typeof PrivateDependentsIndexRoute;
   '/_private/sync-status/': typeof PrivateSyncStatusIndexRoute;
   '/_private/visitors/': typeof PrivateVisitorsIndexRoute;
@@ -149,6 +147,8 @@ export interface FileRoutesById {
   '/_public/develop/': typeof PublicDevelopIndexRoute;
   '/_public/privacy-policy/': typeof PublicPrivacyPolicyIndexRoute;
   '/_public/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
+  '/_private/dependents/add/': typeof PrivateDependentsAddIndexRoute;
+  '/_private/visitors/add/': typeof PrivateVisitorsAddIndexRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
@@ -156,8 +156,6 @@ export interface FileRouteTypes {
     | '/'
     | '/new-user/$id'
     | '/access-user/'
-    | '/add-dependent/'
-    | '/add-visitor/'
     | '/dependents/'
     | '/sync-status/'
     | '/visitors/'
@@ -165,14 +163,14 @@ export interface FileRouteTypes {
     | '/contact/'
     | '/develop/'
     | '/privacy-policy/'
-    | '/app-auth/reset-password/$token';
+    | '/app-auth/reset-password/$token'
+    | '/dependents/add/'
+    | '/visitors/add/';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/new-user/$id'
     | '/access-user'
-    | '/add-dependent'
-    | '/add-visitor'
     | '/dependents'
     | '/sync-status'
     | '/visitors'
@@ -180,7 +178,9 @@ export interface FileRouteTypes {
     | '/contact'
     | '/develop'
     | '/privacy-policy'
-    | '/app-auth/reset-password/$token';
+    | '/app-auth/reset-password/$token'
+    | '/dependents/add'
+    | '/visitors/add';
   id:
     | '__root__'
     | '/_private'
@@ -188,8 +188,6 @@ export interface FileRouteTypes {
     | '/_private/'
     | '/_public/new-user/$id'
     | '/_private/access-user/'
-    | '/_private/add-dependent/'
-    | '/_private/add-visitor/'
     | '/_private/dependents/'
     | '/_private/sync-status/'
     | '/_private/visitors/'
@@ -197,7 +195,9 @@ export interface FileRouteTypes {
     | '/_public/contact/'
     | '/_public/develop/'
     | '/_public/privacy-policy/'
-    | '/_public/app-auth/reset-password/$token';
+    | '/_public/app-auth/reset-password/$token'
+    | '/_private/dependents/add/'
+    | '/_private/visitors/add/';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -277,20 +277,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateDependentsIndexRouteImport;
       parentRoute: typeof PrivateRoute;
     };
-    '/_private/add-visitor/': {
-      id: '/_private/add-visitor/';
-      path: '/add-visitor';
-      fullPath: '/add-visitor/';
-      preLoaderRoute: typeof PrivateAddVisitorIndexRouteImport;
-      parentRoute: typeof PrivateRoute;
-    };
-    '/_private/add-dependent/': {
-      id: '/_private/add-dependent/';
-      path: '/add-dependent';
-      fullPath: '/add-dependent/';
-      preLoaderRoute: typeof PrivateAddDependentIndexRouteImport;
-      parentRoute: typeof PrivateRoute;
-    };
     '/_private/access-user/': {
       id: '/_private/access-user/';
       path: '/access-user';
@@ -305,6 +291,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicNewUserIdRouteImport;
       parentRoute: typeof PublicRoute;
     };
+    '/_private/visitors/add/': {
+      id: '/_private/visitors/add/';
+      path: '/visitors/add';
+      fullPath: '/visitors/add/';
+      preLoaderRoute: typeof PrivateVisitorsAddIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
+    };
+    '/_private/dependents/add/': {
+      id: '/_private/dependents/add/';
+      path: '/dependents/add';
+      fullPath: '/dependents/add/';
+      preLoaderRoute: typeof PrivateDependentsAddIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
+    };
     '/_public/app-auth/reset-password/$token': {
       id: '/_public/app-auth/reset-password/$token';
       path: '/app-auth/reset-password/$token';
@@ -318,21 +318,21 @@ declare module '@tanstack/react-router' {
 interface PrivateRouteChildren {
   PrivateIndexRoute: typeof PrivateIndexRoute;
   PrivateAccessUserIndexRoute: typeof PrivateAccessUserIndexRoute;
-  PrivateAddDependentIndexRoute: typeof PrivateAddDependentIndexRoute;
-  PrivateAddVisitorIndexRoute: typeof PrivateAddVisitorIndexRoute;
   PrivateDependentsIndexRoute: typeof PrivateDependentsIndexRoute;
   PrivateSyncStatusIndexRoute: typeof PrivateSyncStatusIndexRoute;
   PrivateVisitorsIndexRoute: typeof PrivateVisitorsIndexRoute;
+  PrivateDependentsAddIndexRoute: typeof PrivateDependentsAddIndexRoute;
+  PrivateVisitorsAddIndexRoute: typeof PrivateVisitorsAddIndexRoute;
 }
 
 const PrivateRouteChildren: PrivateRouteChildren = {
   PrivateIndexRoute: PrivateIndexRoute,
   PrivateAccessUserIndexRoute: PrivateAccessUserIndexRoute,
-  PrivateAddDependentIndexRoute: PrivateAddDependentIndexRoute,
-  PrivateAddVisitorIndexRoute: PrivateAddVisitorIndexRoute,
   PrivateDependentsIndexRoute: PrivateDependentsIndexRoute,
   PrivateSyncStatusIndexRoute: PrivateSyncStatusIndexRoute,
   PrivateVisitorsIndexRoute: PrivateVisitorsIndexRoute,
+  PrivateDependentsAddIndexRoute: PrivateDependentsAddIndexRoute,
+  PrivateVisitorsAddIndexRoute: PrivateVisitorsAddIndexRoute,
 };
 
 const PrivateRouteWithChildren =

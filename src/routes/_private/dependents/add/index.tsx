@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
-import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +11,7 @@ import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/
 import { DependentForm } from './@components/dependent-form';
 import { addDependentSearchSchema } from './@interface/add-dependent.schema';
 
-export const Route = createFileRoute('/_private/add-dependent/')({
+export const Route = createFileRoute('/_private/dependents/add/')({
   validateSearch: addDependentSearchSchema,
   beforeLoad: () => {
     const { isAuthenticated } = useAppAuth.getState();

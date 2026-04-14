@@ -34,7 +34,7 @@ function DependentsPage() {
       <CardHeader>
         <CardTitle>Meus Dependentes</CardTitle>
         <CardAction>
-          <Button onClick={() => navigate({ to: '/add-dependent' })}>
+          <Button onClick={() => navigate({ to: '/dependents/add' })}>
             <UserPlus className="size-4" />
             Incluir Dependente
           </Button>
@@ -48,8 +48,8 @@ function DependentsPage() {
           <DependentList
             guests={dependents || []}
             syncStatuses={syncStatuses}
-            onAdd={() => navigate({ to: '/add-dependent' })}
-            onEdit={(id) => navigate({ to: '/add-dependent', search: { guestId: id } })}
+            onAdd={() => navigate({ to: '/dependents/add' })}
+            onEdit={(id) => navigate({ to: '/dependents/add', search: { guestId: id } })}
           />
         )}
       </CardContent>

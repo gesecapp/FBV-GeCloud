@@ -32,7 +32,7 @@ function VisitorsPage() {
       <CardHeader>
         <CardTitle>Meus Visitantes</CardTitle>
         <CardAction>
-          <Button onClick={() => navigate({ to: '/add-visitor' })}>
+          <Button onClick={() => navigate({ to: '/visitors/add' })}>
             <UserPlus className="size-4" />
             Incluir Visitante
           </Button>
@@ -46,8 +46,8 @@ function VisitorsPage() {
           <VisitorList
             guests={visitors || []}
             syncStatuses={syncStatuses}
-            onAdd={() => navigate({ to: '/add-visitor' })}
-            onEdit={(id) => navigate({ to: '/add-visitor', search: { guestId: id } })}
+            onAdd={() => navigate({ to: '/visitors/add' })}
+            onEdit={(id) => navigate({ to: '/visitors/add', search: { guestId: id } })}
           />
         )}
       </CardContent>
