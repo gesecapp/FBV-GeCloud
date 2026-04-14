@@ -4,11 +4,12 @@ import { useState } from 'react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { TreeNavigation } from '@/components/tree-navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { ItemActions, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
+import { ItemDescription } from '@/components/ui/item';
 import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
@@ -91,28 +92,28 @@ function AddVisitorPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-[#1E3A5F] p-2 md:p-4">
-      <div className="w-full max-w-4xl">
-        <Card>
-          <CardContent className="flex flex-col gap-6 py-8 md:p-8">
-            <ItemContent className="items-center gap-4">
-              <img src="/images/logo.svg" alt="Logo" className="h-16 w-auto" />
-              <ItemHeader className="w-full">
-                <ItemTitle className="text-2xl">{guestId ? 'Editar Visitante' : 'Novo Visitante'}</ItemTitle>
-                <ItemActions>
-                  <ThemeSwitcher />
-                  <Button variant="outline" onClick={handleBack}>
-                    <ArrowLeft className="size-4" />
-                    Voltar
-                  </Button>
-                </ItemActions>
-              </ItemHeader>
-            </ItemContent>
+    <>
+      <Card className="min-h-screen rounded-none border-none">
+        <CardHeader>
+          <CardTitle>{guestId ? 'Editar Visitante' : 'Novo Visitante'}</CardTitle>
+          <CardAction>
+            <ThemeSwitcher />
 
-            <VisitorForm parentId={userId || ''} guestId={guestId} onSubmit={handleSubmit} onCancel={handleBack} isLoading={createGuest.isPending || updateGuest.isPending} />
-          </CardContent>
-        </Card>
-      </div>
+            <Button variant="outline" onClick={handleBack}>
+              <ArrowLeft className="size-4" />
+              Voltar
+            </Button>
+          </CardAction>
+        </CardHeader>
+
+        <CardContent>
+          <VisitorForm parentId={userId || ''} guestId={guestId} onSubmit={handleSubmit} onCancel={handleBack} isLoading={createGuest.isPending || updateGuest.isPending} />
+        </CardContent>
+
+        <CardFooter>
+          <TreeNavigation />
+        </CardFooter>
+      </Card>
 
       <Dialog open={showInviteModal} onOpenChange={setShowInviteModal}>
         <DialogContent className="max-w-92 text-center">
@@ -135,6 +136,6 @@ function AddVisitorPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

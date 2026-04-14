@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Menu } from 'lucide-react';
+import { ArrowLeft, Menu } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ItemTitle } from '@/components/ui/item';
@@ -20,8 +20,12 @@ export function TreeNavigation() {
     setOpen(false);
   }
 
+  function handleBack() {
+    window.history.back();
+  }
+
   return (
-    <div className="flex w-full gap-2 bg-background p-2">
+    <div className="flex w-full gap-2 pb-4">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="default" className="h-12 flex-1 rounded-xl">
@@ -40,6 +44,11 @@ export function TreeNavigation() {
           </div>
         </SheetContent>
       </Sheet>
+
+      <Button variant="outline" onClick={handleBack}>
+        <ArrowLeft className="size-4" />
+        Voltar
+      </Button>
 
       <MobileSettings />
     </div>

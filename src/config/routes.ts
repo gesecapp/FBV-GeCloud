@@ -12,11 +12,13 @@ export const ROUTE_LABELS: Record<string, string> = {
   'add-dependent': 'Incluir Dependente',
   'add-visitor': 'Incluir Visitante',
   'sync-status': 'Status de Sincronização',
+  visitors: 'Meus Visitantes',
+  dependents: 'Meus Dependentes',
 };
 
 /**
  * Lista de rotas principais da aplicacao.
  */
-export const MAIN_ROUTES = ['/access-user', '/add-dependent', '/add-visitor', '/sync-status'] as const;
+export const MAIN_ROUTES = ['/access-user', '/add-dependent', '/add-visitor', '/sync-status', '/visitors', '/dependents'] as const;
 
 export type MainRoute = (typeof MAIN_ROUTES)[number];

@@ -29,7 +29,7 @@ import { ItemActions, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/i
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { applyCpfMask } from '@/lib/masks';
-import type { GuestProps, UserSyncStatus } from '../@interface/access-user.interface';
+import type { GuestProps, UserSyncStatus } from '@/routes/_private/access-user/@interface/access-user.interface';
 
 interface DependentListProps {
   guests: GuestProps[];

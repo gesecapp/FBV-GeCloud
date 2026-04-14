@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { ArrowUpRight, LogOut, UserPlus, Users } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { TreeNavigation } from '@/components/tree-navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
@@ -33,7 +34,7 @@ function DashboardPage() {
   }
 
   return (
-    <Card>
+    <Card className="min-h-screen rounded-none border-none">
       <CardHeader>
         <CardTitle className="font-normal text-xl tracking-wide">GECLOUD</CardTitle>
         <CardAction>
@@ -135,7 +136,7 @@ function DashboardPage() {
           )}
 
           <Item variant="outline" className="group h-full items-start hover:bg-secondary">
-            <Link to="/access-user" search={{ tab: 'visitors' }} className="flex w-full flex-col no-underline">
+            <Link to="/visitors" className="flex w-full flex-col no-underline">
               <ItemContent>
                 <div className="flex justify-between">
                   <ItemTitle className="font-medium text-base">Meus Visitantes</ItemTitle>
@@ -166,6 +167,28 @@ function DashboardPage() {
             </Link>
           </Item>
 
+          {isMorador && (
+            <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+              <Link to="/dependents" className="flex w-full flex-col no-underline">
+                <ItemContent>
+                  <div className="flex justify-between">
+                    <ItemTitle className="font-medium text-base">Meus Dependentes</ItemTitle>
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  </div>
+                  <ItemDescription>Visualize e gerencie seus dependentes cadastrados.</ItemDescription>
+                </ItemContent>
+                <ItemGroup aria-hidden className="pointer-events-none relative flex h-16 items-center justify-center overflow-hidden">
+                  <div className="absolute size-24 rounded-full border border-border opacity-40"></div>
+                  <div className="absolute size-16 rounded-full border border-border opacity-80 group-hover:border-sky-500"></div>
+                  <div className="absolute size-10 rounded-full border border-sky-500"></div>
+                  <div className="flex size-7 items-center justify-center rounded-full">
+                    <Users className="size-4 text-sky-500" />
+                  </div>
+                </ItemGroup>
+              </Link>
+            </Item>
+          )}
+
           <Item variant="outline" className="group h-full items-start hover:bg-secondary">
             <Link to="/sync-status" className="flex w-full flex-col no-underline">
               <ItemContent>
@@ -186,6 +209,10 @@ function DashboardPage() {
           </Item>
         </div>
       </CardContent>
+
+      <CardFooter>
+        <TreeNavigation />
+      </CardFooter>
     </Card>
   );
 }

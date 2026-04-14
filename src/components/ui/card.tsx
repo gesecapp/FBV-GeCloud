@@ -2,7 +2,7 @@ import type * as React from 'react';
 import { cn } from '@/lib/utils';
 
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card" className={cn('flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground', className)} {...props} />;
+  return <div data-slot="card" className={cn('mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-6 pt-6 pb-20 text-card-foreground', className)} {...props} />;
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
@@ -10,7 +10,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="card-header"
       className={cn(
-        '@container/card-header mx-auto grid w-full max-w-2xl auto-rows-min grid-rows-[auto_auto] items-center gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6',
+        '@container/card-header grid w-full auto-rows-min grid-rows-[auto_auto] items-center gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6',
         className,
       )}
       {...props}
@@ -31,11 +31,13 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-content" className={cn('@container mx-auto w-full max-w-2xl px-4 py-10 md:px-6', className)} {...props} />;
+  return <div data-slot="card-content" className={cn('@container w-full px-4 py-10 md:px-6', className)} {...props} />;
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-footer" className={cn('sticky bottom-0 z-50 mt-auto flex w-full items-center bg-background px-6 [.border-t]:pt-6', className)} {...props} />;
+  return (
+    <div data-slot="card-footer" className={cn('fixed bottom-0 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center px-6 [.border-t]:pt-6', className)} {...props} />
+  );
 }
 
 export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

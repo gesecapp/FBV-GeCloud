@@ -37,11 +37,15 @@ React 19 + Vite 7 + TanStack Router + TanStack Query + Zustand + ShadCN UI + Tai
       {/* conteudo da pagina */}
     )}
   </CardContent>
+  <CardFooter>
+    <TreeNavigation>
+  </CardFooter>
 </Card>
 ```
 - `Card` sempre com `min-h-screen rounded-none border-none` nas paginas `_private`
 - `CardHeader`: `CardTitle` com nome da pagina + `CardAction` com botoes de acao
 - `CardContent`: renderizar `DefaultLoading` enquanto carrega, `DefaultEmptyData` quando vazio, conteudo quando pronto
+- `CardFooter`: posiciona os botoes de navegação, do compoentne `TreeNavigation` na parte de baixo da tela
 
 ## Estrutura de Pastas da Rota
 ```

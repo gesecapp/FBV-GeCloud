@@ -7,7 +7,11 @@ import { useAppAuth } from '@/hooks/use-app-auth';
  */
 
 function PrivateLayout() {
-  return <Outlet />;
+  return (
+    <main className="bg-card">
+      <Outlet />
+    </main>
+  );
 }
 
 export const Route = createFileRoute('/_private')({
