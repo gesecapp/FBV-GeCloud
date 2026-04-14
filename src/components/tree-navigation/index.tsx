@@ -1,11 +1,11 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, Menu } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ItemTitle } from '@/components/ui/item';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { TreeProvider, TreeView } from '@/components/ui/tree';
-import { buildSidebarRoutes } from '@/config/sidebarRoutes';
+import { buildNavRoutes } from '@/config/routes';
 import { MobileSettings } from './mobile-settings';
 import { renderTreeNodes } from './tree-nodes';
 
@@ -13,16 +13,19 @@ export function TreeNavigation() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const sidebarRoutes = useMemo(() => buildSidebarRoutes(), []);
-
-  function handleNavigate(path: string) {
-    navigate({ to: path });
-    setOpen(false);
-  }
+  const handleNavigate = useCallback(
+    (path: string) => {
+      navigate({ to: path });
+      setOpen(false);
+    },
+    [navigate],
+  );
 
   function handleBack() {
     window.history.back();
   }
+
+  const treeNodes = useMemo(() => renderTreeNodes(buildNavRoutes(), handleNavigate), [handleNavigate]);
 
   return (
     <div className="flex w-full gap-2 pb-4">
@@ -44,7 +47,7 @@ export function TreeNavigation() {
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-2 py-4 pb-8">
             <TreeProvider animateExpand>
-              <TreeView>{renderTreeNodes(sidebarRoutes, handleNavigate)}</TreeView>
+              <TreeView>{treeNodes}</TreeView>
             </TreeProvider>
           </div>
         </SheetContent>

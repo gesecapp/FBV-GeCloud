@@ -5,7 +5,7 @@ import { CircleAlert } from 'lucide-react';
 
 import DefaultEmptyData from '@/components/default-empty-data';
 import DefaultLoading from '@/components/default-loading';
-import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 

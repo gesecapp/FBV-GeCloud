@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { LogOut, Settings2 } from 'lucide-react';
 import { useState } from 'react';
-import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { Button } from '@/components/ui/button';
 import { ItemTitle } from '@/components/ui/item';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';

@@ -1,5 +1,5 @@
 import { TreeExpander, TreeIcon, TreeLabel, TreeNode, TreeNodeContent, TreeNodeTrigger } from '@/components/ui/tree';
-import type { SidebarRoute } from '@/config/sidebarRoutes';
+import type { SidebarRoute } from '@/config/routes';
 
 export function renderTreeNodes(routes: SidebarRoute[], onNavigate: (path: string) => void, level = 0, parentPath: boolean[] = []) {
   return routes.map((route, index) => {
