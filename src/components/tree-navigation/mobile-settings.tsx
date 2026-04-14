@@ -21,7 +21,7 @@ export function MobileSettings() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="size-12 shrink-0 rounded-xl bg-background">
+        <Button size="icon" className="size-12 shrink-0">
           <Settings2 className="size-4" />
         </Button>
       </SheetTrigger>

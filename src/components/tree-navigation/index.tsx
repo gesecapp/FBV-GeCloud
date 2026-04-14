@@ -26,9 +26,14 @@ export function TreeNavigation() {
 
   return (
     <div className="flex w-full gap-2 pb-4">
+      <Button onClick={handleBack} className="h-12">
+        <ArrowLeft className="size-4" />
+        Voltar
+      </Button>
+
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="default" className="h-12 flex-1 rounded-xl">
+          <Button className="h-12 flex-1">
             <Menu className="size-4" />
             <ItemTitle className="text-lg">Menu</ItemTitle>
           </Button>
@@ -44,11 +49,6 @@ export function TreeNavigation() {
           </div>
         </SheetContent>
       </Sheet>
-
-      <Button variant="outline" onClick={handleBack}>
-        <ArrowLeft className="size-4" />
-        Voltar
-      </Button>
 
       <MobileSettings />
     </div>
