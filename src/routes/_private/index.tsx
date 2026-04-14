@@ -1,10 +1,8 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ArrowUpRight, LogOut, UserPlus, Users } from 'lucide-react';
-import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { ArrowUpRight, UserPlus, Users } from 'lucide-react';
+import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from '@/components/user-sync-alert';
@@ -16,8 +14,7 @@ export const Route = createFileRoute('/_private/')({
 });
 
 function DashboardPage() {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const { clearAuth, userId, userType } = useAppAuth();
+  const { userId, userType } = useAppAuth();
   const isMorador = userType === 'morador';
   const { data: user } = useGetAppUser();
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(userId);
@@ -26,33 +23,14 @@ function DashboardPage() {
 
   const syncState = getSyncState(syncStatus, isLoadingSync);
   const syncInfo = getSyncStateInfo(syncState);
-  const showStatusIndicator = syncState && syncState !== 'synchronized';
-
-  function handleLogout() {
-    clearAuth();
-    navigate({ to: '/app-auth' });
-  }
+  const badgeStatus = syncState && syncState !== 'synchronized' && syncInfo ? syncInfo.statusIndicator : undefined;
 
   return (
     <Card className="min-h-screen rounded-none border-none">
       <CardHeader>
         <CardTitle className="font-normal text-xl tracking-wide">GECLOUD</CardTitle>
         <CardAction>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="size-4" />
-              </Button>
-              <ThemeSwitcher />
-            </div>
-            <div className="relative">
-              <Avatar className="size-10 border-2 border-primary/20">
-                <AvatarImage src={user?.url_image?.[0]} alt={user?.name} className="object-cover" />
-                <AvatarFallback className="bg-primary text-primary-foreground">{user?.name?.charAt(0)}</AvatarFallback>
-              </Avatar>
-              {showStatusIndicator && syncInfo && <StatusIndicator status={syncInfo.statusIndicator} className="absolute top-1 right-1" />}
-            </div>
-          </div>
+          <UserAvatarMenu badgeStatus={badgeStatus} />
         </CardAction>
       </CardHeader>
 

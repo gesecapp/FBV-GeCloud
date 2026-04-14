@@ -3,6 +3,7 @@ import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -180,6 +181,119 @@ export function VisitorForm({ parentId, guestId, initialData, title, onSubmit, o
 
   if (isLoadingGuest) return <DefaultLoading />;
 
+  const sections: FormSection[] = [
+    {
+      title: 'Identificação',
+      description: 'Dados pessoais do visitante.',
+      fields: [
+        <FormField
+          key="name"
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome Completo *</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Ex: João da Silva" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="cpf"
+          control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>CPF{requireCpfAndImage || (urlImages && urlImages.length > 0) ? ' *' : ''}</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.cpf} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="birthDate"
+          control={form.control}
+          name="birthDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Data de Nascimento</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="email"
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} placeholder="email@exemplo.com" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+      ],
+    },
+    {
+      title: 'Telefones',
+      description: 'Telefones para contato do visitante.',
+      fields: [
+        <ItemContent key="phones" className="gap-3">
+          <div className="flex gap-2">
+            <Input value={phoneInput} onChange={(e) => setPhoneInput(applyPhoneMask(e.target.value))} placeholder="(00) 00000-0000" maxLength={15} className="flex-1" />
+            <Button type="button" variant="outline" onClick={handleAddPhone} disabled={!phoneInput.trim()}>
+              <Plus className="mr-1 size-4" />
+              Adicionar
+            </Button>
+          </div>
+          {telephones.length > 0 ? (
+            <ItemContent className="gap-1">
+              {telephones.map((phone, index) => (
+                <div key={phone} className="flex items-center gap-2">
+                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => handleRemovePhone(index)}>
+                    <Trash2 className="size-4" />
+                  </Button>
+                  <ItemDescription>{applyPhoneMask(phone)}</ItemDescription>
+                </div>
+              ))}
+            </ItemContent>
+          ) : (
+            <ItemDescription>Nenhum telefone adicionado</ItemDescription>
+          )}
+        </ItemContent>,
+      ],
+    },
+    {
+      title: 'Foto',
+      description: 'Imagem de identificação do visitante.',
+      layout: 'vertical',
+      fields: [
+        <FormField
+          key="url_image"
+          control={form.control}
+          name="url_image"
+          render={({ fieldState }) => (
+            <ItemContent className="gap-3">
+              <FormLabel>Foto{requireCpfAndImage ? ' *' : ''}</FormLabel>
+              <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
+              {fieldState.error?.message && <FormMessage>{fieldState.error.message}</FormMessage>}
+            </ItemContent>
+          )}
+        />,
+      ],
+    },
+  ];
+
   return (
     <ItemGroup className="gap-4">
       <ItemHeader>
@@ -189,98 +303,8 @@ export function VisitorForm({ parentId, guestId, initialData, title, onSubmit, o
       {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome Completo *</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cpf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CPF{requireCpfAndImage || (urlImages && urlImages.length > 0) ? ' *' : ''}</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.cpf} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="birthDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data de Nascimento</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E-mail</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <ItemContent className="gap-3">
-            <ItemTitle className="font-medium text-sm">Telefones</ItemTitle>
-            <div className="flex gap-2">
-              <Input value={phoneInput} onChange={(e) => setPhoneInput(applyPhoneMask(e.target.value))} placeholder="Telefone" maxLength={15} className="flex-1" />
-              <Button type="button" variant="outline" onClick={handleAddPhone} disabled={!phoneInput.trim()}>
-                <Plus className="mr-1 size-4" />
-                Adicionar
-              </Button>
-            </div>
-            {telephones.length > 0 ? (
-              <ItemContent className="gap-1">
-                {telephones.map((phone, index) => (
-                  <div key={phone} className="flex items-center gap-2">
-                    <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => handleRemovePhone(index)}>
-                      <Trash2 className="size-4" />
-                    </Button>
-                    <ItemDescription>{applyPhoneMask(phone)}</ItemDescription>
-                  </div>
-                ))}
-              </ItemContent>
-            ) : (
-              <ItemDescription>Nenhum telefone adicionado</ItemDescription>
-            )}
-          </ItemContent>
-
-          <FormField
-            control={form.control}
-            name="url_image"
-            render={({ fieldState }) => (
-              <ItemContent className="gap-3">
-                <FormLabel>Foto{requireCpfAndImage ? ' *' : ''}</FormLabel>
-                <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
-                {fieldState.error?.message && <div className="font-medium text-destructive text-sm">{fieldState.error.message}</div>}
-              </ItemContent>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(handleFormSubmit)}>
+          <DefaultFormLayout sections={sections} />
 
           <ItemActions className="justify-end gap-2">
             <Button type="button" variant="outline" onClick={onCancel}>

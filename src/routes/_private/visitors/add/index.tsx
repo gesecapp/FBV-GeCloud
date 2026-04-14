@@ -1,9 +1,9 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { ArrowLeft, Copy } from 'lucide-react';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
+import { ArrowLeft, Copy, Home } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
-import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
+import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -97,12 +97,14 @@ function AddVisitorPage() {
         <CardHeader>
           <CardTitle>{guestId ? 'Editar Visitante' : 'Novo Visitante'}</CardTitle>
           <CardAction>
-            <ThemeSwitcher />
-
             <Button variant="outline" onClick={handleBack}>
               <ArrowLeft className="size-4" />
               Voltar
             </Button>
+            <Link to="/">
+              <Home className="size-4" />
+            </Link>
+            <UserAvatarMenu />
           </CardAction>
         </CardHeader>
 

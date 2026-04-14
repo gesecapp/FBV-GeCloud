@@ -9,17 +9,14 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-header"
-      className={cn(
-        '@container/card-header grid w-full auto-rows-min grid-rows-[auto_auto] items-center gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6',
-        className,
-      )}
+      className={cn('@container/card-header flex w-full auto-rows-min items-center justify-between gap-2 px-4 px-6 [.border-b]:pb-6', className)}
       {...props}
     />
   );
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-title" className={cn('font-semibold leading-none', className)} {...props} />;
+  return <div data-slot="card-title" className={cn('font-medium font-mono text-2xl leading-none', className)} {...props} />;
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
@@ -27,7 +24,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-action" className={cn('col-start-2 row-span-2 row-start-1 self-center justify-self-end', className)} {...props} />;
+  return <div data-slot="card-action" className={cn('col-start-2 row-span-2 row-start-1 flex items-center gap-3 self-center justify-self-end', className)} {...props} />;
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
@@ -36,7 +33,11 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
 
 function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div data-slot="card-footer" className={cn('fixed bottom-0 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center px-6 [.border-t]:pt-6', className)} {...props} />
+    <div
+      data-slot="card-footer"
+      className={cn('fixed bottom-0 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center px-4 md:px-6 [.border-t]:pt-6', className)}
+      {...props}
+    />
   );
 }
 

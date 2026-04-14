@@ -1,11 +1,10 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
-import { Home, LogOut } from 'lucide-react';
-import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
+import { Home } from 'lucide-react';
+import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
-import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppAuth } from '@/hooks/use-app-auth';
-import { EditProfileTab } from './@components/edit-profile-tab';
+import { ProfileForm } from './@components/profile-form';
 
 export const Route = createFileRoute('/_private/access-user/')({
   beforeLoad: () => {
@@ -22,33 +21,20 @@ export const Route = createFileRoute('/_private/access-user/')({
 });
 
 function AccessUserPage() {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const { clearAuth } = useAppAuth();
-
-  function handleLogout() {
-    clearAuth();
-    navigate({ to: '/app-auth' });
-  }
-
   return (
     <Card className="min-h-screen rounded-none border-none">
       <CardHeader>
-        <CardTitle>Editar Perfil</CardTitle>
+        <CardTitle className="font-bebas text-2xl">Editar Perfil</CardTitle>
         <CardAction>
-          <ThemeSwitcher />
-          <Button variant="ghost" asChild title="Início">
-            <Link to="/">
-              <Home className="size-4" />
-            </Link>
-          </Button>
-          <Button variant="ghost" onClick={handleLogout} title="Sair">
-            <LogOut className="size-4" />
-          </Button>
+          <Link to="/">
+            <Home className="size-4" />
+          </Link>
+          <UserAvatarMenu />
         </CardAction>
       </CardHeader>
 
       <CardContent>
-        <EditProfileTab />
+        <ProfileForm />
       </CardContent>
 
       <CardFooter>

@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import ImagePreview from '@/components/ui/image-preview';
@@ -12,14 +13,6 @@ import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-a
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type DependentFormData, dependentFormSchema } from '../@interface/add-dependent.schema';
-
-interface DependentFormProps {
-  parentId: string;
-  guestId?: string | null;
-  onSubmit: (data: CreateGuestProps & { id?: string }) => void;
-  onCancel: () => void;
-  isLoading?: boolean;
-}
 
 export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading }: DependentFormProps) {
   const { data: existingGuest } = useGetGuestById(guestId || null);
@@ -95,6 +88,124 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
     form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
 
+  const sections: FormSection[] = [
+    {
+      title: 'Identificação',
+      description: 'Dados pessoais do dependente.',
+      fields: [
+        <FormField
+          key="name"
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome Completo *</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Ex: João da Silva" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="cpf"
+          control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>CPF *</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestId} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="birthDate"
+          control={form.control}
+          name="birthDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Data de Nascimento</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="email"
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} placeholder="email@exemplo.com" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+      ],
+    },
+    {
+      title: 'Contato',
+      description: 'Telefones para contato do dependente.',
+      fields: [
+        <FormField
+          key="primaryPhone"
+          control={form.control}
+          name="primaryPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone Primário</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="(00) 00000-0000" onChange={(e) => form.setValue('primaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="secondaryPhone"
+          control={form.control}
+          name="secondaryPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone Secundário</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="(00) 00000-0000" onChange={(e) => form.setValue('secondaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+      ],
+    },
+    {
+      title: 'Foto',
+      description: 'Imagem de identificação do dependente.',
+      layout: 'vertical',
+      fields: [
+        <FormField
+          key="url_image"
+          control={form.control}
+          name="url_image"
+          render={({ fieldState }) => (
+            <ItemContent className="gap-3">
+              <FormLabel>Foto *</FormLabel>
+              <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
+              {fieldState.error?.message && <FormMessage>{fieldState.error.message}</FormMessage>}
+            </ItemContent>
+          )}
+        />,
+      ],
+    },
+  ];
+
   return (
     <ItemGroup className="gap-4">
       <ItemHeader>
@@ -104,100 +215,8 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
       {syncState !== null && syncState !== 'synchronized' && <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome Completo *</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cpf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CPF *</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestId} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="birthDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data de Nascimento</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E-mail</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="primaryPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone Primário</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('primaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="secondaryPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone Secundário</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('secondaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="url_image"
-            render={({ fieldState }) => (
-              <ItemContent className="gap-3">
-                <FormLabel>Foto *</FormLabel>
-                <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
-                {fieldState.error?.message && <div className="font-medium text-destructive text-sm">{fieldState.error.message}</div>}
-              </ItemContent>
-            )}
-          />
-
+        <form onSubmit={form.handleSubmit(handleFormSubmit)}>
+          <DefaultFormLayout sections={sections} />
           <ItemActions className="justify-end gap-2">
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
@@ -211,4 +230,12 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
       </Form>
     </ItemGroup>
   );
+}
+
+interface DependentFormProps {
+  parentId: string;
+  guestId?: string | null;
+  onSubmit: (data: CreateGuestProps & { id?: string }) => void;
+  onCancel: () => void;
+  isLoading?: boolean;
 }

@@ -1,10 +1,10 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowLeft, Home, LogOut, RefreshCw, ShieldCheck, ShieldOff, UserCheck, UserX } from 'lucide-react';
+import { ArrowLeft, Home, RefreshCw, ShieldCheck, ShieldOff, UserCheck, UserX } from 'lucide-react';
 import EmptyData from '@/components/default-empty-data';
 import DefaultLoading from '@/components/default-loading';
-import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
+import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,16 +18,10 @@ export const Route = createFileRoute('/_private/sync-status/')({
 });
 
 function SyncStatusPage() {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const { clearAuth, userId } = useAppAuth();
+  const { userId } = useAppAuth();
   const { data: syncStatus, isLoading, isFetching, refetch } = useGetUserSyncStatusManual(userId);
 
   const sensors = syncStatus?.sync_status?.sensors ?? [];
-
-  function handleLogout() {
-    clearAuth();
-    navigate({ to: '/app-auth' });
-  }
 
   return (
     <Card className="min-h-screen rounded-none border-none">
@@ -38,19 +32,14 @@ function SyncStatusPage() {
             <RefreshCw className={`size-4 ${isFetching ? 'animate-spin' : ''}`} />
             Atualizar
           </Button>
-          <ThemeSwitcher />
-          <Button variant="ghost" asChild title="Início">
-            <Link to="/">
-              <Home className="size-4" />
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleLogout} title="Sair">
-            <LogOut className="size-4" />
-          </Button>
           <Button variant="outline" onClick={() => window.history.back()}>
             <ArrowLeft className="size-4" />
             Voltar
           </Button>
+          <Link to="/">
+            <Home className="size-4" />
+          </Link>
+          <UserAvatarMenu />
         </CardAction>
       </CardHeader>
 

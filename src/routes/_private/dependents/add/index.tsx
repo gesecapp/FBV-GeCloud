@@ -1,7 +1,7 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { ArrowLeft } from 'lucide-react';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
+import { Home } from 'lucide-react';
 import { toast } from 'sonner';
-import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
+import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -70,11 +70,12 @@ function AddDependentPage() {
       <CardHeader>
         <CardTitle>{guestId ? 'Editar Dependente' : 'Novo Dependente'}</CardTitle>
         <CardAction>
-          <ThemeSwitcher />
-          <Button variant="outline" onClick={handleBack}>
-            <ArrowLeft className="size-4" />
-            Voltar
+          <Button size={'sm'}>
+            <Link to="/">
+              <Home className="size-4" />
+            </Link>
           </Button>
+          <UserAvatarMenu />
         </CardAction>
       </CardHeader>
 

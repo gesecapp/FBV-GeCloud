@@ -1,6 +1,7 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { UserPlus } from 'lucide-react';
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router';
+import { Home, UserPlus } from 'lucide-react';
 import DefaultLoading from '@/components/default-loading';
+import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,6 +37,10 @@ function VisitorsPage() {
             <UserPlus className="size-4" />
             Incluir Visitante
           </Button>
+          <Link to="/">
+            <Home className="size-4" />
+          </Link>
+          <UserAvatarMenu />
         </CardAction>
       </CardHeader>
 
