@@ -25,10 +25,6 @@ export function useAppLogin() {
         navigate({ to: '/' });
       }
     },
-    onError: (err: any) => {
-      const msg = err?.response?.data?.originalError?.message || err?.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.';
-      toast.error(msg);
-    },
   });
 }
 

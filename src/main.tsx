@@ -1,16 +1,32 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { ThemeProvider } from 'next-themes';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
 
 import { routeTree } from './routeTree.gen';
 
 import './styles.css';
 
+function extractErrorMessage(error: unknown): string {
+  const err = error as { response?: { data?: { originalError?: { message?: string }; message?: string } }; message?: string };
+  return err?.response?.data?.originalError?.message || err?.response?.data?.message || err?.message || 'Ocorreu um erro inesperado';
+}
+
 // Create QueryClient instance
+// TODO: no futuro ajustar o back-end para ter um retorno padrão de erro e sucesso
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      toast.error(extractErrorMessage(error));
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      toast.error(extractErrorMessage(error));
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,

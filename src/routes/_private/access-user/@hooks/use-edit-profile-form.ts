@@ -124,7 +124,6 @@ export function useEditProfileForm(user: GuestProps | undefined) {
       { userData: changedFields, password },
       {
         onSuccess: () => toast.success('Perfil atualizado! As alterações podem levar alguns instantes para refletirem no sistema.'),
-        onError: () => toast.error('Erro ao salvar dados.'),
       },
     );
   });
