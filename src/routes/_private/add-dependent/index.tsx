@@ -66,7 +66,7 @@ function AddDependentPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1E3A5F] p-2 md:p-4">
+    <div className="flex min-h-full items-center justify-center bg-[#1E3A5F] p-2 md:p-4">
       <div className="w-full max-w-4xl">
         <Card>
           <CardContent className="flex flex-col gap-6 py-8 md:p-8">

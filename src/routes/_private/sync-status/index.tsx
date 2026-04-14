@@ -29,7 +29,7 @@ function SyncStatusPage() {
   }
 
   return (
-    <Card className="min-h-screen border-none p-8">
+    <Card className="border-none p-8">
       <Item className="flex items-center justify-between">
         <ItemTitle className="hidden font-normal text-xl tracking-wide md:block">GECLOUD</ItemTitle>
         <div className="flex w-full items-center justify-between gap-4 md:w-auto">
