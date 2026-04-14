@@ -35,7 +35,7 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card-footer" className={cn('mt-auto sticky bottom-0 z-50 flex w-full items-center bg-background px-6 [.border-t]:pt-6', className)} {...props} />;
+  return <div data-slot="card-footer" className={cn('sticky bottom-0 z-50 mt-auto flex w-full items-center bg-background px-6 [.border-t]:pt-6', className)} {...props} />;
 }
 
 export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

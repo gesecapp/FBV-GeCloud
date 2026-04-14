@@ -4,7 +4,7 @@ import { ThemeSwitcher } from '@/components/sidebar/switch-theme';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StatusIndicator } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
@@ -33,7 +33,7 @@ function DashboardPage() {
   }
 
   return (
-    <>
+    <Card>
       <CardHeader>
         <CardTitle className="font-normal text-xl tracking-wide">GECLOUD</CardTitle>
         <CardAction>
@@ -186,6 +186,6 @@ function DashboardPage() {
           </Item>
         </div>
       </CardContent>
-    </>
+    </Card>
   );
 }
