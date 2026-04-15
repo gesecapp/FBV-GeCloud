@@ -57,11 +57,11 @@ export function UserAvatarMenu({ badgeStatus }: UserAvatarMenuProps) {
     <DropdownMenu onOpenChange={setMenuOpen}>
       <DropdownMenuTrigger asChild>
         <button type="button" className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset focus-visible:ring-ring">
+          {badgeStatus && <StatusIndicator status={badgeStatus} className="absolute top-1 left-1" />}
           <Avatar className="size-10 cursor-pointer">
             <AvatarImage src={user?.url_image?.[0]} alt={user?.name} className="object-cover" />
             <AvatarFallback className="bg-primary text-primary-foreground">{user?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
-          {badgeStatus && <StatusIndicator status={badgeStatus} className="absolute top-1 right-1" />}
         </button>
       </DropdownMenuTrigger>
 

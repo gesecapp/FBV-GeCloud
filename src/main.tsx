@@ -10,8 +10,20 @@ import { routeTree } from './routeTree.gen';
 import './styles.css';
 
 function extractErrorMessage(error: unknown): string {
-  const err = error as { response?: { data?: { originalError?: { message?: string }; message?: string } }; message?: string };
-  return err?.response?.data?.originalError?.message || err?.response?.data?.message || err?.message || 'Ocorreu um erro inesperado';
+  const err = error as { response?: { data?: unknown }; message?: string };
+  const raw = err?.response?.data;
+  const data = (
+    typeof raw === 'string'
+      ? (() => {
+          try {
+            return JSON.parse(raw);
+          } catch {
+            return {};
+          }
+        })()
+      : raw
+  ) as { originalError?: { message?: string }; message?: string } | undefined;
+  return data?.originalError?.message || data?.message || err?.message || 'Ocorreu um erro inesperado';
 }
 
 // Create QueryClient instance

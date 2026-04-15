@@ -9,21 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
-import { Route as PrivateRouteImport } from './routes/_private';
-import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
-import { Route as PrivateDependentsAddIndexRouteImport } from './routes/_private/dependents/add/index';
-import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
-import { Route as PrivateIndexRouteImport } from './routes/_private/index';
-import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
-import { Route as PrivateVisitorsAddIndexRouteImport } from './routes/_private/visitors/add/index';
-import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visitors/index';
 import { Route as PublicRouteImport } from './routes/_public';
-import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
-import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
-import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
-import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
-import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateRouteImport } from './routes/_private';
+import { Route as PrivateIndexRouteImport } from './routes/_private/index';
+import { Route as PublicRegisterMoradorIndexRouteImport } from './routes/_public/register-morador/index';
 import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
+import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
+import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
+import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
+import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visitors/index';
+import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
+import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
+import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
+import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateVisitorsAddIndexRouteImport } from './routes/_private/visitors/add/index';
+import { Route as PrivateDependentsAddIndexRouteImport } from './routes/_private/dependents/add/index';
+import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -38,6 +39,12 @@ const PrivateIndexRoute = PrivateIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PrivateRoute,
 } as any);
+const PublicRegisterMoradorIndexRoute =
+  PublicRegisterMoradorIndexRouteImport.update({
+    id: '/register-morador/',
+    path: '/register-morador/',
+    getParentRoute: () => PublicRoute,
+  } as any);
 const PublicPrivacyPolicyIndexRoute =
   PublicPrivacyPolicyIndexRouteImport.update({
     id: '/privacy-policy/',
@@ -113,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/contact/': typeof PublicContactIndexRoute;
   '/develop/': typeof PublicDevelopIndexRoute;
   '/privacy-policy/': typeof PublicPrivacyPolicyIndexRoute;
+  '/register-morador/': typeof PublicRegisterMoradorIndexRoute;
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
   '/dependents/add/': typeof PrivateDependentsAddIndexRoute;
   '/visitors/add/': typeof PrivateVisitorsAddIndexRoute;
@@ -128,6 +136,7 @@ export interface FileRoutesByTo {
   '/contact': typeof PublicContactIndexRoute;
   '/develop': typeof PublicDevelopIndexRoute;
   '/privacy-policy': typeof PublicPrivacyPolicyIndexRoute;
+  '/register-morador': typeof PublicRegisterMoradorIndexRoute;
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
   '/dependents/add': typeof PrivateDependentsAddIndexRoute;
   '/visitors/add': typeof PrivateVisitorsAddIndexRoute;
@@ -146,6 +155,7 @@ export interface FileRoutesById {
   '/_public/contact/': typeof PublicContactIndexRoute;
   '/_public/develop/': typeof PublicDevelopIndexRoute;
   '/_public/privacy-policy/': typeof PublicPrivacyPolicyIndexRoute;
+  '/_public/register-morador/': typeof PublicRegisterMoradorIndexRoute;
   '/_public/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
   '/_private/dependents/add/': typeof PrivateDependentsAddIndexRoute;
   '/_private/visitors/add/': typeof PrivateVisitorsAddIndexRoute;
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/contact/'
     | '/develop/'
     | '/privacy-policy/'
+    | '/register-morador/'
     | '/app-auth/reset-password/$token'
     | '/dependents/add/'
     | '/visitors/add/';
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/develop'
     | '/privacy-policy'
+    | '/register-morador'
     | '/app-auth/reset-password/$token'
     | '/dependents/add'
     | '/visitors/add';
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
     | '/_public/contact/'
     | '/_public/develop/'
     | '/_public/privacy-policy/'
+    | '/_public/register-morador/'
     | '/_public/app-auth/reset-password/$token'
     | '/_private/dependents/add/'
     | '/_private/visitors/add/';
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/';
       preLoaderRoute: typeof PrivateIndexRouteImport;
       parentRoute: typeof PrivateRoute;
+    };
+    '/_public/register-morador/': {
+      id: '/_public/register-morador/';
+      path: '/register-morador';
+      fullPath: '/register-morador/';
+      preLoaderRoute: typeof PublicRegisterMoradorIndexRouteImport;
+      parentRoute: typeof PublicRoute;
     };
     '/_public/privacy-policy/': {
       id: '/_public/privacy-policy/';
@@ -344,6 +364,7 @@ interface PublicRouteChildren {
   PublicContactIndexRoute: typeof PublicContactIndexRoute;
   PublicDevelopIndexRoute: typeof PublicDevelopIndexRoute;
   PublicPrivacyPolicyIndexRoute: typeof PublicPrivacyPolicyIndexRoute;
+  PublicRegisterMoradorIndexRoute: typeof PublicRegisterMoradorIndexRoute;
   PublicAppAuthResetPasswordTokenRoute: typeof PublicAppAuthResetPasswordTokenRoute;
 }
 
@@ -353,6 +374,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicContactIndexRoute: PublicContactIndexRoute,
   PublicDevelopIndexRoute: PublicDevelopIndexRoute,
   PublicPrivacyPolicyIndexRoute: PublicPrivacyPolicyIndexRoute,
+  PublicRegisterMoradorIndexRoute: PublicRegisterMoradorIndexRoute,
   PublicAppAuthResetPasswordTokenRoute: PublicAppAuthResetPasswordTokenRoute,
 };
 

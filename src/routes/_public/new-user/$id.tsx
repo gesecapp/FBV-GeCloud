@@ -47,7 +47,7 @@ function NewUserPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] p-2 md:p-4">
+      <div className="flex min-h-screen items-center justify-center p-2 md:p-4">
         <DefaultLoading />
       </div>
     );
@@ -55,7 +55,7 @@ function NewUserPage() {
 
   if (isError || !id) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] p-2 md:p-4">
+      <div className="flex min-h-screen items-center justify-center p-2 md:p-4">
         <Card className="max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-8">
             <ItemTitle className="text-destructive text-xl">{!id ? 'Link não encontrado.' : 'Link inválido ou expirado.'}</ItemTitle>
@@ -67,7 +67,7 @@ function NewUserPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] p-2 md:p-4">
+      <div className="flex min-h-screen items-center justify-center p-2 md:p-4">
         <Card className="max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-8">
             <ItemTitle className="text-emerald-600 text-xl">Cadastro Finalizado!</ItemTitle>

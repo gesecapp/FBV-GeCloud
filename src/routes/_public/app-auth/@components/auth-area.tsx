@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -19,6 +20,7 @@ interface AuthAreaProps {
 export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
   const [showPassword, setShowPassword] = useState(false);
   const login = useAppLogin();
+  const navigate = useNavigate();
 
   const form = useForm<AppAuthFormData>({
     resolver: zodResolver(appAuthSchema),
@@ -91,6 +93,9 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
         <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">
           Visitante? Clique aqui para atualizar sua imagem
         </ItemDescription>
+      </button>
+      <button className="w-full" onClick={() => navigate({ to: '/register-morador' })} type="button">
+        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Novo Morador? Cadastre-se aqui</ItemDescription>
       </button>
       <button className="w-full" onClick={onForgotPassword} type="button">
         <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Esqueceu a senha?</ItemDescription>

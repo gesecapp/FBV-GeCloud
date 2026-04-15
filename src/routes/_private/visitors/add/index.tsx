@@ -58,9 +58,6 @@ function AddVisitorPage() {
             toast.success('Visitante atualizado! As alterações podem levar alguns instantes para refletirem no sistema.');
             handleBack();
           },
-          onError: (err: any) => {
-            toast.error(err?.response?.data?.message || 'Erro ao atualizar visitante.');
-          },
         },
       );
     } else {
@@ -74,9 +71,6 @@ function AddVisitorPage() {
             setInvitationLink(url);
             setShowInviteModal(true);
           }
-        },
-        onError: (err: any) => {
-          toast.error(err?.response?.data?.message || 'Erro ao cadastrar visitante.');
         },
       });
     }
