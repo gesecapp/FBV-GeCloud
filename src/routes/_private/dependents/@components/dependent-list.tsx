@@ -123,11 +123,11 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
             <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Buscar por nome ou CPF..." value={search} onChange={(e) => handleSearch(e.target.value)} className="pl-9" />
           </div>
-          <Button variant={sortField === 'name' ? 'default' : 'outline'} size="sm" onClick={() => toggleSort('name')}>
+          <Button variant={sortField === 'name' ? 'default' : 'outline'} onClick={() => toggleSort('name')}>
             {sortField === 'name' && <SortIcon className="mr-1 size-4" />}
             Nome
           </Button>
-          <Button variant={sortField === 'birthday' ? 'default' : 'outline'} size="sm" onClick={() => toggleSort('birthday')}>
+          <Button variant={sortField === 'birthday' ? 'default' : 'outline'} onClick={() => toggleSort('birthday')}>
             {sortField === 'birthday' && <SortIcon className="mr-1 size-4" />}
             Nascimento
           </Button>
