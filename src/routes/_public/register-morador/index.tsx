@@ -49,7 +49,7 @@ function RegisterMoradorPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>Novo Morador</CardTitle>
+          <CardTitle>Novo cadastro</CardTitle>
           <Button variant="outline" size="sm" onClick={() => navigate({ to: '/app-auth' })}>
             <ArrowLeft className="mr-2 size-4" />
             Voltar
