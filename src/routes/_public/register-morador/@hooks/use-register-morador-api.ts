@@ -6,6 +6,7 @@ export interface RegisterMoradorPayload {
   name?: string;
   cpf?: string;
   birthday?: string;
+  user_type?: string;
   email?: string;
   telephones?: string[];
   url_image?: string[];

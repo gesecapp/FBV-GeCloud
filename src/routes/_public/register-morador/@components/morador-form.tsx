@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Eye, EyeOff, Loader2, Trash2 } from 'lucide-react';
+import { Camera, Eye, EyeOff, Loader2, Save, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -9,11 +9,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { CameraCaptureDialog } from '@/components/ui/image-capture';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent } from '@/components/ui/item';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import UploadImage from '@/components/upload-image';
 import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { RegisterMoradorPayload } from '../@hooks/use-register-morador-api';
-import { type RegisterMoradorFormData, registerMoradorFormSchema } from '../@interface/register-morador.schema';
+import { type RegisterMoradorFormData, registerMoradorFormSchema, userTypeOptions } from '../@interface/register-morador.schema';
 
 interface MoradorFormProps {
   onSubmit: (payload: RegisterMoradorPayload) => void;
@@ -31,6 +32,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
       name: '',
       cpf: '',
       birthDate: '',
+      user_type: 'morador' as const,
       email: '',
       primaryPhone: '',
       secondaryPhone: '',
@@ -66,6 +68,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     const isoDate = formatDateToISO(data.birthDate);
     if (isoDate) payload.birthday = isoDate;
 
+    if (data.user_type) payload.user_type = data.user_type;
     if (data.email) payload.email = data.email;
     if (phones.length > 0) payload.telephones = phones;
     if (data.url_image && data.url_image.length > 0) payload.url_image = data.url_image;
@@ -112,48 +115,45 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
             </FormItem>
           )}
         />,
-        <FormField
-          key="cpf"
-          control={form.control}
-          name="cpf"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CPF *</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />,
-        <FormField
-          key="birthDate"
-          control={form.control}
-          name="birthDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Data de Nascimento</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />,
-        <FormField
-          key="email"
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail *</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} placeholder="email@exemplo.com" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />,
+        <div key="userType-birthDate" className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="user_type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de Usuário *</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl className='w-full'>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {userTypeOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="birthDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Data de Nascimento</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>,
       ],
     },
     {
@@ -195,6 +195,34 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
       description: 'Defina uma senha para acessar o aplicativo.',
       fields: [
         <FormField
+          key="cpf"
+          control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>CPF *</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="email"
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-mail *</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} placeholder="email@exemplo.com" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
           key="password"
           control={form.control}
           name="password"
@@ -230,7 +258,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
               <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
               <ItemActions>
                 <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                  <Camera className="mr-2 size-4" />
+                  <Camera className="size-4" />
                   Câmera
                 </Button>
                 {urlImages && urlImages.length > 0 && (
@@ -254,7 +282,8 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
 
         <ItemActions className="flex justify-end py-6">
           <Button type="submit" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+            {isLoading && <Loader2 className="size-4 animate-spin" />}
+            {!isLoading && <Save className='size-4' />}
             Cadastrar
           </Button>
         </ItemActions>
