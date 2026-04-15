@@ -59,23 +59,14 @@ function SyncStatusPage() {
               const lastSync = sensor.last_sync_at ? format(new Date(sensor.last_sync_at), 'dd MM yyyy HH:mm', { locale: ptBR }) : null;
 
               return (
-                <Item key={sensor.sensorId} className="items-center rounded-lg bg-secondary p-4 transition-colors hover:bg-muted">
+                <Item key={sensor.sensorId} variant="default" className="items-start">
                   <ItemMedia variant="icon" className="size-12 rounded-md bg-muted">
                     {isRegistered ? <UserCheck className="size-5 text-emerald-400" /> : <UserX className="size-5 text-red-400" />}
                   </ItemMedia>
 
-                  <ItemContent className="flex-1 justify-center">
-                    <div>
-                      <ItemTitle className="font-semibold text-lg">{sensor.sensorName}</ItemTitle>
-                      {lastSync && (
-                        <div className="flex gap-2">
-                          <ItemDescription className="text-sm">Última sincronização:</ItemDescription>
-                          <ItemTitle className="text-xs">{lastSync}</ItemTitle>
-                        </div>
-                      )}
-                    </div>
-
-                    <ItemGroup>
+                  <ItemContent>
+                    <ItemTitle className="font-medium text-lg">{sensor.sensorName}</ItemTitle>
+                    <ItemGroup className="flex-row">
                       <Badge variant={isRegistered ? 'success' : 'error'} className="p-2">
                         {isRegistered ? <UserCheck className="size-3" /> : <UserX className="size-3" />}
                         {isRegistered ? 'Cadastrado' : 'Não cadastrado'}
@@ -86,6 +77,15 @@ function SyncStatusPage() {
                         {isImageAccepted ? 'Imagem aceita' : sensor.image_accepted === false ? 'Imagem rejeitada' : 'Imagem pendente'}
                       </Badge>
                     </ItemGroup>
+                  </ItemContent>
+
+                  <ItemContent>
+                    {lastSync && (
+                      <div className="flex flex-col items-end">
+                        <ItemDescription className="text-sm">Última sincronização</ItemDescription>
+                        <ItemTitle className="text-xs">{lastSync}</ItemTitle>
+                      </div>
+                    )}
                   </ItemContent>
                 </Item>
               );

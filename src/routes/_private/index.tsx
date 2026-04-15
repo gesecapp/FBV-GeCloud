@@ -55,7 +55,7 @@ function DashboardPage() {
         </ItemGroup>
 
         <div className="grid grid-cols-2 gap-4">
-          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+          <Item variant="default" className="group h-full items-start hover:bg-secondary">
             <Link to="/access-user" className="flex w-full flex-col no-underline">
               <ItemContent>
                 <div className="flex justify-between">
@@ -71,7 +71,7 @@ function DashboardPage() {
             </Link>
           </Item>
 
-          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+          <Item variant="default" className="group h-full items-start hover:bg-secondary">
             <Link to="/visitors/add" className="flex w-full flex-col no-underline">
               <ItemContent>
                 <div className="flex justify-between">
@@ -92,7 +92,7 @@ function DashboardPage() {
           </Item>
 
           {isMorador && (
-            <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+            <Item variant="default" className="group h-full items-start hover:bg-secondary">
               <Link to="/dependents/add" className="flex w-full flex-col no-underline">
                 <ItemContent>
                   <div className="flex justify-between">
@@ -113,7 +113,7 @@ function DashboardPage() {
             </Item>
           )}
 
-          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+          <Item variant="default" className="group h-full items-start hover:bg-secondary">
             <Link to="/visitors" className="flex w-full flex-col no-underline">
               <ItemContent>
                 <div className="flex justify-between">
@@ -146,7 +146,7 @@ function DashboardPage() {
           </Item>
 
           {isMorador && (
-            <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+            <Item variant="default" className="group h-full items-start hover:bg-secondary">
               <Link to="/dependents" className="flex w-full flex-col no-underline">
                 <ItemContent>
                   <div className="flex justify-between">
@@ -167,7 +167,7 @@ function DashboardPage() {
             </Item>
           )}
 
-          <Item variant="outline" className="group h-full items-start hover:bg-secondary">
+          <Item variant="default" className="group h-full items-start hover:bg-secondary">
             <Link to="/sync-status" className="flex w-full flex-col no-underline">
               <ItemContent>
                 <div className="flex justify-between">

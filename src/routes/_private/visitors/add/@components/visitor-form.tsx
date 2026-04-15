@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
 import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
@@ -16,18 +15,7 @@ import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type VisitorFormData, visitorFormSchema } from '../@interface/add-visitor.schema';
 
-interface VisitorFormProps {
-  parentId: string;
-  guestId?: string | null;
-  initialData?: Partial<GuestProps>;
-  title?: string;
-  onSubmit: (data: CreateGuestProps & { id?: string }) => void;
-  onCancel: () => void;
-  isLoading?: boolean;
-  requireCpfAndImage?: boolean;
-}
-
-export function VisitorForm({ parentId, guestId, initialData, title, onSubmit, onCancel, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
+export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
   const { data: fetchedGuest, isLoading: isLoadingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
   const syncState = getSyncState(syncStatus, isLoadingSync);
@@ -316,4 +304,14 @@ export function VisitorForm({ parentId, guestId, initialData, title, onSubmit, o
       </Form>
     </ItemGroup>
   );
+}
+
+interface VisitorFormProps {
+  parentId: string;
+  guestId?: string | null;
+  initialData?: Partial<GuestProps>;
+  onSubmit: (data: CreateGuestProps & { id?: string }) => void;
+  onCancel: () => void;
+  isLoading?: boolean;
+  requireCpfAndImage?: boolean;
 }

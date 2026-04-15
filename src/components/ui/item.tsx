@@ -16,7 +16,8 @@ const itemVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-transparent',
+        default: 'border-input/50 border-b-2 bg-background ring-1 ring-zinc-300 hover:bg-secondary dark:border-input dark:ring-input',
+        input: 'bg-transparent',
         outline: 'border-border',
         muted: 'bg-accent',
       },
@@ -26,7 +27,7 @@ const itemVariants = cva(
       },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: 'input',
       size: 'default',
     },
   },
@@ -34,7 +35,7 @@ const itemVariants = cva(
 
 function Item({
   className,
-  variant = 'default',
+  variant = 'input',
   size = 'default',
   asChild = false,
   ...props
