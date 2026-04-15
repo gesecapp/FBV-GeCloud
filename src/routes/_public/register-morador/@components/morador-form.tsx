@@ -123,7 +123,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
               <FormItem>
                 <FormLabel>Tipo de Usuário *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl className='w-full'>
+                  <FormControl className="w-full">
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
@@ -283,7 +283,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
         <ItemActions className="flex justify-end py-6">
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="size-4 animate-spin" />}
-            {!isLoading && <Save className='size-4' />}
+            {!isLoading && <Save className="size-4" />}
             Cadastrar
           </Button>
         </ItemActions>

@@ -95,7 +95,7 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
         </ItemDescription>
       </button>
       <button className="w-full" onClick={() => navigate({ to: '/register-morador' })} type="button">
-        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Novo Morador? Cadastre-se aqui</ItemDescription>
+        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Novo cadastro</ItemDescription>
       </button>
       <button className="w-full" onClick={onForgotPassword} type="button">
         <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Esqueceu a senha?</ItemDescription>
