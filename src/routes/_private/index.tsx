@@ -36,7 +36,7 @@ function DashboardPage() {
 
       <CardContent>
         <ItemGroup className="mb-10 items-center">
-          <ItemMedia variant="default" className="mb-4 px-20">
+          <ItemMedia variant="default" className="mb-4 max-w-lg px-20">
             <img src="/images/logo.svg" alt="Gesec Logo" className="h-full w-auto" />
           </ItemMedia>
           <ItemContent className="items-center">

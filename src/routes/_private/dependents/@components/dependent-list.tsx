@@ -1,14 +1,20 @@
 import {
-  type ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ChevronLeft, ChevronRight, FileCheck, FileClock, ImageOff, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
+  ArrowDownAZ,
+  ArrowUpAZ,
+  Cake,
+  ChevronLeft,
+  ChevronRight,
+  FileCheck,
+  FileClock,
+  ImageOff,
+  Mail,
+  MoreHorizontal,
+  Pencil,
+  PhoneIncoming,
+  Plus,
+  Search,
+  Trash2,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import DefaultEmptyData from '@/components/default-empty-data';
@@ -22,28 +28,66 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { ItemActions, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { useAccessUserApi } from '@/hooks/use-access-user-api';
-import { applyCpfMask } from '@/lib/masks';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { applyCpfMask, applyPhoneMask } from '@/lib/masks';
 import type { GuestProps, UserSyncStatus } from '@/routes/_private/access-user/@interface/access-user.interface';
 
+const PAGE_SIZE = 10;
+
 export function DependentList({ guests, syncStatuses, onAdd, onEdit }: DependentListProps) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [page, setPage] = useState(0);
+  const [search, setSearch] = useState('');
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [guestToDelete, setGuestToDelete] = useState<{ id: string; name: string } | null>(null);
   const { deleteGuest } = useAccessUserApi();
+  const isMobile = useIsMobile();
 
-  const items = useMemo(
-    (): DependentItem[] =>
-      guests.map((guest) => {
+  function toggleSort(field: SortField) {
+    if (sortField === field) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDir('asc');
+    }
+    setPage(0);
+  }
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return guests
+      .map((guest) => {
         const id = guest._id || guest.id || '';
         const syncStatus = syncStatuses?.find((s) => s.user.id === id);
-        return { ...guest, _resolvedId: id, syncStatus };
-      }),
-    [guests, syncStatuses],
-  );
+        return { ...guest, _resolvedId: id, syncStatus } as DependentItem;
+      })
+      .filter((item) => !q || item.name?.toLowerCase().includes(q) || item.cpf?.includes(q))
+      .sort((a, b) => {
+        let cmp = 0;
+        if (sortField === 'name') {
+          cmp = (a.name || '').localeCompare(b.name || '', 'pt-BR');
+        } else {
+          const da = a.birthday ? new Date(a.birthday).getTime() : 0;
+          const db = b.birthday ? new Date(b.birthday).getTime() : 0;
+          cmp = da - db;
+        }
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
+  }, [guests, syncStatuses, search, sortField, sortDir]);
+
+  const pageCount = Math.ceil(filtered.length / PAGE_SIZE);
+  const pageItems = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    setPage(0);
+  }
 
   function handleConfirmDelete() {
     if (!guestToDelete) return;
@@ -52,105 +96,14 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
         toast.success('Dependente excluído com sucesso!');
         setGuestToDelete(null);
       },
-      onError: (err: any) => {
+      onError: (err: Error & { response?: { data?: { message?: string } } }) => {
         toast.error(err?.response?.data?.message || 'Erro ao excluir dependente.');
         setGuestToDelete(null);
       },
     });
   }
 
-  const columns = useMemo<ColumnDef<DependentItem>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: 'Nome',
-        cell: ({ row }) => <span className="font-medium">{row.original.name || '-'}</span>,
-      },
-      {
-        accessorKey: 'cpf',
-        header: 'CPF',
-        cell: ({ row }) => applyCpfMask(row.original.cpf || ''),
-      },
-      {
-        accessorKey: 'birthday',
-        header: 'Nascimento',
-        cell: ({ row }) => (row.original.birthday ? new Date(row.original.birthday).toLocaleDateString('pt-BR') : '-'),
-      },
-      {
-        accessorKey: 'registration_complete',
-        header: 'Status',
-        cell: ({ row }) => {
-          const completed = row.original.registration_complete;
-          if (completed === true) {
-            return (
-              <div className="flex gap-2">
-                <FileCheck className="size-4 text-green-600" />
-                <ImageOff className="size-4 text-yellow-600" />
-              </div>
-            );
-          }
-          if (completed === false) {
-            return (
-              <div className="flex gap-2">
-                <FileClock className="size-4 text-yellow-600" />
-                <ImageOff className="size-4 text-yellow-600" />
-              </div>
-            );
-          }
-          return (
-            <div className="flex gap-2">
-              <FileClock className="size-4 text-gray-500" />
-              <ImageOff className="size-4 text-gray-500" />
-            </div>
-          );
-        },
-      },
-      {
-        id: 'actions',
-        cell: ({ row }) => (
-          <div className="text-right">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
-                <DropdownMenuItem onClick={() => onEdit(row.original._resolvedId)}>
-                  <Pencil className="mr-2 size-4" />
-                  Editar
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive" onClick={() => setGuestToDelete({ id: row.original._resolvedId, name: row.original.name || '' })}>
-                  <Trash2 className="mr-2 size-4" />
-                  Excluir
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        ),
-      },
-    ],
-    [onEdit],
-  );
-
-  const table = useReactTable({
-    data: items,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: { pageSize: 5 },
-    },
-  });
-
-  const pageCount = table.getPageCount();
-  const currentPage = table.getState().pagination.pageIndex + 1;
+  const SortIcon = sortDir === 'asc' ? ArrowDownAZ : ArrowUpAZ;
 
   return (
     <>
@@ -165,55 +118,135 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
           </ItemActions>
         </ItemHeader>
 
-        {items.length === 0 ? (
+        <ItemActions className="gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Buscar por nome ou CPF..." value={search} onChange={(e) => handleSearch(e.target.value)} className="pl-9" />
+          </div>
+          <Button variant={sortField === 'name' ? 'default' : 'outline'} size="sm" onClick={() => toggleSort('name')}>
+            {sortField === 'name' && <SortIcon className="mr-1 size-4" />}
+            Nome
+          </Button>
+          <Button variant={sortField === 'birthday' ? 'default' : 'outline'} size="sm" onClick={() => toggleSort('birthday')}>
+            {sortField === 'birthday' && <SortIcon className="mr-1 size-4" />}
+            Nascimento
+          </Button>
+        </ItemActions>
+
+        {filtered.length === 0 ? (
           <DefaultEmptyData />
         ) : (
-          <div className="space-y-4">
-            <div className="rounded-lg border">
-              <Table>
-                <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id} className="cursor-pointer" onClick={() => onEdit(row.original._resolvedId)}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+          <ItemGroup>
+            {pageItems.map((item) => (
+              <Item key={item._resolvedId} variant="default" className="cursor-pointer" onClick={() => onEdit(item._resolvedId)}>
+                <div className="flex flex-1 items-center gap-4">
+                  <ItemMedia variant="image">
+                    <Avatar className="size-full rounded-none">
+                      <AvatarImage src={item.url_image?.[0]} alt={item.name || ''} />
+                      <AvatarFallback>
+                        {(item.name || '?')
+                          .split(' ')
+                          .map((n) => n[0])
+                          .slice(0, 2)
+                          .join('')
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </ItemMedia>
+                  <ItemContent className="gap-0">
+                    <ItemTitle className="text-base">{item.name || '-'}</ItemTitle>
+                    <ItemDescription>{applyCpfMask(item.cpf || '')}</ItemDescription>
+                  </ItemContent>
+                </div>
 
-            {items.length > 5 && (
-              <div className="flex items-center justify-between">
-                <p className="text-muted-foreground text-sm">
-                  Exibindo {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} a{' '}
-                  {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, items.length)} de {items.length}
-                </p>
+                {!isMobile && (
+                  <div className="flex flex-wrap items-center gap-4">
+                    {item.telephones && item.telephones.length > 0 && (
+                      <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                        <PhoneIncoming className="size-4" />
+                        <ItemDescription>{item.telephones.map((t) => applyPhoneMask(t)).join(', ')}</ItemDescription>
+                      </div>
+                    )}
+                    {item.birthday && (
+                      <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                        <Cake className="size-4" />
+                        <ItemDescription>{new Date(item.birthday).toLocaleDateString('pt-BR')}</ItemDescription>
+                      </div>
+                    )}
+                    {item.email && (
+                      <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                        <Mail className="size-4" />
+                        <ItemDescription>{item.email}</ItemDescription>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-4">
+                  <ItemDescription className="flex items-center gap-2">
+                    {item.registration_complete === true && (
+                      <>
+                        <FileCheck className="size-4 text-green-600" />
+                        <ImageOff className="size-4 text-yellow-600" />
+                      </>
+                    )}
+                    {item.registration_complete === false && (
+                      <>
+                        <FileClock className="size-4 text-yellow-600" />
+                        <ImageOff className="size-4 text-yellow-600" />
+                      </>
+                    )}
+                    {item.registration_complete == null && (
+                      <>
+                        <FileClock className="size-4 text-gray-400" />
+                        <ImageOff className="size-4 text-gray-400" />
+                      </>
+                    )}
+                  </ItemDescription>
+                  <div className="flex items-center justify-end border-l pl-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="size-8">
+                          <MoreHorizontal className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+                        <DropdownMenuItem onClick={() => onEdit(item._resolvedId)}>
+                          <Pencil className="mr-2 size-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive" onClick={() => setGuestToDelete({ id: item._resolvedId, name: item.name || '' })}>
+                          <Trash2 className="mr-2 size-4" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              </Item>
+            ))}
+
+            {filtered.length > PAGE_SIZE && (
+              <div className="flex items-center justify-between pt-2">
+                <ItemDescription>
+                  Exibindo {page * PAGE_SIZE + 1} a {Math.min((page + 1) * PAGE_SIZE, filtered.length)} de {filtered.length}
+                </ItemDescription>
                 <div className="flex items-center gap-1">
-                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setPage((p) => p - 1)} disabled={page === 0}>
                     <ChevronLeft className="size-4" />
                   </Button>
-                  {Array.from({ length: pageCount }, (_, i) => i + 1).map((page) => (
-                    <Button key={page} variant={currentPage === page ? 'default' : 'outline'} size="icon" className="h-8 w-8" onClick={() => table.setPageIndex(page - 1)}>
-                      {page}
+                  {Array.from({ length: pageCount }, (_, i) => i).map((i) => (
+                    <Button key={i} variant={page === i ? 'default' : 'outline'} size="icon" className="h-8 w-8" onClick={() => setPage(i)}>
+                      {i + 1}
                     </Button>
                   ))}
-                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setPage((p) => p + 1)} disabled={page >= pageCount - 1}>
                     <ChevronRight className="size-4" />
                   </Button>
                 </div>
               </div>
             )}
-          </div>
+          </ItemGroup>
         )}
       </ItemGroup>
 
@@ -241,3 +274,6 @@ interface DependentListProps {
 }
 
 type DependentItem = GuestProps & { _resolvedId: string; syncStatus?: UserSyncStatus };
+
+type SortField = 'name' | 'birthday';
+type SortDir = 'asc' | 'desc';

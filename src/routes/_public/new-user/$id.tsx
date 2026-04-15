@@ -79,20 +79,18 @@ function NewUserPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] p-2 md:p-4">
-      <div className="mx-auto max-w-4xl">
-        <Card>
-          <CardContent className="py-8 md:p-8">
-            {guestData ? (
-              <NewUserForm initialData={guestData as any} guestId={guestId} onSubmit={handleSubmit} isLoading={finalizeInvite.isPending} />
-            ) : (
-              <ItemContent>
-                <ItemDescription className="text-destructive">Não foi possível carregar os dados. Link inválido.</ItemDescription>
-              </ItemContent>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+    <div className="flex min-h-screen items-center justify-center">
+      <Card>
+        <CardContent>
+          {guestData ? (
+            <NewUserForm initialData={guestData as any} guestId={guestId} onSubmit={handleSubmit} isLoading={finalizeInvite.isPending} />
+          ) : (
+            <ItemContent>
+              <ItemDescription className="text-destructive">Não foi possível carregar os dados. Link inválido.</ItemDescription>
+            </ItemContent>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

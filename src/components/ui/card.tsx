@@ -2,14 +2,14 @@ import type * as React from 'react';
 import { cn } from '@/lib/utils';
 
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card" className={cn('mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-6 pt-6 pb-20 text-card-foreground', className)} {...props} />;
+  return <div data-slot="card" className={cn('mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-6 pt-6 pb-20 text-card-foreground md:max-w-6xl', className)} {...props} />;
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-header"
-      className={cn('@container/card-header flex w-full auto-rows-min items-center justify-between gap-2 px-4 px-6 [.border-b]:pb-6', className)}
+      className={cn('@container/card-header flex w-full auto-rows-min items-center justify-between gap-2 px-4 md:px-6 [.border-b]:pb-6', className)}
       {...props}
     />
   );
@@ -35,7 +35,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-footer"
-      className={cn('fixed bottom-0 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center px-4 md:px-6 [.border-t]:pt-6', className)}
+      className={cn('fixed bottom-0 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center px-4 md:max-w-6xl md:px-6 [.border-t]:pt-6', className)}
       {...props}
     />
   );
