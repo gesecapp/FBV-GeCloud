@@ -215,8 +215,8 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
                           <Pencil className="size-4" />
                           Editar
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive" onClick={() => setGuestToDelete({ id: item._resolvedId, name: item.name || '' })}>
-                          <Trash2 className="size-4 stroke-destructive" />
+                        <DropdownMenuItem variant="destructive" onClick={() => setGuestToDelete({ id: item._resolvedId, name: item.name || '' })}>
+                          <Trash2 className="size-4" />
                           Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -258,7 +258,9 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>Confirmar</AlertDialogAction>
+            <AlertDialogAction variant="destructive" onClick={handleConfirmDelete}>
+              Confirmar
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

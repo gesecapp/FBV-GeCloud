@@ -9,7 +9,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-header"
-      className={cn('@container/card-header flex w-full auto-rows-min items-center justify-between gap-2 px-4 md:px-6 [.border-b]:pb-6', className)}
+      className={cn('@container/card-header flex w-full auto-rows-min items-center justify-between gap-2 px-4 max-sm:mt-4 md:px-6 [.border-b]:pb-6', className)}
       {...props}
     />
   );

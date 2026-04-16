@@ -22,7 +22,7 @@ export function useAppLogin() {
       if (data?.data) {
         setAuth(data.data.token, data.data.id, '', data.data.userType);
         toast.success('Login realizado com sucesso!');
-        navigate({ to: '/' });
+        navigate({ to: '/', replace: true });
       }
     },
   });

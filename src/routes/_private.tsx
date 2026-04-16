@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { useAppAuth } from '@/hooks/use-app-auth';
+import { useIdleLogout } from '@/hooks/use-idle-logout';
 
 /**
  * Layout route para rotas privadas (com autenticação)
@@ -7,6 +8,8 @@ import { useAppAuth } from '@/hooks/use-app-auth';
  */
 
 function PrivateLayout() {
+  useIdleLogout();
+
   return (
     <main className="bg-card">
       <Outlet />

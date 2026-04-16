@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { ArrowLeft, Copy, Home } from 'lucide-react';
+import { ArrowLeft, Copy, Home, MessageSquareShare } from 'lucide-react';
 import { useState } from 'react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
@@ -14,7 +14,7 @@ import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { VisitorForm } from './@components/visitor-form';
-import { INVITATION_URL_BASE, WHATSAPP_COLOR, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-visitor.consts';
+import { INVITATION_URL_BASE, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-visitor.consts';
 import { addVisitorSearchSchema } from './@interface/add-visitor.schema';
 
 export const Route = createFileRoute('/_private/visitors/add/')({
@@ -79,11 +79,22 @@ function AddVisitorPage() {
   async function handleCopyUrl() {
     await navigator.clipboard.writeText(invitationLink);
     toast.success('Link copiado!');
+    setShowInviteModal(false);
+    handleBack();
   }
 
   function handleShareWhatsApp() {
     const message = encodeURIComponent(`${WHATSAPP_MESSAGE_PREFIX}${invitationLink}`);
     window.open(`https://wa.me/?text=${message}`, '_blank');
+    setShowInviteModal(false);
+    handleBack();
+  }
+
+  function handleInviteModalChange(open: boolean) {
+    setShowInviteModal(open);
+    if (!open) {
+      handleBack();
+    }
   }
 
   return (
@@ -112,7 +123,7 @@ function AddVisitorPage() {
         </CardFooter>
       </Card>
 
-      <Dialog open={showInviteModal} onOpenChange={setShowInviteModal}>
+      <Dialog open={showInviteModal} onOpenChange={handleInviteModalChange}>
         <DialogContent className="max-w-92 text-center">
           <DialogHeader>
             <DialogTitle>Pré-cadastro realizado com sucesso!</DialogTitle>
@@ -123,11 +134,12 @@ function AddVisitorPage() {
           </div>
           <Input value={invitationLink} readOnly />
           <div className="flex justify-center gap-2">
-            <Button onClick={handleCopyUrl} size="sm">
-              <Copy className="mr-2 size-4" />
+            <Button onClick={handleCopyUrl} variant="default">
+              <Copy className="size-4" />
               Copiar Link
             </Button>
-            <Button onClick={handleShareWhatsApp} size="sm" variant="outline" className={`bg-[${WHATSAPP_COLOR}] text-white hover:bg-[${WHATSAPP_COLOR}]/90`}>
+            <Button onClick={handleShareWhatsApp} variant="green">
+              <MessageSquareShare className="size-4" />
               WhatsApp
             </Button>
           </div>
