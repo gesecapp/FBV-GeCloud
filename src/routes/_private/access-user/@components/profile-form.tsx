@@ -151,7 +151,6 @@ export function ProfileForm() {
       layout: 'vertical',
       fields: [
         <ItemContent key="url_image" className="gap-3">
-          <FormLabel>Foto de Perfil</FormLabel>
           <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
         </ItemContent>,
       ],

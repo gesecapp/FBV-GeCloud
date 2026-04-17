@@ -196,7 +196,6 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
           name="url_image"
           render={({ fieldState }) => (
             <ItemContent className="gap-3">
-              <FormLabel>Foto *</FormLabel>
               <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
               {fieldState.error?.message && <FormMessage>{fieldState.error.message}</FormMessage>}
             </ItemContent>

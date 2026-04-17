@@ -1,17 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Eye, EyeOff, Loader2, Save, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Save } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CameraCaptureDialog } from '@/components/ui/image-capture';
+import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import UploadImage from '@/components/upload-image';
-import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { RegisterMoradorPayload } from '../@hooks/use-register-morador-api';
 import { type RegisterMoradorFormData, registerMoradorFormSchema, userTypeOptions } from '../@interface/register-morador.schema';
@@ -24,7 +22,6 @@ interface MoradorFormProps {
 export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [_phoneInput, _setPhoneInput] = useState('');
-  const [cameraOpen, setCameraOpen] = useState(false);
 
   const form = useForm<RegisterMoradorFormData>({
     resolver: zodResolver(registerMoradorFormSchema),
@@ -77,23 +74,8 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     onSubmit(payload);
   }
 
-  function handleAddFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      const compressed = await compressImageToBase64(base64);
-      form.setValue('url_image', [compressed], { shouldValidate: true });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleCameraCapture(image: string) {
-    form.setValue('url_image', [image], { shouldValidate: true });
-    setCameraOpen(false);
-  }
-
-  function handleRemoveImage() {
-    form.setValue('url_image', [], { shouldValidate: true });
+  function handleImageChange(image: string | undefined) {
+    form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
 
   const sections: FormSection[] = [
@@ -254,19 +236,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
           name="url_image"
           render={({ fieldState }) => (
             <ItemContent className="gap-3">
-              <FormLabel>Foto</FormLabel>
-              <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
-              <ItemActions>
-                <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                  <Camera className="size-4" />
-                  Câmera
-                </Button>
-                {urlImages && urlImages.length > 0 && (
-                  <Button type="button" variant="ghost" size="icon" className="text-destructive" onClick={handleRemoveImage}>
-                    <Trash2 className="size-4" />
-                  </Button>
-                )}
-              </ItemActions>
+              <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
               {fieldState.error?.message && <FormMessage>{fieldState.error.message}</FormMessage>}
             </ItemContent>
           )}
@@ -288,8 +258,6 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
           </Button>
         </ItemActions>
       </form>
-
-      <CameraCaptureDialog open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCameraCapture} />
     </Form>
   );
 }

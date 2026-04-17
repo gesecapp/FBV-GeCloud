@@ -1,15 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Loader2, Save } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Loader2, Save } from 'lucide-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CameraCaptureDialog } from '@/components/ui/image-capture';
+import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
-import UploadImage from '@/components/upload-image';
-import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type NewUserFormData, newUserFormSchema } from '../@interface/new-user.interface';
@@ -22,8 +20,6 @@ interface NewUserFormProps {
 }
 
 export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUserFormProps) {
-  const [cameraOpen, setCameraOpen] = useState(false);
-
   const form = useForm<NewUserFormData>({
     resolver: zodResolver(newUserFormSchema),
     defaultValues: {
@@ -117,18 +113,8 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
     onSubmit(payload);
   }
 
-  function handleAddFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      const compressed = await compressImageToBase64(base64);
-      form.setValue('url_image', [compressed], { shouldValidate: true });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleCameraCapture(image: string) {
-    form.setValue('url_image', [image], { shouldValidate: true });
+  function handleImageChange(image: string | undefined) {
+    form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
 
   const sections: FormSection[] = [
@@ -151,20 +137,6 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
           )}
         />,
         <FormField
-          key="cpf"
-          control={form.control}
-          name="cpf"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CPF</FormLabel>
-              <FormControl>
-                <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!initialData?.cpf} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />,
-        <FormField
           key="birthDate"
           control={form.control}
           name="birthDate"
@@ -178,24 +150,10 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
             </FormItem>
           )}
         />,
-        <FormField
-          key="email"
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />,
       ],
     },
     {
-      title: 'Contato',
+      title: 'Telefones',
       description: 'Telefones para contato.',
       fields: [
         <FormField
@@ -229,6 +187,40 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
       ],
     },
     {
+      title: 'Acesso',
+      description: 'Dados para identificação e contato.',
+      fields: [
+        <FormField
+          key="cpf"
+          control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>CPF</FormLabel>
+              <FormControl>
+                <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!initialData?.cpf} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="email"
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+      ],
+    },
+    {
       title: 'Foto',
       description: 'Imagem para identificação do visitante.',
       layout: 'vertical',
@@ -237,16 +229,10 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
           key="url_image"
           control={form.control}
           name="url_image"
-          render={() => (
+          render={({ fieldState }) => (
             <ItemContent className="gap-3">
-              <FormLabel>Foto</FormLabel>
-              <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
-              <ItemActions>
-                <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                  <Camera className="size-4" />
-                  Câmera
-                </Button>
-              </ItemActions>
+              <ImagePreview value={urlImages[0]} onChange={handleImageChange} height={200} />
+              {fieldState.error?.message && <FormMessage>{fieldState.error.message}</FormMessage>}
             </ItemContent>
           )}
         />,
@@ -272,8 +258,6 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
           </ItemActions>
         </form>
       </Form>
-
-      <CameraCaptureDialog open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCameraCapture} />
     </ItemGroup>
   );
 }
