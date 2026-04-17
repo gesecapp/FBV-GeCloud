@@ -346,6 +346,27 @@
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }
 
+.dashboard-card-illustration {
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--muted-foreground);
+  opacity: 0.9;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  mask-image: var(--dashboard-card-icon);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: var(--dashboard-card-icon);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.group:hover .dashboard-card-illustration {
+  background-color: var(--foreground);
+  opacity: 1;
+}
+
 /* =========================================================
    BASE LAYER
    ========================================================= */
