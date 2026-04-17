@@ -1,30 +1,27 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Loader2 } from 'lucide-react';
+import { Camera, Loader2, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { CameraCaptureDialog } from '@/components/ui/image-capture';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
 import UploadImage from '@/components/upload-image';
-import { RegistrationStatusAlert } from '@/components/user-sync-alert';
-import { useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
-import type { GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type NewUserFormData, newUserFormSchema } from '../@interface/new-user.interface';
 
 interface NewUserFormProps {
   initialData: Partial<GuestProps> & { parentId?: string };
   guestId: string | null;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: CreateGuestProps & { id?: string }) => void;
   isLoading?: boolean;
 }
 
 export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUserFormProps) {
-  const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
   const [cameraOpen, setCameraOpen] = useState(false);
 
   const form = useForm<NewUserFormData>({
@@ -74,7 +71,7 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
     if (data.primaryPhone?.trim()) telephones.push(data.primaryPhone.replace(/\D/g, ''));
     if (data.secondaryPhone?.trim()) telephones.push(data.secondaryPhone.replace(/\D/g, ''));
 
-    const payload: any = {
+    const payload: CreateGuestProps & { id?: string } = {
       parentId: initialData.parentId || '',
       user_type: 'visitante',
     };
@@ -134,111 +131,142 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
     form.setValue('url_image', [image], { shouldValidate: true });
   }
 
+  const sections: FormSection[] = [
+    {
+      title: 'Identificação',
+      description: 'Dados pessoais para finalizar o cadastro.',
+      fields: [
+        <FormField
+          key="name"
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome Completo *</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="cpf"
+          control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>CPF</FormLabel>
+              <FormControl>
+                <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!initialData?.cpf} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="birthDate"
+          control={form.control}
+          name="birthDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Data de Nascimento</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="email"
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+      ],
+    },
+    {
+      title: 'Contato',
+      description: 'Telefones para contato.',
+      fields: [
+        <FormField
+          key="primaryPhone"
+          control={form.control}
+          name="primaryPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone Primário</FormLabel>
+              <FormControl>
+                <Input {...field} onChange={(e) => form.setValue('primaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+        <FormField
+          key="secondaryPhone"
+          control={form.control}
+          name="secondaryPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone Secundário</FormLabel>
+              <FormControl>
+                <Input {...field} onChange={(e) => form.setValue('secondaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />,
+      ],
+    },
+    {
+      title: 'Foto',
+      description: 'Imagem para identificação do visitante.',
+      layout: 'vertical',
+      fields: [
+        <FormField
+          key="url_image"
+          control={form.control}
+          name="url_image"
+          render={() => (
+            <ItemContent className="gap-3">
+              <FormLabel>Foto</FormLabel>
+              <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
+              <ItemActions>
+                <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
+                  <Camera className="size-4" />
+                  Câmera
+                </Button>
+              </ItemActions>
+            </ItemContent>
+          )}
+        />,
+      ],
+    },
+  ];
+
   return (
     <ItemGroup className="gap-4">
       <ItemHeader>
         <ItemTitle className="text-lg">Finalizar Cadastro</ItemTitle>
       </ItemHeader>
 
-      <RegistrationStatusAlert syncStatus={syncStatus} isLoading={isLoadingSync} />
-
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome Completo *</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cpf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CPF</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!initialData?.cpf} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="birthDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data de Nascimento</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="DD/MM/AAAA" onChange={(e) => form.setValue('birthDate', applyDateMask(e.target.value))} maxLength={10} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E-mail</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="primaryPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone Primário</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('primaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="secondaryPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone Secundário</FormLabel>
-                  <FormControl>
-                    <Input {...field} onChange={(e) => form.setValue('secondaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <ItemContent className="gap-3">
-            <FormLabel>Foto</FormLabel>
-            <UploadImage value={urlImages[0]} onAddFile={handleAddFile} height={200} />
-            <ItemActions>
-              <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-                <Camera className="mr-2 size-4" />
-                Câmera
-              </Button>
-            </ItemActions>
-          </ItemContent>
-
-          <ItemActions className="justify-end">
+        <form onSubmit={form.handleSubmit(handleFormSubmit)}>
+          <DefaultFormLayout sections={sections} />
+          <ItemActions className="justify-end py-6">
             <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+              {isLoading && <Loader2 className="size-4 animate-spin" />}
+              {!isLoading && <Save className="size-4" />}
               Salvar
             </Button>
           </ItemActions>
