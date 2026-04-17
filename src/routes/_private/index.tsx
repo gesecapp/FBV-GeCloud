@@ -66,7 +66,7 @@ function DashboardPage() {
           <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
             <Link to="/access-user" className="flex h-full w-full flex-col justify-between no-underline">
               <ItemContent className="flex-row items-start justify-between">
-                <ItemTitle className="font-medium text-base">Editar meu cadastro</ItemTitle>
+                <ItemTitle className="font-medium text-base">Meu cadastro</ItemTitle>
                 <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
               </ItemContent>
               <DashboardCardIcon src="/images/clipboard-pencil-svgrepo-com.svg" alt="Editar cadastro" />
@@ -122,7 +122,7 @@ function DashboardPage() {
           <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
             <Link to="/sync-status" className="flex h-full w-full flex-col justify-between no-underline">
               <ItemContent className="flex-row justify-between">
-                <ItemTitle className="font-medium text-base">Status de Sincronização</ItemTitle>
+                <ItemTitle className="font-medium text-base">Sincronizações</ItemTitle>
                 <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
               </ItemContent>
               <DashboardCardIcon src="/images/sync-circle-sharp-svgrepo-com.svg" alt="Status de sincronização" />
@@ -132,7 +132,7 @@ function DashboardPage() {
       </CardContent>
 
       <CardFooter>
-        <TreeNavigation />
+        <TreeNavigation hideBack hideMenu showLogout />
       </CardFooter>
     </Card>
   );
