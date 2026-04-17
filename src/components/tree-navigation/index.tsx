@@ -1,12 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, Menu } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
+import { FontSizeSwitcher } from '@/components/nav-actions/font-size-switcher';
+import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { Button } from '@/components/ui/button';
 import { ItemTitle } from '@/components/ui/item';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { TreeProvider, TreeView } from '@/components/ui/tree';
 import { buildNavRoutes } from '@/config/routes';
-import { MobileSettings } from './mobile-settings';
 import { renderTreeNodes } from './tree-nodes';
 
 export function TreeNavigation() {
@@ -29,14 +30,16 @@ export function TreeNavigation() {
 
   return (
     <div className="flex w-full gap-2 bg-card pb-4">
-      <Button onClick={handleBack} className="h-12">
+      <Button variant="ghost" onClick={handleBack} className="h-12">
         <ArrowLeft className="size-4" />
         Voltar
       </Button>
+      <ThemeSwitcher variant="ghost" size="default" />
+      <FontSizeSwitcher variant="ghost" size="default" />
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button className="h-12 flex-1">
+          <Button variant="ghost" className="h-12 flex-1">
             <Menu className="size-4" />
             <ItemTitle className="text-lg">Menu</ItemTitle>
           </Button>
@@ -52,8 +55,6 @@ export function TreeNavigation() {
           </div>
         </SheetContent>
       </Sheet>
-
-      <MobileSettings />
     </div>
   );
 }

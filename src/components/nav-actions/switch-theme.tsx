@@ -2,7 +2,7 @@ import type { Transition, Variants } from 'framer-motion';
 import { motion, useAnimation } from 'framer-motion';
 import { Cog } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { forwardRef, type HTMLAttributes, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, type ComponentProps, type HTMLAttributes, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useSidebarToggle } from '@/hooks/use-sidebar-toggle';
@@ -10,7 +10,9 @@ import { cn } from '@/lib/utils';
 
 // --- Switcher ---
 
-export function ThemeSwitcher() {
+type ThemeSwitcherProps = Pick<ComponentProps<typeof Button>, 'variant' | 'size'>;
+
+export function ThemeSwitcher({ variant = 'ghost', size = 'icon' }: ThemeSwitcherProps) {
   const { setMenuOpen } = useSidebarToggle();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -22,7 +24,7 @@ export function ThemeSwitcher() {
 
   if (!mounted) {
     return (
-      <Button size="icon" variant="ghost">
+      <Button size={size} variant={variant}>
         <SunIcon className="flex h-full w-full items-center justify-center" />
       </Button>
     );
@@ -31,7 +33,7 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu onOpenChange={setMenuOpen}>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="ghost">
+        <Button size={size} variant={variant}>
           {theme === 'sunset' ? (
             <SunDimIcon className="flex h-full w-full items-center justify-center" />
           ) : theme === 'ocean-blue' ? (
