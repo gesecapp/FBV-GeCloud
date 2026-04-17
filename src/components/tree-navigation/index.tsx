@@ -12,12 +12,11 @@ import { useAppAuth } from '@/hooks/use-app-auth';
 import { renderTreeNodes } from './tree-nodes';
 
 type TreeNavigationProps = {
-  hideBack?: boolean;
   hideMenu?: boolean;
   showLogout?: boolean;
 };
 
-export function TreeNavigation({ hideBack = false, hideMenu = false, showLogout = false }: TreeNavigationProps) {
+export function TreeNavigation({ hideMenu = false, showLogout = false }: TreeNavigationProps) {
   const navigate = useNavigate();
   const { clearAuth } = useAppAuth();
   const [open, setOpen] = useState(false);
@@ -43,7 +42,12 @@ export function TreeNavigation({ hideBack = false, hideMenu = false, showLogout 
 
   return (
     <div className="flex w-full gap-2 bg-card pb-4">
-      {!hideBack && (
+      {showLogout ? (
+        <Button variant="ghost" onClick={handleLogout} className="h-12">
+          <DoorOpen className="size-4" />
+          Sair
+        </Button>
+      ) : (
         <Button variant="ghost" onClick={handleBack} className="h-12">
           <ArrowLeft className="size-4" />
           Voltar
@@ -51,13 +55,6 @@ export function TreeNavigation({ hideBack = false, hideMenu = false, showLogout 
       )}
       <ThemeSwitcher variant="ghost" size="default" />
       <FontSizeSwitcher variant="ghost" size="default" />
-
-      {showLogout && (
-        <Button variant="ghost" onClick={handleLogout} className="h-12 flex-1">
-          <DoorOpen className="size-4" />
-          <ItemTitle className="text-lg">Sair</ItemTitle>
-        </Button>
-      )}
 
       {!hideMenu && (
         <Sheet open={open} onOpenChange={setOpen}>

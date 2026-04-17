@@ -132,7 +132,7 @@ function DashboardPage() {
       </CardContent>
 
       <CardFooter>
-        <TreeNavigation hideBack hideMenu showLogout />
+        <TreeNavigation hideMenu showLogout />
       </CardFooter>
     </Card>
   );
