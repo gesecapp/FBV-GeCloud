@@ -121,6 +121,9 @@
   /* Font fallbacks */
   --font-fallback-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   --font-fallback-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Font size (controlled via FontSizeSwitcher) */
+  --font-size-base: 14px;
 }
 
 /* =========================================================
@@ -382,6 +385,10 @@
   * {
     @apply border-border outline-ring/50;
     user-select: none;
+  }
+
+  html {
+    font-size: var(--font-size-base);
   }
 
   body {

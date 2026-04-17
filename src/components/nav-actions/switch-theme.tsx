@@ -2,7 +2,7 @@ import type { Transition, Variants } from 'framer-motion';
 import { motion, useAnimation } from 'framer-motion';
 import { Cog } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { forwardRef, type ComponentProps, type HTMLAttributes, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { type ComponentProps, forwardRef, type HTMLAttributes, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useSidebarToggle } from '@/hooks/use-sidebar-toggle';

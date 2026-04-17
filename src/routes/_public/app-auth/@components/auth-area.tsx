@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { FontSizeSwitcher } from '@/components/nav-actions/font-size-switcher';
 import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -41,6 +42,7 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
         <ItemHeader className="w-full">
           <ItemTitle className="text-2xl">Acesso do Usuário</ItemTitle>
           <ItemActions>
+            <FontSizeSwitcher />
             <ThemeSwitcher />
           </ItemActions>
         </ItemHeader>
