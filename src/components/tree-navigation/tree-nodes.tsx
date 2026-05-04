@@ -3,7 +3,8 @@ import type { SidebarRoute } from '@/config/routes';
 
 export function renderTreeNodes(routes: SidebarRoute[], onNavigate: (path: string) => void, level = 0, parentPath: boolean[] = []) {
   return routes.map((route, index) => {
-    const hasChildren = !!route.children && route.children.length > 0;
+    const children = route.children;
+    const hasChildren = !!children && children.length > 0;
     const isLast = index === routes.length - 1;
 
     const nextParentPath = [...parentPath];
@@ -25,7 +26,7 @@ export function renderTreeNodes(routes: SidebarRoute[], onNavigate: (path: strin
           {route.icon && <TreeIcon icon={<route.icon className="size-4" />} hasChildren={hasChildren} />}
           <TreeLabel>{route.labelKey}</TreeLabel>
         </TreeNodeTrigger>
-        {hasChildren && <TreeNodeContent hasChildren>{renderTreeNodes(route.children!, onNavigate, level + 1, nextParentPath)}</TreeNodeContent>}
+        {hasChildren && <TreeNodeContent hasChildren>{renderTreeNodes(children, onNavigate, level + 1, nextParentPath)}</TreeNodeContent>}
       </TreeNode>
     );
   });
