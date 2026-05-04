@@ -162,10 +162,10 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
         form.clearErrors('financialCode');
         toast.success('Código financeiro validado.');
       },
-      onError: (error) => {
+      onError: () => {
         setIsFinancialCodeValidated(false);
-        form.setError('financialCode', { message: error.message });
-        toast.error(error.message);
+        form.setError('financialCode', { message: 'Entrar em contato com o administrador local!' });
+        toast.error('Entrar em contato com o administrador local!');
       },
     });
   }
