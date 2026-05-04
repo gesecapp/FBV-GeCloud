@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { api } from '@/lib/api/client';
 
 export interface RegisterMoradorPayload {
   name?: string;
@@ -6,6 +7,7 @@ export interface RegisterMoradorPayload {
   cnpj?: string;
   document_type?: 'cpf' | 'cnpj';
   financial_code?: string;
+  parentId?: string;
   birthday?: string;
   user_type?: string;
   email?: string;
@@ -14,33 +16,20 @@ export interface RegisterMoradorPayload {
   password?: string;
 }
 
-export interface MockMoradorRegistration {
+export interface GuestSearchResult {
+  id?: string;
+  _id?: string;
   name: string;
-  document_type: 'cpf' | 'cnpj';
-  document: string;
+  document_type?: 'cpf' | 'cnpj';
+  document?: string;
+  user_type?: string;
+  cpf?: string;
+  cnpj?: string;
   birthday?: string;
   email?: string;
   telephones?: string[];
   url_image?: string[];
 }
-
-const mockRegistrations: Record<string, MockMoradorRegistration> = {
-  '12345678909': {
-    name: 'Joao da Silva',
-    document_type: 'cpf',
-    document: '12345678909',
-    birthday: '1990-05-12T03:00:00.000Z',
-    email: 'joao.silva@email.com',
-    telephones: ['11987654321', '1133334444'],
-  },
-  '11222333000181': {
-    name: 'Condominio Exemplo LTDA',
-    document_type: 'cnpj',
-    document: '11222333000181',
-    email: 'financeiro@exemplo.com',
-    telephones: ['1130004000'],
-  },
-};
 
 const mockFinancialCodes = new Set(['FIN-001', 'FIN001', '1234', '987654']);
 
@@ -51,11 +40,8 @@ function wait(ms = 450) {
 export function useRegisterMorador() {
   return useMutation({
     mutationFn: async (payload: RegisterMoradorPayload) => {
-      await wait();
-      return {
-        id: crypto.randomUUID(),
-        ...payload,
-      };
+      const response = await api.post('/app/moradores', payload);
+      return response.data;
     },
   });
 }
@@ -78,14 +64,21 @@ export function useValidateFinancialCode() {
 export function useFetchRegistrationByDocument() {
   return useMutation({
     mutationFn: async ({ document }: { documentType: 'cpf' | 'cnpj'; document: string }) => {
-      await wait();
-      const registration = mockRegistrations[document.replace(/\D/g, '')];
+      const response = await api.get<{ data: GuestSearchResult; statusCode: number }>('/app/guests/search/cpf', {
+        params: { cpf: document.replace(/\D/g, '') },
+      });
+      return response.data.data;
+    },
+  });
+}
 
-      if (!registration) {
-        throw new Error('Cadastro não encontrado para este documento.');
-      }
-
-      return registration;
+export function useFindParentByDocument() {
+  return useMutation({
+    mutationFn: async ({ document }: { documentType: 'cpf' | 'cnpj'; document: string }) => {
+      const response = await api.get<{ data: GuestSearchResult; statusCode: number }>('/app/guests/search/cpf', {
+        params: { cpf: document.replace(/\D/g, '') },
+      });
+      return response.data.data;
     },
   });
 }

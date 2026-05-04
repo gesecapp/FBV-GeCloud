@@ -11,9 +11,12 @@ export const userTypeOptions = [
 export const registerMoradorFormSchema = z
   .object({
     name: z.string().min(1, 'Campo obrigatório'),
+    parentDocumentType: z.enum(['cpf', 'cnpj']).optional(),
+    parentDocument: z.string().optional(),
     documentType: z.enum(['cpf', 'cnpj']),
     document: z.string().min(1, 'Documento obrigatório'),
     financialCode: z.string().optional(),
+    parentId: z.string().optional(),
     birthDate: z.string().optional(),
     user_type: z.enum(['morador', 'visitante', 'colaborador', 'prestador_de_servico', 'dependente']),
     email: z.string().email('E-mail inválido').min(1, 'Campo obrigatório'),
@@ -30,6 +33,14 @@ export const registerMoradorFormSchema = z
         code: z.ZodIssueCode.custom,
         message: 'Código financeiro obrigatório para moradores',
         path: ['financialCode'],
+      });
+    }
+
+    if ((data.user_type === 'visitante' || data.user_type === 'dependente') && !data.parentId?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Busque e selecione o morador responsável',
+        path: ['parentDocument'],
       });
     }
 

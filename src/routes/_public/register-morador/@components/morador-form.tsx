@@ -12,7 +12,7 @@ import { ItemActions, ItemContent } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { applyCnpjMask, applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { cn } from '@/lib/utils';
-import { type RegisterMoradorPayload, useFetchRegistrationByDocument, useValidateFinancialCode } from '../@hooks/use-register-morador-api';
+import { type RegisterMoradorPayload, useFetchRegistrationByDocument, useFindParentByDocument, useValidateFinancialCode } from '../@hooks/use-register-morador-api';
 import { type RegisterMoradorFormData, registerMoradorFormSchema, userTypeOptions } from '../@interface/register-morador.schema';
 
 interface MoradorFormProps {
@@ -24,13 +24,18 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isFinancialCodeValidated, setIsFinancialCodeValidated] = useState(false);
   const [hasTriedDocumentValidation, setHasTriedDocumentValidation] = useState(false);
+  const [parentName, setParentName] = useState('');
   const validateFinancialCode = useValidateFinancialCode();
   const fetchRegistrationByDocument = useFetchRegistrationByDocument();
+  const findParentByDocument = useFindParentByDocument();
 
   const form = useForm<RegisterMoradorFormData>({
     resolver: zodResolver(registerMoradorFormSchema),
     defaultValues: {
       name: '',
+      parentDocumentType: 'cpf',
+      parentDocument: '',
+      parentId: '',
       documentType: 'cpf',
       document: '',
       financialCode: '',
@@ -47,11 +52,15 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
   const urlImages = form.watch('url_image');
   const userType = form.watch('user_type');
   const documentType = form.watch('documentType');
+  const parentDocumentType = form.watch('parentDocumentType') ?? 'cpf';
+  const parentId = form.watch('parentId');
   const hasSelectedUserType = Boolean(userType);
   const isMorador = userType === 'morador';
+  const needsParent = userType === 'visitante' || userType === 'dependente';
   const isValidatingFinancialCode = validateFinancialCode.isPending;
   const isFetchingDocument = fetchRegistrationByDocument.isPending;
-  const canUseDocument = hasSelectedUserType && (!isMorador || isFinancialCodeValidated);
+  const isFindingParent = findParentByDocument.isPending;
+  const canUseDocument = hasSelectedUserType && (!isMorador || isFinancialCodeValidated) && (!needsParent || Boolean(parentId));
   const canFillRegistrationFields = canUseDocument && hasTriedDocumentValidation;
 
   function formatDateToISO(dateString: string | undefined): string {
@@ -86,6 +95,10 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
       payload.financial_code = data.financialCode.trim().toUpperCase();
     }
 
+    if (data.parentId && (data.user_type === 'visitante' || data.user_type === 'dependente')) {
+      payload.parentId = data.parentId;
+    }
+
     const isoDate = formatDateToISO(data.birthDate);
     if (isoDate) payload.birthday = isoDate;
 
@@ -109,10 +122,35 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     form.clearErrors('document');
   }
 
+  function resetParentStep() {
+    setParentName('');
+    form.setValue('parentDocument', '', { shouldValidate: true });
+    form.setValue('parentId', '', { shouldValidate: true });
+    form.clearErrors('parentDocument');
+  }
+
   function handleUserTypeChange(value: RegisterMoradorFormData['user_type']) {
     form.setValue('user_type', value, { shouldValidate: true });
     form.setValue('financialCode', '', { shouldValidate: true });
     setIsFinancialCodeValidated(false);
+    resetParentStep();
+    resetDocumentStep();
+  }
+
+  function handleParentDocumentTypeChange(type: 'cpf' | 'cnpj') {
+    setParentName('');
+    form.setValue('parentDocumentType', type, { shouldValidate: true });
+    form.setValue('parentDocument', '', { shouldValidate: true });
+    form.setValue('parentId', '', { shouldValidate: true });
+    form.clearErrors('parentDocument');
+    resetDocumentStep();
+  }
+
+  function handleParentDocumentChange(value: string) {
+    setParentName('');
+    form.setValue('parentId', '', { shouldValidate: true });
+    form.setValue('parentDocument', applyDocumentMask(value, parentDocumentType), { shouldValidate: true });
+    form.clearErrors('parentDocument');
     resetDocumentStep();
   }
 
@@ -130,6 +168,47 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     setIsFinancialCodeValidated(false);
     resetDocumentStep();
     form.setValue('financialCode', value, { shouldValidate: true });
+  }
+
+  function handleFindParent() {
+    const parentDocument = form.getValues('parentDocument') ?? '';
+    const documentDigits = parentDocument.replace(/\D/g, '');
+    const expectedLength = parentDocumentType === 'cpf' ? 11 : 14;
+
+    if (documentDigits.length !== expectedLength) {
+      form.setError('parentDocument', { message: `${parentDocumentType.toUpperCase()} inválido` });
+      return;
+    }
+
+    findParentByDocument.mutate(
+      { documentType: parentDocumentType, document: parentDocument },
+      {
+        onSuccess: (parent) => {
+          const nextParentId = parent.id ?? parent._id ?? '';
+
+          if (parent.user_type && parent.user_type !== 'morador') {
+            form.setError('parentDocument', { message: 'O responsável deve ser um morador.' });
+            return;
+          }
+
+          if (!nextParentId) {
+            form.setError('parentDocument', { message: 'Morador responsável encontrado sem identificador.' });
+            return;
+          }
+
+          setParentName(parent.name);
+          form.setValue('parentId', nextParentId, { shouldValidate: true });
+          form.clearErrors('parentDocument');
+          toast.success('Morador responsável encontrado.');
+        },
+        onError: () => {
+          setParentName('');
+          form.setValue('parentId', '', { shouldValidate: true });
+          form.setError('parentDocument', { message: 'Morador responsável não encontrado.' });
+          toast.error('Morador responsável não encontrado.');
+        },
+      },
+    );
   }
 
   function handleValidateFinancialCode() {
@@ -236,6 +315,64 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
                         Validar
                       </Button>
                     </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />,
+            ],
+          },
+        ]
+      : []),
+    ...(needsParent
+      ? [
+          {
+            title: 'Morador responsável',
+            description: 'Busque o morador que será responsável por este cadastro.',
+            fields: [
+              <FormField
+                key="parentDocumentType"
+                control={form.control}
+                name="parentDocumentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex gap-4">
+                      {(['cpf', 'cnpj'] as const).map((type) => (
+                        <Button
+                          key={type}
+                          type="button"
+                          variant={field.value === type ? 'default' : 'outline'}
+                          className={cn('min-w-24 justify-start', field.value === type && 'shadow-sm')}
+                          onClick={() => handleParentDocumentTypeChange(type)}
+                        >
+                          {type.toUpperCase()}
+                        </Button>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />,
+              <FormField
+                key="parentDocument"
+                control={form.control}
+                name="parentDocument"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex gap-3">
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder={parentDocumentType === 'cpf' ? 'Digite o CPF do morador' : 'Digite o CNPJ do morador'}
+                          onChange={(event) => handleParentDocumentChange(event.target.value)}
+                          maxLength={parentDocumentType === 'cpf' ? 14 : 18}
+                        />
+                      </FormControl>
+                      <Button type="button" variant="primary" onClick={handleFindParent} disabled={isFindingParent || !field.value?.trim()}>
+                        {isFindingParent ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
+                        Buscar
+                      </Button>
+                    </div>
+                    {parentName && <p className="text-muted-foreground text-sm">Usuário vinculado</p>}
                     <FormMessage />
                   </FormItem>
                 )}
