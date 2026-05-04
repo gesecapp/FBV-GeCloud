@@ -2,12 +2,10 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ItemDescription, ItemTitle } from '@/components/ui/item';
-
-import { MoradorForm } from './@components/morador-form';
+import { MoradorForm } from './@components/morador-form.tsx';
 import { type RegisterMoradorPayload, useRegisterMorador } from './@hooks/use-register-morador-api';
 
 export const Route = createFileRoute('/_public/register-morador/')({

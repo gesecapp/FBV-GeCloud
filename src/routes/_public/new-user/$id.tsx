@@ -9,9 +9,27 @@ import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/
 import { NewUserForm } from './@components/new-user-form';
 import { useFinalizeGuestInvite, useGetGuestByInviteId } from './@hooks/use-new-user-api';
 
+type InviteError = {
+  response?: {
+    data?: {
+      originalError?: {
+        message?: unknown;
+      };
+      message?: unknown;
+    };
+  };
+};
+
 export const Route = createFileRoute('/_public/new-user/$id')({
   component: NewUserPage,
 });
+
+function getInviteErrorMessage(err: unknown) {
+  const responseData = (err as InviteError).response?.data;
+  const message = responseData?.originalError?.message ?? responseData?.message;
+
+  return typeof message === 'string' ? message : 'Erro ao finalizar cadastro.';
+}
 
 function NewUserPage() {
   const { id } = Route.useParams();
@@ -23,12 +41,12 @@ function NewUserPage() {
   const guestId = guestData?.id || null;
 
   function handleSubmit(data: CreateGuestProps & { id?: string }) {
-    if (!guestId && !data.id) {
+    const idToUpdate = guestId ?? data.id;
+
+    if (!idToUpdate) {
       toast.error('ID do visitante não encontrado.');
       return;
     }
-
-    const idToUpdate = guestId || data.id!;
 
     finalizeInvite.mutate(
       { guestId: idToUpdate, data },
@@ -37,9 +55,8 @@ function NewUserPage() {
           setSuccess(true);
           toast.success('Cadastro finalizado! Os dados podem levar alguns instantes para refletirem no sistema.');
         },
-        onError: (err: any) => {
-          const msg = err?.response?.data?.originalError?.message || err?.response?.data?.message || 'Erro ao finalizar cadastro.';
-          toast.error(msg);
+        onError: (err: unknown) => {
+          toast.error(getInviteErrorMessage(err));
         },
       },
     );
@@ -83,7 +100,7 @@ function NewUserPage() {
       <Card>
         <CardContent>
           {guestData ? (
-            <NewUserForm initialData={guestData as any} guestId={guestId} onSubmit={handleSubmit} isLoading={finalizeInvite.isPending} />
+            <NewUserForm initialData={guestData} guestId={guestId} onSubmit={handleSubmit} isLoading={finalizeInvite.isPending} />
           ) : (
             <ItemContent>
               <ItemDescription className="text-destructive">Não foi possível carregar os dados. Link inválido.</ItemDescription>

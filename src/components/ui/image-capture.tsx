@@ -8,14 +8,12 @@ import { compressImageToBase64 } from '@/lib/image-compression';
 function AdjustControl({
   icon,
   label,
-  value,
   displayValue,
   onIncrement,
   onDecrement,
 }: {
   icon: React.ReactNode;
   label: string;
-  value: number;
   displayValue: string;
   onIncrement: () => void;
   onDecrement: () => void;
@@ -39,14 +37,12 @@ function AdjustControl({
       </button>
 
       {/* Percentage indicator */}
-      <div
+      <output
         aria-label={`${label}: ${displayValue}`}
-        aria-valuenow={value}
         className="flex min-w-[2.2rem] items-center justify-center rounded-md bg-white/10 px-1 py-0.5 text-center font-mono text-[10px] text-white"
-        role="status"
       >
         {displayValue}
-      </div>
+      </output>
 
       {/* Decrement */}
       <button
@@ -428,7 +424,6 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             <AdjustControl
               icon={<ZoomIn />}
               label="Zoom"
-              value={zoom}
               displayValue={zoomDisplay}
               onIncrement={() => setZoom((v) => clampZoom(v + 0.1))}
               onDecrement={() => setZoom((v) => clampZoom(v - 0.1))}
@@ -436,7 +431,6 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             <AdjustControl
               icon={<MoveVertical />}
               label="Posição"
-              value={verticalOffset}
               displayValue={offsetDisplay}
               onIncrement={() => setVerticalOffset((v) => clampOffset(v + 5))}
               onDecrement={() => setVerticalOffset((v) => clampOffset(v - 5))}
@@ -444,7 +438,6 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             <AdjustControl
               icon={<Lightbulb />}
               label="Brilho"
-              value={brightnessFilter}
               displayValue={brightnessDisplay}
               onIncrement={() => setBrightnessFilter((v) => clampBrightness(v + 5))}
               onDecrement={() => setBrightnessFilter((v) => clampBrightness(v - 5))}
@@ -452,7 +445,6 @@ function CameraCaptureDialog({ open, onClose, onCapture }: CameraCaptureDialogPr
             <AdjustControl
               icon={<Contrast />}
               label="WDR"
-              value={wdrLevel}
               displayValue={wdrDisplay}
               onIncrement={() => setWdrLevel((v) => clampWdr(v + 10))}
               onDecrement={() => setWdrLevel((v) => clampWdr(v - 10))}
