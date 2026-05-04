@@ -64,22 +64,6 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     }
   }
 
-  function formatISOToDateInput(dateString: string | undefined): string {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return '';
-
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(date);
-  }
-
-  function formatPhone(phone: string | undefined): string {
-    return phone ? applyPhoneMask(phone) : '';
-  }
-
   function applyDocumentMask(value: string, type = documentType) {
     return type === 'cpf' ? applyCpfMask(value) : applyCnpjMask(value);
   }
@@ -163,9 +147,10 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
         toast.success('Código financeiro validado.');
       },
       onError: () => {
+        const message = 'Código financeiro não encontrado, entre em contato com o administrador do local.';
         setIsFinancialCodeValidated(false);
-        form.setError('financialCode', { message: 'Entrar em contato com o administrador local!' });
-        toast.error('Entrar em contato com o administrador local!');
+        form.setError('financialCode', { message });
+        toast.error(message);
       },
     });
   }
@@ -184,23 +169,16 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     fetchRegistrationByDocument.mutate(
       { documentType, document },
       {
-        onSuccess: (registration) => {
-          form.clearErrors('document');
-          form.setValue('documentType', registration.document_type, { shouldValidate: true });
-          form.setValue('document', applyDocumentMask(registration.document, registration.document_type), { shouldValidate: true });
-          form.setValue('name', registration.name, { shouldValidate: true });
-          form.setValue('birthDate', formatISOToDateInput(registration.birthday), { shouldValidate: true });
-          form.setValue('email', registration.email ?? '', { shouldValidate: true });
-          form.setValue('primaryPhone', formatPhone(registration.telephones?.[0]), { shouldValidate: true });
-          form.setValue('secondaryPhone', formatPhone(registration.telephones?.[1]), { shouldValidate: true });
-          form.setValue('url_image', registration.url_image ?? [], { shouldValidate: true });
-          setHasTriedDocumentValidation(true);
-          toast.success('Cadastro encontrado e preenchido.');
+        onSuccess: () => {
+          const message = 'Documento já cadastrado. Faça login para atualizar seu cadastro.';
+          setHasTriedDocumentValidation(false);
+          form.setError('document', { message });
+          toast.error(message);
         },
-        onError: (error) => {
+        onError: () => {
           setHasTriedDocumentValidation(true);
-          form.setError('document', { message: error.message });
-          toast.error(error.message);
+          form.clearErrors('document');
+          toast.success('Documento liberado para cadastro.');
         },
       },
     );
