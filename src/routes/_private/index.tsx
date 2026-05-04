@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Building2 } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
@@ -104,6 +104,18 @@ function DashboardPage() {
                 <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
               </ItemContent>
               <DashboardCardIcon src="/images/people-group-svgrepo-com.svg" alt="Meus visitantes" />
+            </Link>
+          </Item>
+
+          <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+            <Link to="/units" className="flex h-full w-full flex-col justify-between no-underline">
+              <ItemContent className="flex-row justify-between">
+                <ItemTitle className="font-medium text-base">Unidades</ItemTitle>
+                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+              </ItemContent>
+              <ItemGroup aria-hidden className="pointer-events-none flex h-16 items-center justify-center overflow-hidden">
+                <Building2 className="size-12 text-muted-foreground transition-all group-hover:text-sky-500" />
+              </ItemGroup>
             </Link>
           </Item>
 
