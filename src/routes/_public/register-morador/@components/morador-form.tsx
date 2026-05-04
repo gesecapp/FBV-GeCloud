@@ -204,8 +204,8 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
         onError: () => {
           setParentName('');
           form.setValue('parentId', '', { shouldValidate: true });
-          form.setError('parentDocument', { message: 'Morador responsável não encontrado.' });
-          toast.error('Morador responsável não encontrado.');
+          form.setError('parentDocument', { message: 'Usuário não encontrado' });
+          toast.error('Usuário não encontrado');
         },
       },
     );
