@@ -1,19 +1,9 @@
 export interface Unit {
   id: string;
-  name: string;
-  block: string;
-  entityName: string;
-  isCurrentUserLinked: boolean;
-}
-
-export interface UnitUser {
-  id: string;
-  unitId: string;
-  name: string;
-  document: string;
-  email: string;
-  relationship: string;
-  status: 'active' | 'pending';
-  birthday: string;
-  isCurrentUser: boolean;
+  entityId: string;
+  identifier: string;
+  block?: string;
+  type: string;
+  description?: string;
+  address?: string;
 }
