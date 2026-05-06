@@ -1,13 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api/client';
 
 export interface RegisterMoradorPayload {
   name?: string;
-  cpf?: string;
-  cnpj?: string;
-  document_type?: 'cpf' | 'cnpj';
-  financial_code?: string;
+  document?: string;
+  is_legal_person?: boolean;
   parentId?: string;
+  unityIds?: string[];
   birthday?: string;
   user_type?: string;
   email?: string;
@@ -31,10 +30,10 @@ export interface GuestSearchResult {
   url_image?: string[];
 }
 
-const mockFinancialCodes = new Set(['FIN-001', 'FIN001', '1234', '987654']);
-
-function wait(ms = 450) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
+export interface UnitySearchResult {
+  id: string;
+  identifier: string;
+  block?: string;
 }
 
 export function useRegisterMorador() {
@@ -46,18 +45,19 @@ export function useRegisterMorador() {
   });
 }
 
-export function useValidateFinancialCode() {
-  return useMutation({
-    mutationFn: async (financialCode: string) => {
-      await wait();
-      const normalizedCode = financialCode.trim().toUpperCase();
-
-      if (!mockFinancialCodes.has(normalizedCode)) {
-        throw new Error('Código financeiro não encontrado.');
-      }
-
-      return { financial_code: normalizedCode };
+export function useSearchUnities(query: string, enabled: boolean) {
+  const trimmed = query.trim();
+  return useQuery({
+    queryKey: ['app', 'unities', 'search', trimmed],
+    queryFn: async () => {
+      const response = await api.get<{ data: UnitySearchResult[]; statusCode: number }>('/app/unities/search', {
+        params: { q: trimmed, limit: 10 },
+      });
+      return response.data.data;
     },
+    enabled: enabled && trimmed.length > 0,
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
   });
 }
 

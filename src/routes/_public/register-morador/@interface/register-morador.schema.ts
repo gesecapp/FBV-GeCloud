@@ -15,7 +15,7 @@ export const registerMoradorFormSchema = z
     parentDocument: z.string().optional(),
     documentType: z.enum(['cpf', 'cnpj']),
     document: z.string().min(1, 'Documento obrigatório'),
-    financialCode: z.string().optional(),
+    unityIds: z.array(z.string()),
     parentId: z.string().optional(),
     birthDate: z.string().optional(),
     user_type: z.enum(['morador', 'visitante', 'colaborador', 'prestador_de_servico', 'dependente']),
@@ -28,11 +28,11 @@ export const registerMoradorFormSchema = z
   .superRefine((data, ctx) => {
     const documentDigits = data.document.replace(/\D/g, '');
 
-    if (data.user_type === 'morador' && !data.financialCode?.trim()) {
+    if (data.user_type === 'morador' && (!data.unityIds || data.unityIds.length === 0)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Código financeiro obrigatório para moradores',
-        path: ['financialCode'],
+        message: 'Selecione ao menos uma unidade',
+        path: ['unityIds'],
       });
     }
 

@@ -12,8 +12,9 @@ import { ItemActions, ItemContent } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { applyCnpjMask, applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { cn } from '@/lib/utils';
-import { type RegisterMoradorPayload, useFetchRegistrationByDocument, useFindParentByDocument, useValidateFinancialCode } from '../@hooks/use-register-morador-api';
+import { type RegisterMoradorPayload, type UnitySearchResult, useFetchRegistrationByDocument, useFindParentByDocument } from '../@hooks/use-register-morador-api';
 import { type RegisterMoradorFormData, registerMoradorFormSchema, userTypeOptions } from '../@interface/register-morador.schema';
+import { UnitySearchInput } from './unity-search-input';
 
 interface MoradorFormProps {
   onSubmit: (payload: RegisterMoradorPayload) => void;
@@ -22,10 +23,9 @@ interface MoradorFormProps {
 
 export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [isFinancialCodeValidated, setIsFinancialCodeValidated] = useState(false);
   const [hasTriedDocumentValidation, setHasTriedDocumentValidation] = useState(false);
   const [parentName, setParentName] = useState('');
-  const validateFinancialCode = useValidateFinancialCode();
+  const [selectedUnities, setSelectedUnities] = useState<UnitySearchResult[]>([]);
   const fetchRegistrationByDocument = useFetchRegistrationByDocument();
   const findParentByDocument = useFindParentByDocument();
 
@@ -38,7 +38,7 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
       parentId: '',
       documentType: 'cpf',
       document: '',
-      financialCode: '',
+      unityIds: [],
       birthDate: '',
       user_type: undefined,
       email: '',
@@ -54,13 +54,13 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
   const documentType = form.watch('documentType');
   const parentDocumentType = form.watch('parentDocumentType') ?? 'cpf';
   const parentId = form.watch('parentId');
+  const unityIds = form.watch('unityIds') ?? [];
   const hasSelectedUserType = Boolean(userType);
   const isMorador = userType === 'morador';
   const needsParent = userType === 'visitante' || userType === 'dependente';
-  const isValidatingFinancialCode = validateFinancialCode.isPending;
   const isFetchingDocument = fetchRegistrationByDocument.isPending;
   const isFindingParent = findParentByDocument.isPending;
-  const canUseDocument = hasSelectedUserType && (!isMorador || isFinancialCodeValidated) && (!needsParent || Boolean(parentId));
+  const canUseDocument = hasSelectedUserType && (!isMorador || unityIds.length > 0) && (!needsParent || Boolean(parentId));
   const canFillRegistrationFields = canUseDocument && hasTriedDocumentValidation;
 
   function formatDateToISO(dateString: string | undefined): string {
@@ -84,15 +84,14 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
 
     const documentClean = data.document.replace(/\D/g, '');
     const payload: RegisterMoradorPayload = {
-      document_type: data.documentType,
+      document: documentClean,
+      is_legal_person: data.documentType === 'cnpj',
     };
 
     if (data.name) payload.name = data.name;
-    if (data.documentType === 'cpf') payload.cpf = documentClean;
-    if (data.documentType === 'cnpj') payload.cnpj = documentClean;
 
-    if (data.financialCode?.trim() && data.user_type === 'morador') {
-      payload.financial_code = data.financialCode.trim().toUpperCase();
+    if (data.unityIds && data.unityIds.length > 0) {
+      payload.unityIds = data.unityIds;
     }
 
     if (data.parentId && (data.user_type === 'visitante' || data.user_type === 'dependente')) {
@@ -131,9 +130,19 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
 
   function handleUserTypeChange(value: RegisterMoradorFormData['user_type']) {
     form.setValue('user_type', value, { shouldValidate: true });
-    form.setValue('financialCode', '', { shouldValidate: true });
-    setIsFinancialCodeValidated(false);
+    form.setValue('unityIds', [], { shouldValidate: true });
+    setSelectedUnities([]);
     resetParentStep();
+    resetDocumentStep();
+  }
+
+  function handleUnitiesChange(next: UnitySearchResult[]) {
+    setSelectedUnities(next);
+    form.setValue(
+      'unityIds',
+      next.map((u) => u.id),
+      { shouldValidate: true },
+    );
     resetDocumentStep();
   }
 
@@ -162,12 +171,6 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
   function handleDocumentChange(value: string) {
     setHasTriedDocumentValidation(false);
     form.setValue('document', applyDocumentMask(value), { shouldValidate: true });
-  }
-
-  function handleFinancialCodeChange(value: string) {
-    setIsFinancialCodeValidated(false);
-    resetDocumentStep();
-    form.setValue('financialCode', value, { shouldValidate: true });
   }
 
   function handleFindParent() {
@@ -209,29 +212,6 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
         },
       },
     );
-  }
-
-  function handleValidateFinancialCode() {
-    const financialCode = form.getValues('financialCode')?.trim();
-
-    if (!financialCode) {
-      form.setError('financialCode', { message: 'Informe o código financeiro' });
-      return;
-    }
-
-    validateFinancialCode.mutate(financialCode, {
-      onSuccess: () => {
-        setIsFinancialCodeValidated(true);
-        form.clearErrors('financialCode');
-        toast.success('Código financeiro validado.');
-      },
-      onError: () => {
-        const message = 'Código financeiro não encontrado, entre em contato com o administrador do local.';
-        setIsFinancialCodeValidated(false);
-        form.setError('financialCode', { message });
-        toast.error(message);
-      },
-    });
   }
 
   function handleFetchDocument() {
@@ -297,24 +277,18 @@ export function MoradorForm({ onSubmit, isLoading }: MoradorFormProps) {
     ...(isMorador
       ? [
           {
-            title: 'Código Financeiro',
-            description: 'Informe o código para validar os dados financeiros.',
+            title: 'Unidades financeiras',
+            description: 'Busque e selecione uma ou mais unidades pelo identificador.',
             fields: [
               <FormField
-                key="financialCode"
+                key="unityIds"
                 control={form.control}
-                name="financialCode"
-                render={({ field }) => (
+                name="unityIds"
+                render={() => (
                   <FormItem>
-                    <div className="flex gap-3">
-                      <FormControl>
-                        <Input {...field} placeholder="Digite o código financeiro" onChange={(event) => handleFinancialCodeChange(event.target.value)} />
-                      </FormControl>
-                      <Button type="button" variant="primary" onClick={handleValidateFinancialCode} disabled={isValidatingFinancialCode || !field.value?.trim()}>
-                        {isValidatingFinancialCode ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
-                        Validar
-                      </Button>
-                    </div>
+                    <FormControl>
+                      <UnitySearchInput value={selectedUnities} onChange={handleUnitiesChange} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
