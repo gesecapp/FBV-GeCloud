@@ -22,7 +22,6 @@ export interface GuestSearchResult {
   document_type?: 'cpf' | 'cnpj';
   document?: string;
   user_type?: string;
-  cpf?: string;
   cnpj?: string;
   birthday?: string;
   email?: string;
@@ -64,8 +63,8 @@ export function useSearchUnities(query: string, enabled: boolean) {
 export function useFetchRegistrationByDocument() {
   return useMutation({
     mutationFn: async ({ document }: { documentType: 'cpf' | 'cnpj'; document: string }) => {
-      const response = await api.get<{ data: GuestSearchResult; statusCode: number }>('/app/guests/search/cpf', {
-        params: { cpf: document.replace(/\D/g, '') },
+      const response = await api.get<{ data: GuestSearchResult; statusCode: number }>('/app/guests/search/document', {
+        params: { document: document.replace(/\D/g, '') },
       });
       return response.data.data;
     },
@@ -75,8 +74,8 @@ export function useFetchRegistrationByDocument() {
 export function useFindParentByDocument() {
   return useMutation({
     mutationFn: async ({ document }: { documentType: 'cpf' | 'cnpj'; document: string }) => {
-      const response = await api.get<{ data: GuestSearchResult; statusCode: number }>('/app/guests/search/cpf', {
-        params: { cpf: document.replace(/\D/g, '') },
+      const response = await api.get<{ data: GuestSearchResult; statusCode: number }>('/app/guests/search/document', {
+        params: { document: document.replace(/\D/g, '') },
       });
       return response.data.data;
     },

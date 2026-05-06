@@ -114,7 +114,7 @@ export function useAccessUserApi() {
     onSuccess: (responseData, newGuest) => {
       const createdGuest: GuestProps = {
         id: responseData.id,
-        cpf: newGuest.cpf,
+        document: newGuest.document,
         name: newGuest.name,
         birthday: newGuest.birthday,
         telephones: newGuest.telephones,
@@ -159,14 +159,14 @@ export function useAccessUserApi() {
 function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
   if (!raw || 'message' in raw) {
     return {
-      user: { id: userId, name: '', cpf: '' },
+      user: { id: userId, name: '', document: '' },
       sync_status: null,
       synchronized: false,
     };
   }
 
   const syncStatusData = raw.sync_status || raw;
-  const user = raw.user || { id: userId, name: '', cpf: '' };
+  const user = raw.user || { id: userId, name: '', document: '' };
 
   const rawSensors = syncStatusData.sensors || {};
   const sensorsArray = Array.isArray(rawSensors) ? rawSensors : Object.entries(rawSensors).map(([id, s]: [string, any]) => ({ ...s, sensorId: id }));

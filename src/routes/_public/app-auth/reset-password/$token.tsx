@@ -90,7 +90,7 @@ function ResetPasswordPage() {
                   Olá, <strong>{user.name}</strong>
                 </ItemDescription>
                 <ItemDescription>
-                  CPF: <strong>{applyCpfMask(user.cpf)}</strong>
+                  CPF: <strong>{applyCpfMask(user.document)}</strong>
                 </ItemDescription>
               </ItemContent>
 

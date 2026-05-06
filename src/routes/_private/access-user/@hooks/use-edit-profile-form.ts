@@ -17,7 +17,7 @@ export function useEditProfileForm(user: GuestProps | undefined) {
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       fullName: '',
-      cpf: '',
+      document: '',
       birthDate: '',
       email: '',
       primaryPhone: '',
@@ -45,7 +45,7 @@ export function useEditProfileForm(user: GuestProps | undefined) {
       const telephones = user.telephones || [];
       form.reset({
         fullName: user.name || '',
-        cpf: applyCpfMask(user.cpf || ''),
+        document: applyCpfMask(user.document || ''),
         birthDate: formatDateFromISO(user.birthday),
         email: user.email || '',
         primaryPhone: telephones[0] ? applyPhoneMask(telephones[0]) : '',
@@ -85,7 +85,7 @@ export function useEditProfileForm(user: GuestProps | undefined) {
     changedFields.url_image = data.url_image;
 
     // CPF sempre precisa estar presente como referência
-    changedFields.cpf = user?.cpf || '';
+    changedFields.document = user?.document || '';
 
     // Nome
     if (data.fullName !== (user?.name || '')) {

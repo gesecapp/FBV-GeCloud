@@ -10,7 +10,7 @@ export interface UnitUser {
   id: string;
   unitId: string;
   name: string;
-  cpf: string;
+  document: string;
   email: string;
   relationship: string;
   status: 'active' | 'pending';

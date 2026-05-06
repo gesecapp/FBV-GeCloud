@@ -42,7 +42,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     resolver: zodResolver(visitorFormSchema),
     defaultValues: {
       name: '',
-      cpf: '',
+      document: '',
       birthDate: '',
       email: '',
       telephones: [],
@@ -58,7 +58,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     if (guestData) {
       form.reset({
         name: guestData.name || '',
-        cpf: applyCpfMask(guestData.cpf || ''),
+        document: applyCpfMask(guestData.document || ''),
         birthDate: guestData.birthday
           ? (() => {
               const d = new Date(guestData.birthday);
@@ -101,9 +101,9 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     if (cooldown > 0) return;
 
     if (requireCpfAndImage) {
-      const cpfClean = data.cpf?.replace(/\D/g, '');
+      const cpfClean = data.document?.replace(/\D/g, '');
       if (!cpfClean || cpfClean.length !== 11) {
-        form.setError('cpf', { type: 'manual', message: 'CPF é obrigatório e deve ter 11 dígitos' });
+        form.setError('document', { type: 'manual', message: 'CPF é obrigatório e deve ter 11 dígitos' });
         return;
       }
       if (!data.url_image || data.url_image.length === 0) {
@@ -130,8 +130,8 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
 
       if (data.name !== (guestData?.name || '')) payload.name = data.name;
 
-      const cpfClean = data.cpf?.replace(/\D/g, '');
-      if (cpfClean !== (guestData?.cpf || '')) payload.cpf = cpfClean;
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (cpfClean !== (guestData?.document || '')) payload.document = cpfClean;
 
       if (isoDate !== (guestData?.birthday || '')) payload.birthday = isoDate;
       if (data.email !== (guestData?.email || '')) payload.email = data.email;
@@ -144,8 +144,8 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     } else {
       if (data.name) payload.name = data.name;
 
-      const cpfClean = data.cpf?.replace(/\D/g, '');
-      if (cpfClean) payload.cpf = cpfClean;
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (cpfClean) payload.document = cpfClean;
 
       if (isoDate) payload.birthday = isoDate;
       if (data.email) payload.email = data.email;
@@ -189,14 +189,14 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
           )}
         />,
         <FormField
-          key="cpf"
+          key="document"
           control={form.control}
-          name="cpf"
+          name="document"
           render={({ field }) => (
             <FormItem>
               <FormLabel>CPF{requireCpfAndImage || (urlImages && urlImages.length > 0) ? ' *' : ''}</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.cpf} />
+                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.document} />
               </FormControl>
               <FormMessage />
             </FormItem>

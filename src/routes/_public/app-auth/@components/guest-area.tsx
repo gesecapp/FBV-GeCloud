@@ -11,13 +11,13 @@ import { ItemActions, ItemContent, ItemDescription, ItemGroup, ItemTitle } from 
 import UploadImage from '@/components/upload-image';
 import { compressImageToBase64 } from '@/lib/image-compression';
 import { applyCpfMask } from '@/lib/masks';
-import { useGuestByCpf, useUpdateGuestImage } from '../@hooks/use-app-login';
+import { useGuestByDocument, useUpdateGuestImage } from '../@hooks/use-app-login';
 
 interface Guest {
   id?: string;
   _id?: string;
   name: string;
-  cpf: string;
+  document: string;
   url_image?: string[];
 }
 
@@ -33,11 +33,11 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
   const [countdown, setCountdown] = useState(0);
   const [cameraOpen, setCameraOpen] = useState(false);
 
-  const findGuest = useGuestByCpf();
+  const findGuest = useGuestByDocument();
   const updateImage = useUpdateGuestImage();
 
-  const form = useForm<{ cpf: string }>({
-    defaultValues: { cpf: '' },
+  const form = useForm<{ document: string }>({
+    defaultValues: { document: '' },
   });
 
   useEffect(() => {
@@ -59,12 +59,12 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
   }, [blockedUntil]);
 
   function handleCpfChange(value: string) {
-    form.setValue('cpf', applyCpfMask(value), { shouldValidate: true });
+    form.setValue('document', applyCpfMask(value), { shouldValidate: true });
   }
 
-  function onSearchSubmit(data: { cpf: string }) {
+  function onSearchSubmit(data: { document: string }) {
     if (blockedUntil) return;
-    findGuest.mutate(data.cpf.replace(/\D/g, ''), {
+    findGuest.mutate(data.document.replace(/\D/g, ''), {
       onSuccess: (result) => {
         setGuestData(result);
         setGuestImages(result.url_image || []);
@@ -125,7 +125,7 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
           <form onSubmit={form.handleSubmit(onSearchSubmit)} className="flex flex-col gap-4">
             <FormField
               control={form.control}
-              name="cpf"
+              name="document"
               rules={{ required: 'CPF é obrigatório', minLength: { value: 14, message: 'CPF inválido' } }}
               render={({ field }) => (
                 <FormItem>
@@ -158,7 +158,7 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
       <ItemTitle className="text-center text-2xl">Atualizar Foto</ItemTitle>
       <ItemContent>
         <ItemTitle className="text-lg">{guestData.name}</ItemTitle>
-        <ItemDescription className="text-lg">{applyCpfMask(guestData.cpf || '')}</ItemDescription>
+        <ItemDescription className="text-lg">{applyCpfMask(guestData.document || '')}</ItemDescription>
       </ItemContent>
 
       <ItemContent className="gap-3">

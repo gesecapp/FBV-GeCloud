@@ -22,7 +22,7 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
     resolver: zodResolver(dependentFormSchema),
     defaultValues: {
       name: '',
-      cpf: '',
+      document: '',
       birthDate: '',
       email: '',
       primaryPhone: '',
@@ -38,7 +38,7 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
       const telephones = existingGuest.telephones || [];
       form.reset({
         name: existingGuest.name || '',
-        cpf: applyCpfMask(existingGuest.cpf || ''),
+        document: applyCpfMask(existingGuest.document || ''),
         birthDate: existingGuest.birthday
           ? (() => {
               const d = new Date(existingGuest.birthday);
@@ -70,7 +70,7 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
 
     const payload: CreateGuestProps & { id?: string } = {
       name: data.name,
-      cpf: data.cpf?.replace(/\D/g, ''),
+      document: data.document?.replace(/\D/g, ''),
       parentId,
       birthday: formatDateToISO(data.birthDate),
       telephones,
@@ -108,14 +108,14 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
           )}
         />,
         <FormField
-          key="cpf"
+          key="document"
           control={form.control}
-          name="cpf"
+          name="document"
           render={({ field }) => (
             <FormItem>
               <FormLabel>CPF *</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestId} />
+                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestId} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -11,9 +11,9 @@ export function useAppLogin() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async ({ cpf, password }: { cpf: string; password: string }) => {
+    mutationFn: async ({ document, password }: { document: string; password: string }) => {
       const response = await api.post<AppLoginResponse>('/app/login', {
-        cpf: cpf.replace(/\D/g, ''),
+        document: document.replace(/\D/g, ''),
         password,
       });
       return response.data;
@@ -28,11 +28,11 @@ export function useAppLogin() {
   });
 }
 
-export function useGuestByCpf() {
+export function useGuestByDocument() {
   return useMutation({
-    mutationFn: async (cpf: string) => {
-      const response = await api.get<{ data: any; statusCode: number }>('/app/guests/search/cpf', {
-        params: { cpf },
+    mutationFn: async (document: string) => {
+      const response = await api.get<{ data: any; statusCode: number }>('/app/guests/search/document', {
+        params: { document },
       });
       return response.data.data;
     },

@@ -7,15 +7,15 @@ export const useAppAuth = create<AppAuthStore>()(
       isAuthenticated: false,
       token: null,
       userId: null,
-      cpf: null,
+      document: null,
       userType: null,
 
-      setAuth: (token: string, userId: string, cpf: string, userType: string) => {
-        set({ isAuthenticated: true, token, userId, cpf, userType });
+      setAuth: (token: string, userId: string, document: string, userType: string) => {
+        set({ isAuthenticated: true, token, userId, document, userType });
       },
 
       clearAuth: () => {
-        set({ isAuthenticated: false, token: null, userId: null, cpf: null, userType: null });
+        set({ isAuthenticated: false, token: null, userId: null, document: null, userType: null });
       },
       checkTokenValidity: () => {
         const { token, clearAuth } = get();
@@ -55,7 +55,7 @@ export const useAppAuth = create<AppAuthStore>()(
         isAuthenticated: state.isAuthenticated,
         token: state.token,
         userId: state.userId,
-        cpf: state.cpf,
+        document: state.document,
         userType: state.userType,
       }),
       onRehydrateStorage: () => (state) => {
@@ -71,9 +71,9 @@ type AppAuthStore = {
   isAuthenticated: boolean;
   token: string | null;
   userId: string | null;
-  cpf: string | null;
+  document: string | null;
   userType: string | null;
-  setAuth: (token: string, userId: string, cpf: string, userType: string) => void;
+  setAuth: (token: string, userId: string, document: string, userType: string) => void;
   clearAuth: () => void;
   checkTokenValidity: () => boolean;
 };

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const editProfileSchema = z.object({
   fullName: z.string().min(1, 'Campo obrigatório'),
-  cpf: z.string(),
+  document: z.string(),
   birthDate: z.string().optional(),
   email: z.string().email('E-mail inválido').optional().or(z.literal('')),
   primaryPhone: z.string().optional(),
@@ -16,7 +16,7 @@ export type EditProfileFormData = z.infer<typeof editProfileSchema>;
 export interface GuestProps {
   _id?: string;
   id?: string;
-  cpf?: string;
+  document?: string;
   name?: string;
   birthday?: string;
   telephones?: string[];
@@ -28,7 +28,7 @@ export interface GuestProps {
 }
 
 export interface CreateGuestProps {
-  cpf?: string;
+  document?: string;
   name?: string;
   parentId: string;
   birthday?: string;
@@ -49,7 +49,7 @@ export interface SensorSyncStatus {
 }
 
 export interface UserSyncStatus {
-  user: { id: string; name: string; cpf: string };
+  user: { id: string; name: string; document: string };
   sync_status: {
     _id: string;
     accessUserId: string;

@@ -130,7 +130,7 @@ function UnitsPage() {
                     {linkedUsers.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.name}</TableCell>
-                        <TableCell>{applyCpfMask(user.cpf)}</TableCell>
+                        <TableCell>{applyCpfMask(user.document)}</TableCell>
                         <TableCell>{new Date(user.birthday).toLocaleDateString('pt-BR')}</TableCell>
                         <TableCell>{user.relationship}</TableCell>
                         <TableCell>

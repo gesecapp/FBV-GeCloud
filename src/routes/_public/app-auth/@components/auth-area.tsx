@@ -25,15 +25,15 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
 
   const form = useForm<AppAuthFormData>({
     resolver: zodResolver(appAuthSchema),
-    defaultValues: { cpf: '', password: '' },
+    defaultValues: { document: '', password: '' },
   });
 
   function handleCpfChange(value: string) {
-    form.setValue('cpf', applyCpfMask(value), { shouldValidate: true });
+    form.setValue('document', applyCpfMask(value), { shouldValidate: true });
   }
 
   function onSubmit(data: AppAuthFormData) {
-    login.mutate({ cpf: data.cpf, password: data.password });
+    login.mutate({ document: data.document, password: data.password });
   }
 
   return (
@@ -53,7 +53,7 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <FormField
             control={form.control}
-            name="cpf"
+            name="document"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>CPF *</FormLabel>

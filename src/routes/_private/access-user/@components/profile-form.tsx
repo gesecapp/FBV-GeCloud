@@ -62,9 +62,9 @@ export function ProfileForm() {
           )}
         />,
         <FormField
-          key="cpf"
+          key="document"
           control={form.control}
-          name="cpf"
+          name="document"
           render={({ field }) => (
             <FormItem>
               <FormLabel>CPF *</FormLabel>

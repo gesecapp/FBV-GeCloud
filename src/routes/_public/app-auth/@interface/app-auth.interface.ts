@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const appAuthSchema = z.object({
-  cpf: z.string().min(14, 'CPF inválido'),
+  document: z.string().min(14, 'CPF inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 });
 
@@ -33,5 +33,5 @@ export interface AppLoginResponse {
 
 export interface ValidateTokenResponse {
   name: string;
-  cpf: string;
+  document: string;
 }

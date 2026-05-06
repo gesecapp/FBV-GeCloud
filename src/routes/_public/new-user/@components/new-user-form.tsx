@@ -24,7 +24,7 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
     resolver: zodResolver(newUserFormSchema),
     defaultValues: {
       name: '',
-      cpf: '',
+      document: '',
       birthDate: '',
       email: '',
       primaryPhone: '',
@@ -42,7 +42,7 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
 
       form.reset({
         name: initialData.name || '',
-        cpf: applyCpfMask(initialData.cpf || ''),
+        document: applyCpfMask(initialData.document || ''),
         birthDate: birthDateFormatted,
         email: initialData.email || '',
         primaryPhone: telephones[0] ? applyPhoneMask(telephones[0]) : '',
@@ -83,8 +83,8 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
 
       if (data.name !== (initialData?.name || '')) payload.name = data.name;
 
-      const cpfClean = data.cpf?.replace(/\D/g, '');
-      if (cpfClean) payload.cpf = cpfClean;
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (cpfClean) payload.document = cpfClean;
 
       const isoDate = formatDateToISO(data.birthDate);
       if (isoDate !== (initialData?.birthday || '')) payload.birthday = isoDate;
@@ -97,8 +97,8 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
       }
     } else {
       if (data.name) payload.name = data.name;
-      const cpfClean = data.cpf?.replace(/\D/g, '');
-      if (cpfClean) payload.cpf = cpfClean;
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (cpfClean) payload.document = cpfClean;
       const isoDate = formatDateToISO(data.birthDate);
       if (isoDate) payload.birthday = isoDate;
       if (data.email) payload.email = data.email;
@@ -191,14 +191,14 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
       description: 'Dados para identificação e contato.',
       fields: [
         <FormField
-          key="cpf"
+          key="document"
           control={form.control}
-          name="cpf"
+          name="document"
           render={({ field }) => (
             <FormItem>
               <FormLabel>CPF</FormLabel>
               <FormControl>
-                <Input {...field} onChange={(e) => form.setValue('cpf', applyCpfMask(e.target.value))} maxLength={14} disabled={!!initialData?.cpf} />
+                <Input {...field} onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))} maxLength={14} disabled={!!initialData?.document} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -67,7 +67,7 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
         const syncStatus = syncStatuses?.find((s) => s.user.id === id);
         return { ...guest, _resolvedId: id, syncStatus } as DependentItem;
       })
-      .filter((item) => !q || item.name?.toLowerCase().includes(q) || item.cpf?.includes(q))
+      .filter((item) => !q || item.name?.toLowerCase().includes(q) || item.document?.includes(q))
       .sort((a, b) => {
         let cmp = 0;
         if (sortField === 'name') {
@@ -155,7 +155,7 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
                   </ItemMedia>
                   <ItemContent className="gap-0">
                     <ItemTitle className="text-base">{item.name || '-'}</ItemTitle>
-                    <ItemDescription>{applyCpfMask(item.cpf || '')}</ItemDescription>
+                    <ItemDescription>{applyCpfMask(item.document || '')}</ItemDescription>
                   </ItemContent>
                 </div>
 
