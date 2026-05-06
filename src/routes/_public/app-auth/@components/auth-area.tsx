@@ -56,7 +56,7 @@ export function AuthArea({ onGuestMode, onForgotPassword }: AuthAreaProps) {
             name="document"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>CPF *</FormLabel>
+                <FormLabel>CPF/CNPJ*</FormLabel>
                 <FormControl>
                   <Input autoFocus className="h-12!" maxLength={14} placeholder="000.000.000-00" {...field} onChange={(e) => handleCpfChange(e.target.value)} />
                 </FormControl>
