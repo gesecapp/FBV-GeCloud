@@ -131,8 +131,7 @@ function UnitsPage() {
                   <ItemDescription>Processo desabilitado temporariamente.</ItemDescription>
                 </ItemContent>
                 <Badge variant="secondary">
-                  <Users className="size-3" />
-                  0 usuários
+                  <Users className="size-3" />0 usuários
                 </Badge>
               </ItemHeader>
             </ItemGroup>

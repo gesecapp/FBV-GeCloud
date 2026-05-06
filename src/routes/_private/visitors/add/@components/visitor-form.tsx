@@ -196,7 +196,13 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
             <FormItem>
               <FormLabel>CPF{requireCpfAndImage || (urlImages && urlImages.length > 0) ? ' *' : ''}</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestData?.document} />
+                <Input
+                  {...field}
+                  placeholder="000.000.000-00"
+                  onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))}
+                  maxLength={14}
+                  disabled={!!guestData?.document}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
