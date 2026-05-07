@@ -37,8 +37,8 @@ interface NavRouteConfig {
 const NAV_ROUTES: readonly NavRouteConfig[] = [
   { path: '/access-user' },
   { path: '/sync-status' },
-  { path: '/visitors', allowedUserTypes: ['morador', 'colaborador'] },
-  { path: '/visitors/add', allowedUserTypes: ['morador', 'colaborador'] },
+  { path: '/visitors', allowedUserTypes: ['morador'] },
+  { path: '/visitors/add', allowedUserTypes: ['morador'] },
   { path: '/dependents', allowedUserTypes: ['morador'] },
   { path: '/dependents/add', allowedUserTypes: ['morador'] },
 ];

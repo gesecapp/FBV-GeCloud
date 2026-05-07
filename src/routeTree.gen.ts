@@ -9,23 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
-import { Route as PrivateRouteImport } from './routes/_private';
-import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
-import { Route as PrivateDependentsAddIndexRouteImport } from './routes/_private/dependents/add/index';
-import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
-import { Route as PrivateIndexRouteImport } from './routes/_private/index';
-import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
-import { Route as PrivateUnitsIndexRouteImport } from './routes/_private/units/index';
-import { Route as PrivateVisitorsAddIndexRouteImport } from './routes/_private/visitors/add/index';
-import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visitors/index';
 import { Route as PublicRouteImport } from './routes/_public';
-import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
-import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
-import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
-import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
-import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
-import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
+import { Route as PrivateRouteImport } from './routes/_private';
+import { Route as PrivateIndexRouteImport } from './routes/_private/index';
 import { Route as PublicRegisterMoradorIndexRouteImport } from './routes/_public/register-morador/index';
+import { Route as PublicPrivacyPolicyIndexRouteImport } from './routes/_public/privacy-policy/index';
+import { Route as PublicDevelopIndexRouteImport } from './routes/_public/develop/index';
+import { Route as PublicContactIndexRouteImport } from './routes/_public/contact/index';
+import { Route as PublicAppAuthIndexRouteImport } from './routes/_public/app-auth/index';
+import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visitors/index';
+import { Route as PrivateUnitsIndexRouteImport } from './routes/_private/units/index';
+import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
+import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
+import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
+import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateVisitorsAddIndexRouteImport } from './routes/_private/visitors/add/index';
+import { Route as PrivateDependentsAddIndexRouteImport } from './routes/_private/dependents/add/index';
+import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
