@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { Building2, Home, Users } from 'lucide-react';
 import { useMemo } from 'react';
 import DefaultEmptyData from '@/components/default-empty-data';
@@ -12,10 +12,23 @@ import { DataSelect, type DataSelectOption } from '@/components/ui/data-select';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useAppAuth } from '@/hooks/use-app-auth';
+import { getUserPermissions } from '@/lib/permissions';
 import { useUnits } from '@/routes/_private/units/@hooks/use-units';
 import type { Unit } from '@/routes/_private/units/@interface/unit.interface';
 
 export const Route = createFileRoute('/_private/units/')({
+  beforeLoad: () => {
+    const { isAuthenticated, userType } = useAppAuth.getState();
+
+    if (!isAuthenticated) {
+      throw redirect({ to: '/app-auth' });
+    }
+
+    if (!getUserPermissions(userType).canViewUnits) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: UnitsPage,
   staticData: { title: 'Unidades' },
 });

@@ -7,16 +7,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGetAllSyncStatuses, useGetGuestsByParent } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
+import { getUserPermissions } from '@/lib/permissions';
 import { VisitorList } from './@components/visitor-list';
 
 export const Route = createFileRoute('/_private/visitors/')({
   beforeLoad: () => {
-    const { isAuthenticated } = useAppAuth.getState();
+    const { isAuthenticated, userType } = useAppAuth.getState();
 
     if (!isAuthenticated) {
       throw redirect({
         to: '/app-auth',
       });
+    }
+
+    if (!getUserPermissions(userType).canManageVisitors) {
+      throw redirect({ to: '/' });
     }
   },
   component: VisitorsPage,

@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { ItemDescription } from '@/components/ui/item';
 import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
+import { getUserPermissions } from '@/lib/permissions';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { VisitorForm } from './@components/visitor-form';
 import { INVITATION_URL_BASE, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-visitor.consts';
@@ -20,12 +21,16 @@ import { addVisitorSearchSchema } from './@interface/add-visitor.schema';
 export const Route = createFileRoute('/_private/visitors/add/')({
   validateSearch: addVisitorSearchSchema,
   beforeLoad: () => {
-    const { isAuthenticated } = useAppAuth.getState();
+    const { isAuthenticated, userType } = useAppAuth.getState();
 
     if (!isAuthenticated) {
       throw redirect({
         to: '/app-auth',
       });
+    }
+
+    if (!getUserPermissions(userType).canManageVisitors) {
+      throw redirect({ to: '/' });
     }
   },
   component: AddVisitorPage,

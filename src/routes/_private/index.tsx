@@ -9,6 +9,7 @@ import { Item, ItemContent, ItemDescription, ItemGroup, ItemTitle } from '@/comp
 import { getSyncState, getSyncStateInfo, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
+import { useUserPermissions } from '@/hooks/use-user-permissions';
 
 export const Route = createFileRoute('/_private/')({
   component: DashboardPage,
@@ -23,8 +24,8 @@ function DashboardCardIcon({ src, alt }: { src: string; alt: string }) {
 }
 
 function DashboardPage() {
-  const { userId, userType } = useAppAuth();
-  const isMorador = userType === 'morador';
+  const { userId } = useAppAuth();
+  const { permissions } = useUserPermissions();
   const { data: user } = useGetAppUser();
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(userId);
 
@@ -63,29 +64,33 @@ function DashboardPage() {
         </ItemGroup>
 
         <div className="grid grid-cols-2 gap-4">
-          <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
-            <Link to="/access-user" className="flex h-full w-full flex-col justify-between no-underline">
-              <ItemContent className="flex-row items-start justify-between">
-                <ItemTitle className="font-medium text-base">Meu cadastro</ItemTitle>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </ItemContent>
-              <DashboardCardIcon src="/images/clipboard-pencil-svgrepo-com.svg" alt="Editar cadastro" />
-            </Link>
-          </Item>
-
-          <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
-            <Link to="/visitors/add" className="flex h-full w-full flex-col justify-between no-underline">
-              <ItemContent>
-                <ItemContent className="flex-row justify-between">
-                  <ItemTitle className="font-medium text-base">Incluir Visitante</ItemTitle>
+          {permissions.canEditOwnProfile && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/access-user" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent className="flex-row items-start justify-between">
+                  <ItemTitle className="font-medium text-base">Meu cadastro</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
                 </ItemContent>
-              </ItemContent>
-              <DashboardCardIcon src="/images/person-silhouette-plus-svgrepo-com.svg" alt="Incluir visitante" />
-            </Link>
-          </Item>
+                <DashboardCardIcon src="/images/clipboard-pencil-svgrepo-com.svg" alt="Editar cadastro" />
+              </Link>
+            </Item>
+          )}
 
-          {isMorador && (
+          {permissions.canManageVisitors && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/visitors/add" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent>
+                  <ItemContent className="flex-row justify-between">
+                    <ItemTitle className="font-medium text-base">Incluir Visitante</ItemTitle>
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  </ItemContent>
+                </ItemContent>
+                <DashboardCardIcon src="/images/person-silhouette-plus-svgrepo-com.svg" alt="Incluir visitante" />
+              </Link>
+            </Item>
+          )}
+
+          {permissions.canManageDependents && (
             <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
               <Link to="/dependents/add" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
@@ -97,29 +102,33 @@ function DashboardPage() {
             </Item>
           )}
 
-          <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
-            <Link to="/visitors" className="flex h-full w-full flex-col justify-between no-underline">
-              <ItemContent className="flex-row justify-between">
-                <ItemTitle className="font-medium text-base">Meus Visitantes</ItemTitle>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </ItemContent>
-              <DashboardCardIcon src="/images/people-group-svgrepo-com.svg" alt="Meus visitantes" />
-            </Link>
-          </Item>
+          {permissions.canManageVisitors && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/visitors" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent className="flex-row justify-between">
+                  <ItemTitle className="font-medium text-base">Meus Visitantes</ItemTitle>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </ItemContent>
+                <DashboardCardIcon src="/images/people-group-svgrepo-com.svg" alt="Meus visitantes" />
+              </Link>
+            </Item>
+          )}
 
-          <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
-            <Link to="/units" className="flex h-full w-full flex-col justify-between no-underline">
-              <ItemContent className="flex-row justify-between">
-                <ItemTitle className="font-medium text-base">Unidades</ItemTitle>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </ItemContent>
-              <ItemGroup aria-hidden className="pointer-events-none flex h-16 items-center justify-center overflow-hidden">
-                <Building2 className="size-12 text-muted-foreground transition-all group-hover:text-sky-500" />
-              </ItemGroup>
-            </Link>
-          </Item>
+          {permissions.canViewUnits && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/units" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent className="flex-row justify-between">
+                  <ItemTitle className="font-medium text-base">Unidades</ItemTitle>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </ItemContent>
+                <ItemGroup aria-hidden className="pointer-events-none flex h-16 items-center justify-center overflow-hidden">
+                  <Building2 className="size-12 text-muted-foreground transition-all group-hover:text-sky-500" />
+                </ItemGroup>
+              </Link>
+            </Item>
+          )}
 
-          {isMorador && (
+          {permissions.canManageDependents && (
             <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
               <Link to="/dependents" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
@@ -131,15 +140,17 @@ function DashboardPage() {
             </Item>
           )}
 
-          <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
-            <Link to="/sync-status" className="flex h-full w-full flex-col justify-between no-underline">
-              <ItemContent className="flex-row justify-between">
-                <ItemTitle className="font-medium text-base">Sincronizações</ItemTitle>
-                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
-              </ItemContent>
-              <DashboardCardIcon src="/images/sync-circle-sharp-svgrepo-com.svg" alt="Status de sincronização" />
-            </Link>
-          </Item>
+          {permissions.canViewSyncStatus && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/sync-status" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent className="flex-row justify-between">
+                  <ItemTitle className="font-medium text-base">Sincronizações</ItemTitle>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </ItemContent>
+                <DashboardCardIcon src="/images/sync-circle-sharp-svgrepo-com.svg" alt="Status de sincronização" />
+              </Link>
+            </Item>
+          )}
         </div>
       </CardContent>
 

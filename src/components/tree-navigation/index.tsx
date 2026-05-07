@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { TreeProvider, TreeView } from '@/components/ui/tree';
 import { buildNavRoutes } from '@/config/routes';
 import { useAppAuth } from '@/hooks/use-app-auth';
+import { useUserPermissions } from '@/hooks/use-user-permissions';
 import { renderTreeNodes } from './tree-nodes';
 
 type TreeNavigationProps = {
@@ -19,6 +20,7 @@ type TreeNavigationProps = {
 export function TreeNavigation({ hideMenu = false, showLogout = false }: TreeNavigationProps) {
   const navigate = useNavigate();
   const { clearAuth } = useAppAuth();
+  const { userType } = useUserPermissions();
   const [open, setOpen] = useState(false);
 
   const handleNavigate = useCallback(
@@ -38,7 +40,7 @@ export function TreeNavigation({ hideMenu = false, showLogout = false }: TreeNav
     navigate({ to: '/app-auth' });
   }
 
-  const treeNodes = useMemo(() => renderTreeNodes(buildNavRoutes(), handleNavigate), [handleNavigate]);
+  const treeNodes = useMemo(() => renderTreeNodes(buildNavRoutes(userType), handleNavigate), [handleNavigate, userType]);
 
   return (
     <div className="flex w-full gap-2 bg-card pb-4">

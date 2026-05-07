@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import type { AppUserType } from '@/lib/permissions';
 import type { FileRoutesByTo } from '@/routeTree.gen';
 
 export interface SidebarRoute {
@@ -24,21 +25,43 @@ export const ROUTE_LABELS: Record<string, string> = {
   add: 'Adicionar',
 };
 
-// Rotas privadas de navegação, validadas contra o routeTree.gen.ts
-const NAV_PATHS = ['/access-user', '/sync-status', '/visitors', '/visitors/add', '/dependents', '/dependents/add'] satisfies Array<keyof FileRoutesByTo>;
+type NavPath = keyof FileRoutesByTo;
 
-function groupBySection(paths: typeof NAV_PATHS): Record<string, string[]> {
-  const groups: Record<string, string[]> = {};
-  for (const path of paths) {
-    const section = path.split('/').filter(Boolean)[0];
+interface NavRouteConfig {
+  path: NavPath;
+  allowedUserTypes?: readonly AppUserType[];
+}
+
+// Rotas privadas de navegação, validadas contra o routeTree.gen.ts.
+// Sem `allowedUserTypes` = visível para todos os tipos autenticados.
+const NAV_ROUTES: readonly NavRouteConfig[] = [
+  { path: '/access-user' },
+  { path: '/sync-status' },
+  { path: '/visitors', allowedUserTypes: ['morador', 'colaborador'] },
+  { path: '/visitors/add', allowedUserTypes: ['morador', 'colaborador'] },
+  { path: '/dependents', allowedUserTypes: ['morador'] },
+  { path: '/dependents/add', allowedUserTypes: ['morador'] },
+];
+
+function isAllowed(route: NavRouteConfig, userType: AppUserType | null): boolean {
+  if (!route.allowedUserTypes) return true;
+  if (!userType) return false;
+  return route.allowedUserTypes.includes(userType);
+}
+
+function groupBySection(routes: readonly NavRouteConfig[]): Record<string, NavPath[]> {
+  const groups: Record<string, NavPath[]> = {};
+  for (const route of routes) {
+    const section = route.path.split('/').filter(Boolean)[0];
     if (!groups[section]) groups[section] = [];
-    groups[section].push(path);
+    groups[section].push(route.path);
   }
   return groups;
 }
 
-export function buildNavRoutes(): SidebarRoute[] {
-  const grouped = groupBySection(NAV_PATHS);
+export function buildNavRoutes(userType: AppUserType | null = null): SidebarRoute[] {
+  const visible = NAV_ROUTES.filter((route) => isAllowed(route, userType));
+  const grouped = groupBySection(visible);
   const routes: SidebarRoute[] = [];
 
   for (const [section, paths] of Object.entries(grouped)) {

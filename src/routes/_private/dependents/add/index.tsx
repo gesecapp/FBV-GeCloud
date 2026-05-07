@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
+import { getUserPermissions } from '@/lib/permissions';
 import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { DependentForm } from './@components/dependent-form';
 import { addDependentSearchSchema } from './@interface/add-dependent.schema';
@@ -14,12 +15,16 @@ import { addDependentSearchSchema } from './@interface/add-dependent.schema';
 export const Route = createFileRoute('/_private/dependents/add/')({
   validateSearch: addDependentSearchSchema,
   beforeLoad: () => {
-    const { isAuthenticated } = useAppAuth.getState();
+    const { isAuthenticated, userType } = useAppAuth.getState();
 
     if (!isAuthenticated) {
       throw redirect({
         to: '/app-auth',
       });
+    }
+
+    if (!getUserPermissions(userType).canManageDependents) {
+      throw redirect({ to: '/' });
     }
   },
   component: AddDependentPage,
