@@ -12,11 +12,6 @@ import { useAppAuth } from '@/hooks/use-app-auth';
 import { useUserPermissions } from '@/hooks/use-user-permissions';
 import { renderTreeNodes } from './tree-nodes';
 
-type TreeNavigationProps = {
-  hideMenu?: boolean;
-  showLogout?: boolean;
-};
-
 export function TreeNavigation({ hideMenu = false, showLogout = false }: TreeNavigationProps) {
   const navigate = useNavigate();
   const { clearAuth } = useAppAuth();
@@ -81,3 +76,8 @@ export function TreeNavigation({ hideMenu = false, showLogout = false }: TreeNav
     </div>
   );
 }
+
+type TreeNavigationProps = {
+  hideMenu?: boolean;
+  showLogout?: boolean;
+};

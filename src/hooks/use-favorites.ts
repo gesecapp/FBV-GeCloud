@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-const FAVORITES_STORAGE_NAME = 'user_favorites';
-
 export const useFavorites = create<FavoritesStore>()(
   persist(
     (set, get) => ({
@@ -26,7 +24,7 @@ export const useFavorites = create<FavoritesStore>()(
       },
     }),
     {
-      name: FAVORITES_STORAGE_NAME,
+      name: 'user_favorites',
       storage: createJSONStorage(() => localStorage),
     },
   ),

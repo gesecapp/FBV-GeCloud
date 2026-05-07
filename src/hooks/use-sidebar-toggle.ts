@@ -2,21 +2,6 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const SIDEBAR_COOKIE_NAME = 'sidebar_state';
-
-type SidebarToggleStore = {
-  isOpen: boolean;
-  isMobileOpen: boolean;
-  isHovered: boolean;
-  isMenuOpen: boolean;
-  setOpen: (open: boolean) => void;
-  setMobileOpen: (open: boolean) => void;
-  setHovered: (hovered: boolean) => void;
-  setMenuOpen: (open: boolean) => void;
-  toggle: () => void;
-  state: 'expanded' | 'collapsed';
-};
-
 const computeState = (isOpen: boolean, isHovered: boolean, isMenuOpen: boolean): 'expanded' | 'collapsed' => (isOpen || isHovered || isMenuOpen ? 'expanded' : 'collapsed');
 
 export const useSidebarToggle = create<SidebarToggleStore>()(
@@ -64,7 +49,7 @@ export const useSidebarToggle = create<SidebarToggleStore>()(
       },
     }),
     {
-      name: SIDEBAR_COOKIE_NAME,
+      name: 'sidebar_state',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isOpen: state.isOpen,
@@ -107,3 +92,16 @@ export function useSidebar() {
     toggleSidebar: toggle,
   };
 }
+
+type SidebarToggleStore = {
+  isOpen: boolean;
+  isMobileOpen: boolean;
+  isHovered: boolean;
+  isMenuOpen: boolean;
+  setOpen: (open: boolean) => void;
+  setMobileOpen: (open: boolean) => void;
+  setHovered: (hovered: boolean) => void;
+  setMenuOpen: (open: boolean) => void;
+  toggle: () => void;
+  state: 'expanded' | 'collapsed';
+};

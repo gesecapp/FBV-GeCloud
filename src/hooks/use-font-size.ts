@@ -6,12 +6,6 @@ const MAX_SIZE = 20;
 const DEFAULT_SIZE = 14;
 const CSS_VAR = '--font-size-base';
 
-interface FontSizeStore {
-  fontSize: number;
-  increase: () => void;
-  decrease: () => void;
-}
-
 function applyFontSize(size: number) {
   document.documentElement.style.setProperty(CSS_VAR, `${size}px`);
 }
@@ -40,3 +34,9 @@ export const useFontSize = create<FontSizeStore>()(
     },
   ),
 );
+
+interface FontSizeStore {
+  fontSize: number;
+  increase: () => void;
+  decrease: () => void;
+}

@@ -2,14 +2,6 @@ import type { LucideIcon } from 'lucide-react';
 import type { AppUserType } from '@/lib/permissions';
 import type { FileRoutesByTo } from '@/routeTree.gen';
 
-export interface SidebarRoute {
-  id: string;
-  path: string;
-  labelKey: string;
-  icon?: LucideIcon;
-  children?: SidebarRoute[];
-}
-
 // Mapeamento de icones por segmento de rota
 export const ROUTE_ICONS: Record<string, LucideIcon> = {};
 
@@ -24,13 +16,6 @@ export const ROUTE_LABELS: Record<string, string> = {
   dependents: 'Meus Dependentes',
   add: 'Adicionar',
 };
-
-type NavPath = keyof FileRoutesByTo;
-
-interface NavRouteConfig {
-  path: NavPath;
-  allowedUserTypes?: readonly AppUserType[];
-}
 
 // Rotas privadas de navegação, validadas contra o routeTree.gen.ts.
 // Sem `allowedUserTypes` = visível para todos os tipos autenticados.
@@ -96,4 +81,19 @@ export function buildNavRoutes(userType: AppUserType | null = null): SidebarRout
   }
 
   return routes;
+}
+
+export interface SidebarRoute {
+  id: string;
+  path: string;
+  labelKey: string;
+  icon?: LucideIcon;
+  children?: SidebarRoute[];
+}
+
+type NavPath = keyof FileRoutesByTo;
+
+interface NavRouteConfig {
+  path: NavPath;
+  allowedUserTypes?: readonly AppUserType[];
 }

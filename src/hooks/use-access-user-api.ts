@@ -3,8 +3,6 @@ import { useAppAuth } from '@/hooks/use-app-auth';
 import { api } from '@/lib/api/client';
 import type { CreateGuestProps, GuestProps, GuestResponse, UserSyncStatus, UserType } from '@/routes/_private/access-user/@interface/access-user.interface';
 
-export type { CreateGuestProps, GuestProps, GuestResponse, UserSyncStatus, UserType };
-
 function authHeaders(token: string | null): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
@@ -191,3 +189,5 @@ function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
     synchronized,
   };
 }
+
+export type { CreateGuestProps, GuestProps, GuestResponse, UserSyncStatus, UserType };
