@@ -1,16 +1,4 @@
-export type AppUserType = 'morador' | 'visitante' | 'colaborador' | 'prestador_de_servico' | 'dependente';
-
 export const APP_USER_TYPES: readonly AppUserType[] = ['morador', 'visitante', 'colaborador', 'prestador_de_servico', 'dependente'] as const;
-
-export interface UserPermissions {
-  canEditOwnProfile: boolean;
-  canViewSyncStatus: boolean;
-  canViewUnits: boolean;
-  canManageDependents: boolean;
-  canManageVisitors: boolean;
-  canInviteVisitors: boolean;
-  canManageServiceProviders: boolean;
-}
 
 const NO_PERMISSIONS: UserPermissions = {
   canEditOwnProfile: true,
@@ -53,3 +41,15 @@ export function isAppUserType(value: string | null | undefined): value is AppUse
 export function getUserPermissions(userType: string | null | undefined): UserPermissions {
   return isAppUserType(userType) ? PERMISSIONS_BY_TYPE[userType] : NO_PERMISSIONS;
 }
+
+export interface UserPermissions {
+  canEditOwnProfile: boolean;
+  canViewSyncStatus: boolean;
+  canViewUnits: boolean;
+  canManageDependents: boolean;
+  canManageVisitors: boolean;
+  canInviteVisitors: boolean;
+  canManageServiceProviders: boolean;
+}
+
+export type AppUserType = 'morador' | 'visitante' | 'colaborador' | 'prestador_de_servico' | 'dependente';

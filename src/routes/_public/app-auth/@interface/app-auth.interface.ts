@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AppUserType } from '@/lib/permissions';
 
 export const appAuthSchema = z.object({
   document: z.string().min(14, 'CPF inválido'),
@@ -26,7 +27,7 @@ export const resetPasswordSchema = z
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export interface AppLoginResponse {
-  data: { token: string; id: string; userType: string };
+  data: { token: string; id: string; userType: AppUserType };
   statusCode: number;
   message: string;
 }

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import type { AppUserType } from '@/lib/permissions';
 
 export const useAppAuth = create<AppAuthStore>()(
   persist(
@@ -10,7 +11,7 @@ export const useAppAuth = create<AppAuthStore>()(
       document: null,
       userType: null,
 
-      setAuth: (token: string, userId: string, document: string, userType: string) => {
+      setAuth: (token: string, userId: string, document: string, userType: AppUserType) => {
         set({ isAuthenticated: true, token, userId, document, userType });
       },
 
@@ -72,8 +73,8 @@ type AppAuthStore = {
   token: string | null;
   userId: string | null;
   document: string | null;
-  userType: string | null;
-  setAuth: (token: string, userId: string, document: string, userType: string) => void;
+  userType: AppUserType | null;
+  setAuth: (token: string, userId: string, document: string, userType: AppUserType) => void;
   clearAuth: () => void;
   checkTokenValidity: () => boolean;
 };
