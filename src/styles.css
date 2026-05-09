@@ -366,7 +366,7 @@
 }
 
 .group:hover .dashboard-card-illustration {
-  background-color: var(--foreground);
+  background-color: var(--color-sky-500);
   opacity: 1;
 }
 

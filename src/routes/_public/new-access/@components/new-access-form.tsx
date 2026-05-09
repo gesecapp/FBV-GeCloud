@@ -12,10 +12,6 @@ import { applyCnpjMask, applyCpfMask } from '@/lib/masks';
 import { useCheckDocument, useCreateNewAccess } from '../@hooks/use-new-access-api';
 import { type NewAccessFormData, newAccessSchema } from '../@interface/new-access.schema';
 
-interface NewAccessFormProps {
-  onSuccess: () => void;
-}
-
 export function NewAccessForm({ onSuccess }: NewAccessFormProps) {
   const navigate = useNavigate();
   const checkDocument = useCheckDocument();
@@ -209,4 +205,8 @@ export function NewAccessForm({ onSuccess }: NewAccessFormProps) {
       </Button>
     </ItemGroup>
   );
+}
+
+interface NewAccessFormProps {
+  onSuccess: () => void;
 }

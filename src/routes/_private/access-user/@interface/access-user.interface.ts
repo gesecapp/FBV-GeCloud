@@ -9,6 +9,7 @@ export const editProfileSchema = z.object({
   secondaryPhone: z.string().optional(),
   password: z.string().optional(),
   url_image: z.array(z.string()),
+  userType: z.string().optional(),
 });
 
 export type EditProfileFormData = z.infer<typeof editProfileSchema>;

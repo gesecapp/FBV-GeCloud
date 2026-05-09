@@ -24,6 +24,7 @@ export function useEditProfileForm(user: GuestProps | undefined) {
       secondaryPhone: '',
       password: '',
       url_image: [],
+      userType: '',
     },
   });
 
@@ -52,6 +53,7 @@ export function useEditProfileForm(user: GuestProps | undefined) {
         secondaryPhone: telephones[1] ? applyPhoneMask(telephones[1]) : '',
         url_image: user.url_image || [],
         password: '',
+        userType: user.user_type || '',
       });
     }
   }, [user, form, formatDateFromISO]);
@@ -78,8 +80,17 @@ export function useEditProfileForm(user: GuestProps | undefined) {
       return;
     }
 
+    if (!user?.user_type && !data.userType) {
+      toast.error('Selecione o tipo de usuário.');
+      return;
+    }
+
     // Só envia campos que foram alterados em relação ao original
     const changedFields: Record<string, any> = {};
+
+    if (data.userType && data.userType !== (user?.user_type || '')) {
+      changedFields.user_type = data.userType;
+    }
 
     // url_image sempre deve ser enviada
     changedFields.url_image = data.url_image;

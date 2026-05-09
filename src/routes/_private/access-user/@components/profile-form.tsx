@@ -7,10 +7,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup } from '@/components/ui/item';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetAppUser, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { applyDateMask, applyPhoneMask } from '@/lib/masks';
+import { userTypeOptions } from '@/routes/_public/accomplish-access/$id/@interface/accomplish-access.schema';
 import { useEditProfileForm } from '../@hooks/use-edit-profile-form';
 
 export function ProfileForm() {
@@ -28,7 +30,44 @@ export function ProfileForm() {
 
   if (isLoading) return <DefaultLoading />;
 
+  const needsUserType = !user?.user_type;
+
   const sections: FormSection[] = [
+    ...(needsUserType
+      ? [
+          {
+            title: 'Tipo de Usuário',
+            description: 'Necessário para concluir o cadastro.',
+            fields: [
+              <FormField
+                key="userType"
+                control={form.control}
+                name="userType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo de Usuário *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Selecione o tipo de usuário" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {userTypeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />,
+            ],
+          },
+        ]
+      : []),
     {
       title: 'Dados Pessoais',
       description: 'Informações de identificação.',
@@ -123,7 +162,13 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Telefone Primário</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="(00) 00000-0000" onChange={(e) => form.setValue('primaryPhone', applyPhoneMask(e.target.value))} maxLength={15} />
+                <Input
+                  {...field}
+                  placeholder="(00) 00000-0000"
+                  onChange={(e) => form.setValue('primaryPhone', applyPhoneMask(e.target.value))}
+                  maxLength={15}
+                  className={!field.value?.trim() ? 'border-destructive focus-visible:ring-destructive/20' : undefined}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

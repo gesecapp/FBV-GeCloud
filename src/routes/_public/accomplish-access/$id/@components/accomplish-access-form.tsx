@@ -124,6 +124,12 @@ export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishA
             </FormItem>
           )}
         />,
+      ],
+    },
+    {
+      title: 'Dados Pessoais',
+      description: 'Informações do titular.',
+      fields: [
         <FormField
           key="name"
           control={form.control}

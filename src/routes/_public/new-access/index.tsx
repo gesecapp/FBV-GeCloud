@@ -25,8 +25,8 @@ function NewAccessPage() {
           <img src="/images/logo.svg" alt="Logo" className="h-16 w-auto" />
           {emailSent ? (
             <ItemGroup className="gap-6!">
-              <ItemContent>
-                <ItemTitle className="text-center text-2xl">Verifique seu E-mail</ItemTitle>
+              <ItemContent className="items-center">
+                <ItemTitle className="text-2xl">Verifique seu E-mail</ItemTitle>
                 <ItemDescription className="text-center">Enviamos um link de confirmação para o e-mail informado. Acesse o link para concluir o cadastro.</ItemDescription>
               </ItemContent>
               <Button variant="ghost" onClick={() => navigate({ to: '/app-auth' })} type="button">

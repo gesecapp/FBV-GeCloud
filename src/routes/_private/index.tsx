@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ArrowUpRight, Building2 } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
@@ -69,7 +69,7 @@ function DashboardPage() {
               <Link to="/access-user" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row items-start justify-between">
                   <ItemTitle className="font-medium text-base">Meu cadastro</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
                 <DashboardCardIcon src="/images/clipboard-pencil-svgrepo-com.svg" alt="Editar cadastro" />
               </Link>
@@ -82,7 +82,7 @@ function DashboardPage() {
                 <ItemContent>
                   <ItemContent className="flex-row justify-between">
                     <ItemTitle className="font-medium text-base">Incluir Visitante</ItemTitle>
-                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                   </ItemContent>
                 </ItemContent>
                 <DashboardCardIcon src="/images/person-silhouette-plus-svgrepo-com.svg" alt="Incluir visitante" />
@@ -95,7 +95,7 @@ function DashboardPage() {
               <Link to="/dependents/add" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
                   <ItemTitle className="font-medium text-base">Incluir Dependente</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
                 <DashboardCardIcon src="/images/person-connections-svgrepo-com.svg" alt="Incluir dependente" />
               </Link>
@@ -107,7 +107,7 @@ function DashboardPage() {
               <Link to="/visitors" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
                   <ItemTitle className="font-medium text-base">Meus Visitantes</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
                 <DashboardCardIcon src="/images/people-group-svgrepo-com.svg" alt="Meus visitantes" />
               </Link>
@@ -120,7 +120,7 @@ function DashboardPage() {
                 <ItemContent>
                   <ItemContent className="flex-row justify-between">
                     <ItemTitle className="font-medium text-base">Incluir Prestador</ItemTitle>
-                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                   </ItemContent>
                 </ItemContent>
                 <DashboardCardIcon src="/images/worker-clocking-in-svgrepo-com.svg" alt="Incluir prestador" />
@@ -133,7 +133,7 @@ function DashboardPage() {
               <Link to="/service-providers" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
                   <ItemTitle className="font-medium text-base">Meus Prestadores</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
                 <DashboardCardIcon src="/images/workers-team-svgrepo-com.svg" alt="Meus prestadores" />
               </Link>
@@ -145,11 +145,9 @@ function DashboardPage() {
               <Link to="/units" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
                   <ItemTitle className="font-medium text-base">Unidades</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <ItemGroup aria-hidden className="pointer-events-none flex h-16 items-center justify-center overflow-hidden">
-                  <Building2 className="size-12 text-muted-foreground transition-all group-hover:text-sky-500" />
-                </ItemGroup>
+                <DashboardCardIcon src="/images/company-svgrepo-com.svg" alt="Unidades" />
               </Link>
             </Item>
           )}
@@ -159,7 +157,7 @@ function DashboardPage() {
               <Link to="/dependents" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
                   <ItemTitle className="font-medium text-base">Meus Dependentes</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
                 <DashboardCardIcon src="/images/couple-alt-svgrepo-com.svg" alt="Meus dependentes" />
               </Link>
@@ -171,7 +169,7 @@ function DashboardPage() {
               <Link to="/sync-status" className="flex h-full w-full flex-col justify-between no-underline">
                 <ItemContent className="flex-row justify-between">
                   <ItemTitle className="font-medium text-base">Sincronizações</ItemTitle>
-                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
                 <DashboardCardIcon src="/images/sync-circle-sharp-svgrepo-com.svg" alt="Status de sincronização" />
               </Link>
