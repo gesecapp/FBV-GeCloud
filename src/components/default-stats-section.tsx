@@ -62,7 +62,7 @@ export function DefaultStatsSection() {
             <Item className="flex-col items-center justify-center">
               <ItemContent className="items-center">
                 <ItemTitle className="font-bold text-5xl text-emerald-500">
-                  <Leaf className="mr-2 inline size-10" />
+                  <Leaf className="inline size-10" />
                   1,000Kg
                 </ItemTitle>
                 <ItemDescription className="mt-2 font-bold text-foreground">Emissões de CO2 Compensadas</ItemDescription>

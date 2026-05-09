@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { api } from '@/lib/api/client';
-import type { AppLoginResponse, ValidateTokenResponse } from '../@interface/app-auth.interface';
+import type { AppLoginResponse, GuestByDocumentSearchResponse, ValidateTokenResponse } from '../@interface/app-auth.interface';
 
 export function useAppLogin() {
   const { setAuth } = useAppAuth();
@@ -31,7 +31,7 @@ export function useAppLogin() {
 export function useGuestByDocument() {
   return useMutation({
     mutationFn: async (document: string) => {
-      const response = await api.get<{ data: any; statusCode: number }>('/app/guests/search/document', {
+      const response = await api.get<{ data: GuestByDocumentSearchResponse; statusCode: number }>('/app/guests/search/document', {
         params: { document },
       });
       return response.data.data;
@@ -52,8 +52,19 @@ export function useUpdateGuestImage() {
 
 export function useForgotPassword() {
   return useMutation({
-    mutationFn: async ({ email }: { email: string }) => {
-      await api.post('/app/auth/forgot-password', { email });
+    mutationFn: async ({ email, document }: { email: string; document?: string }) => {
+      await api.post('/app/auth/forgot-password', document ? { email, document } : { email });
+    },
+  });
+}
+
+export function useCheckDocument() {
+  return useMutation({
+    mutationFn: async (document: string) => {
+      const response = await api.get<{ data: GuestByDocumentSearchResponse; statusCode: number }>('/app/guests/search/document', {
+        params: { document: document.replace(/\D/g, '') },
+      });
+      return response.data.data;
     },
   });
 }

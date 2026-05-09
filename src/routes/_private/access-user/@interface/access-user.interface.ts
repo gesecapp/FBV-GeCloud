@@ -36,7 +36,7 @@ export interface CreateGuestProps {
   email?: string;
   photos?: string[];
   url_image?: string[];
-  user_type: 'visitante' | 'dependente';
+  user_type: 'visitante' | 'dependente' | 'prestador_de_servico';
 }
 
 export interface SensorSyncStatus {
@@ -68,4 +68,4 @@ export interface GuestResponse {
   token?: string;
 }
 
-export type UserType = 'visitante' | 'dependente';
+export type UserType = 'visitante' | 'dependente' | 'prestador_de_servico';

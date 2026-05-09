@@ -14,12 +14,12 @@ import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { getUserPermissions } from '@/lib/permissions';
 import type { CreateGuestProps } from '../../access-user/@interface/access-user.interface';
-import { VisitorForm } from './@components/visitor-form';
-import { INVITATION_URL_BASE, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-visitor.consts';
-import { addVisitorSearchSchema } from './@interface/add-visitor.schema';
+import { ServiceProviderForm } from './@components/service-provider-form';
+import { INVITATION_URL_BASE, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-service-provider.consts';
+import { addServiceProviderSearchSchema } from './@interface/add-service-provider.schema';
 
-export const Route = createFileRoute('/_private/visitors/add/')({
-  validateSearch: addVisitorSearchSchema,
+export const Route = createFileRoute('/_private/service-providers/add/')({
+  validateSearch: addServiceProviderSearchSchema,
   beforeLoad: () => {
     const { isAuthenticated, userType } = useAppAuth.getState();
 
@@ -29,15 +29,15 @@ export const Route = createFileRoute('/_private/visitors/add/')({
       });
     }
 
-    if (!getUserPermissions(userType).canManageVisitors) {
+    if (!getUserPermissions(userType).canManageServiceProviders) {
       throw redirect({ to: '/' });
     }
   },
-  component: AddVisitorPage,
-  staticData: { title: 'Visitante' },
+  component: AddServiceProviderPage,
+  staticData: { title: 'Prestador de Serviço' },
 });
 
-function AddVisitorPage() {
+function AddServiceProviderPage() {
   const { guestId } = Route.useSearch();
   const { userId } = useAppAuth();
   const { createGuest, updateGuest } = useAccessUserApi();
@@ -47,11 +47,11 @@ function AddVisitorPage() {
   const [invitationLink, setInvitationLink] = useState('');
 
   function handleBack() {
-    navigate({ to: '/visitors' });
+    navigate({ to: '/service-providers' });
   }
 
   function handleSubmit(data: CreateGuestProps & { id?: string }) {
-    const payload = { ...data, user_type: 'visitante' as const };
+    const payload = { ...data, user_type: 'prestador_de_servico' as const };
     const hasPhoto = payload.url_image && payload.url_image.length > 0 && !!payload.url_image[0];
 
     if (data.id) {
@@ -60,7 +60,7 @@ function AddVisitorPage() {
         { id: data.id, guestData },
         {
           onSuccess: () => {
-            toast.success('Visitante atualizado! As alterações podem levar alguns instantes para refletirem no sistema.');
+            toast.success('Prestador atualizado! As alterações podem levar alguns instantes para refletirem no sistema.');
             handleBack();
           },
         },
@@ -69,7 +69,7 @@ function AddVisitorPage() {
       createGuest.mutate(payload, {
         onSuccess: (responseData) => {
           if (hasPhoto) {
-            toast.success('Visitante cadastrado! Os dados podem levar alguns instantes para refletirem no sistema.');
+            toast.success('Prestador cadastrado! Os dados podem levar alguns instantes para refletirem no sistema.');
             handleBack();
           } else if (responseData.id) {
             const url = `${INVITATION_URL_BASE}/${responseData.id}`;
@@ -106,7 +106,7 @@ function AddVisitorPage() {
     <>
       <Card className="min-h-screen rounded-none border-none">
         <CardHeader>
-          <CardTitle>{guestId ? 'Editar Visitante' : 'Novo Visitante'}</CardTitle>
+          <CardTitle>{guestId ? 'Editar Prestador' : 'Novo Prestador'}</CardTitle>
           <CardAction>
             <Button size={'sm'} onClick={handleBack}>
               <ArrowLeft className="size-4" />
@@ -120,7 +120,7 @@ function AddVisitorPage() {
         </CardHeader>
 
         <CardContent>
-          <VisitorForm parentId={userId || ''} guestId={guestId} onSubmit={handleSubmit} onCancel={handleBack} isLoading={createGuest.isPending || updateGuest.isPending} />
+          <ServiceProviderForm parentId={userId || ''} guestId={guestId} onSubmit={handleSubmit} onCancel={handleBack} isLoading={createGuest.isPending || updateGuest.isPending} />
         </CardContent>
 
         <CardFooter>
@@ -133,7 +133,7 @@ function AddVisitorPage() {
           <DialogHeader>
             <DialogTitle>Pré-cadastro realizado com sucesso!</DialogTitle>
           </DialogHeader>
-          <ItemDescription>Compartilhe o link abaixo para o visitante finalizar o cadastro e inserir a foto.</ItemDescription>
+          <ItemDescription>Compartilhe o link abaixo para o prestador finalizar o cadastro e inserir a foto.</ItemDescription>
           <div className="mx-auto my-2 flex justify-center rounded-lg border border-slate-200 bg-white p-4">
             <QRCode value={invitationLink} size={160} />
           </div>

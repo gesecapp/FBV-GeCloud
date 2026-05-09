@@ -169,7 +169,7 @@ export function ProfileForm() {
 
           <ItemActions className="flex justify-end py-6">
             <Button type="submit" disabled={isPending}>
-              {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+              {isPending && <Loader2 className="size-4 animate-spin" />}
               {!isLoading && <Save className="size-4"></Save>}
               Salvar
             </Button>

@@ -114,6 +114,32 @@ function DashboardPage() {
             </Item>
           )}
 
+          {permissions.canManageServiceProviders && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/service-providers/add" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent>
+                  <ItemContent className="flex-row justify-between">
+                    <ItemTitle className="font-medium text-base">Incluir Prestador</ItemTitle>
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                  </ItemContent>
+                </ItemContent>
+                <DashboardCardIcon src="/images/worker-clocking-in-svgrepo-com.svg" alt="Incluir prestador" />
+              </Link>
+            </Item>
+          )}
+
+          {permissions.canManageServiceProviders && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/service-providers" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent className="flex-row justify-between">
+                  <ItemTitle className="font-medium text-base">Meus Prestadores</ItemTitle>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:stroke-sky-500" />
+                </ItemContent>
+                <DashboardCardIcon src="/images/workers-team-svgrepo-com.svg" alt="Meus prestadores" />
+              </Link>
+            </Item>
+          )}
+
           {permissions.canViewUnits && (
             <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
               <Link to="/units" className="flex h-full w-full flex-col justify-between no-underline">

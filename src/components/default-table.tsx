@@ -92,16 +92,16 @@ const columns: ColumnDef<Item>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
-              <Eye className="mr-2 size-4" />
+              <Eye className="size-4" />
               Ver detalhes
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Pencil className="mr-2 size-4" />
+              <Pencil className="size-4" />
               Editar
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive">
-              <Trash2 className="mr-2 size-4" />
+              <Trash2 className="size-4" />
               Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>

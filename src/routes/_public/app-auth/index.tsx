@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { AuthArea } from './@components/auth-area';
-import { ForgotPasswordArea } from './@components/forgot-password-area';
 import { GuestArea } from './@components/guest-area';
 
 export const Route = createFileRoute('/_public/app-auth/')({
@@ -11,20 +10,13 @@ export const Route = createFileRoute('/_public/app-auth/')({
 
 function AppAuthPage() {
   const [isGuestMode, setIsGuestMode] = useState(false);
-  const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
 
   return (
     <div className="flex min-h-screen items-center justify-center">
       <Card className="max-w-md! justify-center">
         <CardContent className="flex flex-col gap-6">
           <img src="/images/logo.svg" alt="Logo" className="h-16 w-auto" />
-          {isForgotPasswordMode ? (
-            <ForgotPasswordArea onClose={() => setIsForgotPasswordMode(false)} />
-          ) : isGuestMode ? (
-            <GuestArea onClose={() => setIsGuestMode(false)} />
-          ) : (
-            <AuthArea onGuestMode={() => setIsGuestMode(true)} onForgotPassword={() => setIsForgotPasswordMode(true)} />
-          )}
+          {isGuestMode ? <GuestArea onClose={() => setIsGuestMode(false)} /> : <AuthArea onGuestMode={() => setIsGuestMode(true)} />}
         </CardContent>
       </Card>
     </div>

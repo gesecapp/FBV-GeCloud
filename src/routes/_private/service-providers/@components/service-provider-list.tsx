@@ -40,7 +40,7 @@ import type { GuestProps, UserSyncStatus } from '@/routes/_private/access-user/@
 
 const PAGE_SIZE = 10;
 
-export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorListProps) {
+export function ServiceProviderList({ guests, syncStatuses, onAdd, onEdit }: ServiceProviderListProps) {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [sortField, setSortField] = useState<SortField>('name');
@@ -65,7 +65,7 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
       .map((guest) => {
         const id = guest._id || guest.id || '';
         const syncStatus = syncStatuses?.find((s) => s.user.id === id);
-        return { ...guest, _resolvedId: id, syncStatus } as VisitorItem;
+        return { ...guest, _resolvedId: id, syncStatus } as ServiceProviderItem;
       })
       .filter((item) => !q || item.name?.toLowerCase().includes(q) || item.document?.includes(q))
       .sort((a, b) => {
@@ -93,11 +93,11 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
     if (!guestToDelete) return;
     deleteGuest.mutate(guestToDelete.id, {
       onSuccess: () => {
-        toast.success('Visitante excluído com sucesso!');
+        toast.success('Prestador excluído com sucesso!');
         setGuestToDelete(null);
       },
       onError: (err: Error & { response?: { data?: { message?: string } } }) => {
-        toast.error(err?.response?.data?.message || 'Erro ao excluir visitante.');
+        toast.error(err?.response?.data?.message || 'Erro ao excluir prestador.');
         setGuestToDelete(null);
       },
     });
@@ -109,7 +109,7 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
     <>
       <ItemGroup className="gap-4">
         <ItemHeader>
-          <ItemTitle className="text-lg">Visitantes</ItemTitle>
+          <ItemTitle className="text-lg">Prestadores de Serviço</ItemTitle>
           <ItemActions>
             <Button size="sm" onClick={onAdd}>
               <Plus className="size-4" />
@@ -253,8 +253,8 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
       <AlertDialog open={!!guestToDelete} onOpenChange={() => setGuestToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir Visitante</AlertDialogTitle>
-            <AlertDialogDescription>Tem certeza que deseja excluir o visitante {guestToDelete?.name}?</AlertDialogDescription>
+            <AlertDialogTitle>Excluir Prestador</AlertDialogTitle>
+            <AlertDialogDescription>Tem certeza que deseja excluir o prestador {guestToDelete?.name}?</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -271,11 +271,11 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
 type SortField = 'name' | 'birthday';
 type SortDir = 'asc' | 'desc';
 
-interface VisitorListProps {
+interface ServiceProviderListProps {
   guests: GuestProps[];
   syncStatuses?: UserSyncStatus[];
   onAdd: () => void;
   onEdit: (id: string) => void;
 }
 
-type VisitorItem = GuestProps & { _resolvedId: string; syncStatus?: UserSyncStatus };
+type ServiceProviderItem = GuestProps & { _resolvedId: string; syncStatus?: UserSyncStatus };

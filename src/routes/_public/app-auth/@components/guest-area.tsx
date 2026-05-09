@@ -1,4 +1,4 @@
-import { Camera, Loader2 } from 'lucide-react';
+import { ArrowLeft, Camera, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -66,8 +66,17 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
     if (blockedUntil) return;
     findGuest.mutate(data.document.replace(/\D/g, ''), {
       onSuccess: (result) => {
-        setGuestData(result);
-        setGuestImages(result.url_image || []);
+        if (!result.found || !result.guest) {
+          toast.error('Cadastro não encontrado para este CPF.');
+          return;
+        }
+        const guest = result.guest;
+        setGuestData({
+          ...guest,
+          name: guest.name ?? '',
+          document: guest.document ?? '',
+        });
+        setGuestImages(guest.url_image || []);
       },
       onError: (err: any) => {
         if (err?.response?.status === 429) {
@@ -139,11 +148,12 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
             />
 
             <ItemGroup className="gap-2">
-              <Button className="h-12! w-full" disabled={findGuest.isPending || !!blockedUntil} type="submit">
-                {findGuest.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+              <Button variant={'blue'} className="h-12! w-full text-base" disabled={findGuest.isPending || !!blockedUntil} type="submit">
+                {findGuest.isPending && <Loader2 className="size-4 animate-spin" />}
                 {blockedUntil ? `Aguarde ${countdown}s` : 'Buscar Cadastro'}
               </Button>
-              <Button className="w-full" onClick={onClose} variant="ghost">
+              <Button variant="ghost" onClick={onClose} type="button">
+                <ArrowLeft className="size-4" />
                 Voltar ao Início
               </Button>
             </ItemGroup>
@@ -165,7 +175,7 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
         <UploadImage value={guestImages[0]} onAddFile={handleAddFile} height={200} />
         <ItemActions>
           <Button type="button" variant="outline" onClick={() => setCameraOpen(true)}>
-            <Camera className="mr-2 size-4" />
+            <Camera className="size-4" />
             Câmera
           </Button>
         </ItemActions>
@@ -173,7 +183,7 @@ export function GuestArea({ onClose, onGuestLoaded }: GuestAreaProps) {
 
       <ItemGroup className="gap-2">
         <Button className="h-12! w-full" disabled={updateImage.isPending || !!blockedUntil || guestImages.length === 0} onClick={handleImageUpdate}>
-          {updateImage.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+          {updateImage.isPending && <Loader2 className="size-4 animate-spin" />}
           {blockedUntil ? `Aguarde ${countdown}s` : 'Salvar Alterações'}
         </Button>
         <Button className="w-full" onClick={onClose} variant="ghost">

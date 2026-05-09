@@ -112,7 +112,7 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
           <ItemTitle className="text-lg">Dependentes</ItemTitle>
           <ItemActions>
             <Button size="sm" onClick={onAdd}>
-              <Plus className="mr-2 size-4" />
+              <Plus className="size-4" />
               Adicionar
             </Button>
           </ItemActions>
@@ -212,11 +212,11 @@ export function DependentList({ guests, syncStatuses, onAdd, onEdit }: Dependent
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                         <DropdownMenuItem onClick={() => onEdit(item._resolvedId)}>
-                          <Pencil className="mr-2 size-4" />
+                          <Pencil className="size-4" />
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive" onClick={() => setGuestToDelete({ id: item._resolvedId, name: item.name || '' })}>
-                          <Trash2 className="mr-2 size-4" />
+                          <Trash2 className="size-4" />
                           Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>

@@ -13,9 +13,9 @@ import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-al
 import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
-import { type VisitorFormData, visitorFormSchema } from '../@interface/add-visitor.schema';
+import { type ServiceProviderFormData, serviceProviderFormSchema } from '../@interface/add-service-provider.schema';
 
-export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel, isLoading, requireCpfAndImage = false }: VisitorFormProps) {
+export function ServiceProviderForm({ parentId, guestId, initialData, onSubmit, onCancel, isLoading, requireCpfAndImage = false }: ServiceProviderFormProps) {
   const { data: fetchedGuest, isLoading: isLoadingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
   const syncState = getSyncState(syncStatus, isLoadingSync);
@@ -38,8 +38,8 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     };
   }, [cooldown]);
 
-  const form = useForm<VisitorFormData>({
-    resolver: zodResolver(visitorFormSchema),
+  const form = useForm<ServiceProviderFormData>({
+    resolver: zodResolver(serviceProviderFormSchema),
     defaultValues: {
       name: '',
       document: '',
@@ -97,7 +97,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     );
   }
 
-  function handleFormSubmit(data: VisitorFormData) {
+  function handleFormSubmit(data: ServiceProviderFormData) {
     if (cooldown > 0) return;
 
     if (requireCpfAndImage) {
@@ -116,7 +116,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
 
     const payload: CreateGuestProps & { id?: string } = {
       parentId,
-      user_type: 'visitante',
+      user_type: 'prestador_de_servico',
     };
 
     if (guestId) {
@@ -172,7 +172,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
   const sections: FormSection[] = [
     {
       title: 'Identificação',
-      description: 'Dados pessoais do visitante.',
+      description: 'Dados do prestador de serviço.',
       fields: [
         <FormField
           key="name"
@@ -240,7 +240,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     },
     {
       title: 'Telefones',
-      description: 'Telefones para contato do visitante.',
+      description: 'Telefones para contato do prestador.',
       fields: [
         <ItemContent key="phones" className="gap-3">
           <div className="flex gap-2">
@@ -269,7 +269,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
     },
     {
       title: 'Foto',
-      description: 'Imagem de identificação do visitante.',
+      description: 'Imagem de identificação do prestador.',
       layout: 'vertical',
       fields: [
         <FormField
@@ -311,7 +311,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
   );
 }
 
-interface VisitorFormProps {
+interface ServiceProviderFormProps {
   parentId: string;
   guestId?: string | null;
   initialData?: Partial<GuestProps>;

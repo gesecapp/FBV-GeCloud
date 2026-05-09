@@ -1,27 +1,28 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ItemContent, ItemDescription, ItemGroup, ItemTitle } from '@/components/ui/item';
-import { useForgotPassword } from '../@hooks/use-app-login';
-import { type ForgotPasswordFormData, forgotPasswordSchema } from '../@interface/app-auth.interface';
+import { useForgotPassword } from '../@hooks/use-forgot-password-api';
+import { type ForgotPasswordFormData, forgotPasswordSchema } from '../@interface/forgot-password.schema';
 
-interface ForgotPasswordAreaProps {
-  onClose: () => void;
+interface ForgotPasswordFormProps {
+  initialEmail?: string;
 }
 
-export function ForgotPasswordArea({ onClose }: ForgotPasswordAreaProps) {
+export function ForgotPasswordForm({ initialEmail }: ForgotPasswordFormProps) {
+  const navigate = useNavigate();
   const [emailSent, setEmailSent] = useState(false);
   const forgotPassword = useForgotPassword();
 
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: { email: '' },
+    defaultValues: { email: initialEmail ?? '' },
   });
 
   function onSubmit(data: ForgotPasswordFormData) {
@@ -64,17 +65,18 @@ export function ForgotPasswordArea({ onClose }: ForgotPasswordAreaProps) {
               )}
             />
 
-            <Button className="h-12! w-full" disabled={forgotPassword.isPending} type="submit">
-              {forgotPassword.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+            <Button variant="blue" className="h-12! w-full text-base" disabled={forgotPassword.isPending} type="submit">
+              {forgotPassword.isPending && <Loader2 className="size-4 animate-spin" />}
               Enviar E-mail
             </Button>
           </form>
         </Form>
       )}
 
-      <button className="w-full" onClick={onClose} type="button">
-        <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Voltar ao Login</ItemDescription>
-      </button>
+      <Button variant="ghost" onClick={() => navigate({ to: '/app-auth' })} type="button">
+        <ArrowLeft className="size-4" />
+        Voltar ao Login
+      </Button>
     </ItemGroup>
   );
 }
