@@ -247,12 +247,12 @@ export function AuthArea({ onGuestMode }: AuthAreaProps) {
             />
 
             <Button className="h-12! w-full" disabled={login.isPending} type="submit">
-              {login.isPending && <Loader2 className="size-4 animate-spin" />}
+              {login.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
               Entrar
             </Button>
 
             <Button className="w-full" variant="ghost" type="button" onClick={backToDocument}>
-              <ArrowLeft className="size-4" />
+              <ArrowLeft className="mr-2 size-4" />
               Voltar
             </Button>
 
@@ -283,12 +283,12 @@ export function AuthArea({ onGuestMode }: AuthAreaProps) {
             />
 
             <Button className="h-12! w-full" disabled={forgotPassword.isPending} type="submit">
-              {forgotPassword.isPending && <Loader2 className="size-4 animate-spin" />}
+              {forgotPassword.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
               Enviar E-mail
             </Button>
 
             <Button className="w-full" variant="ghost" type="button" onClick={backToDocument}>
-              <ArrowLeft className="size-4" />
+              <ArrowLeft className="mr-2 size-4" />
               Voltar
             </Button>
           </form>
@@ -310,12 +310,7 @@ export function AuthArea({ onGuestMode }: AuthAreaProps) {
           </div>
 
           {secondaryActions.map((action) => (
-            <button
-              key={action.label}
-              type="button"
-              onClick={action.onClick}
-              className="flex min-h-14 w-full cursor-pointer items-center gap-3 border-border border-b p-2 text-left hover:bg-foreground/5"
-            >
+            <button key={action.label} type="button" onClick={action.onClick} className="flex min-h-14 w-full cursor-pointer items-center gap-3 p-2 text-left hover:bg-secondary">
               <div className="flex size-10 shrink-0 items-center justify-center">{action.icon}</div>
               <ItemDescription className="flex-1">{action.label}</ItemDescription>
               <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
