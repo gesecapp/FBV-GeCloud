@@ -9,7 +9,7 @@ import ImagePreview from '@/components/ui/image-preview';
 import { Input } from '@/components/ui/input';
 import { ItemActions, ItemContent, ItemGroup, ItemHeader, ItemTitle } from '@/components/ui/item';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
-import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import type { CreateGuestProps, GuestProps, UserType } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type NewUserFormData, newUserFormSchema } from '../@interface/new-user.interface';
 
 interface NewUserFormProps {
@@ -19,7 +19,15 @@ interface NewUserFormProps {
   isLoading?: boolean;
 }
 
+const USER_TYPE_LABEL: Record<UserType, string> = {
+  visitante: 'visitante',
+  dependente: 'dependente',
+  prestador_de_servico: 'prestador de serviço',
+};
+
 export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUserFormProps) {
+  const userType = (initialData.user_type as UserType) || 'visitante';
+  const userTypeLabel = USER_TYPE_LABEL[userType] || 'usuário';
   const form = useForm<NewUserFormData>({
     resolver: zodResolver(newUserFormSchema),
     defaultValues: {
@@ -69,7 +77,7 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
 
     const payload: CreateGuestProps & { id?: string } = {
       parentId: initialData.parentId || '',
-      user_type: 'visitante',
+      user_type: userType,
     };
 
     if (guestId) {
@@ -222,7 +230,7 @@ export function NewUserForm({ initialData, guestId, onSubmit, isLoading }: NewUs
     },
     {
       title: 'Foto',
-      description: 'Imagem para identificação do visitante.',
+      description: `Imagem para identificação do ${userTypeLabel}.`,
       layout: 'vertical',
       fields: [
         <FormField

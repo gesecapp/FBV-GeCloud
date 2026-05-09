@@ -1,20 +1,21 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { Building2, Home, Users } from 'lucide-react';
-import { useMemo } from 'react';
-import DefaultEmptyData from '@/components/default-empty-data';
+import { Building2, Home, Search } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import DefaultLoading from '@/components/default-loading';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
 import { TreeNavigation } from '@/components/tree-navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataSelect, type DataSelectOption } from '@/components/ui/data-select';
+import { Input } from '@/components/ui/input';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { getUserPermissions } from '@/lib/permissions';
-import { useUnits } from '@/routes/_private/units/@hooks/use-units';
+import { useSearchUnits } from '@/routes/_private/units/@hooks/use-search-units';
+import { useAssignUnits, useUnits } from '@/routes/_private/units/@hooks/use-units';
 import type { Unit } from '@/routes/_private/units/@interface/unit.interface';
 
 export const Route = createFileRoute('/_private/units/')({
@@ -37,15 +38,7 @@ function UnitsPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const { units, currentUnit, isLoading } = useUnits();
 
-  const unitOptions = useMemo<DataSelectOption<Unit>[]>(
-    () =>
-      units.map((unit) => ({
-        value: unit.id,
-        label: formatUnitTitle(unit),
-        data: unit,
-      })),
-    [units],
-  );
+  const hasUnits = units.length > 0;
 
   return (
     <Card className="min-h-screen rounded-none border-none">
@@ -64,9 +57,7 @@ function UnitsPage() {
           <DefaultLoading />
         ) : (
           <ItemGroup className="gap-6">
-            {units.length === 0 ? (
-              <DefaultEmptyData />
-            ) : (
+            {hasUnits ? (
               <>
                 <Item variant="default" className="items-start">
                   <ItemMedia variant="icon" className="size-12 rounded-md bg-muted">
@@ -109,45 +100,9 @@ function UnitsPage() {
                   </Table>
                 </ItemGroup>
               </>
+            ) : (
+              <UnitAssignment />
             )}
-
-            <Item variant="default" className="items-start opacity-60">
-              <ItemContent className="gap-3">
-                <ItemHeader>
-                  <ItemContent>
-                    <ItemTitle>Selecionar unidade</ItemTitle>
-                    <ItemDescription>Processo desabilitado temporariamente.</ItemDescription>
-                  </ItemContent>
-                </ItemHeader>
-
-                <ItemContent className="gap-2">
-                  <Label htmlFor="unit-select">Unidade</Label>
-                  <DataSelect
-                    id="unit-select"
-                    value={currentUnit?.id}
-                    onChange={() => undefined}
-                    options={unitOptions}
-                    placeholder="Processo desabilitado"
-                    searchPlaceholder="Buscar unidade..."
-                    noOptionsMessage="Nenhuma unidade disponível."
-                    noResultsMessage="Nenhuma unidade encontrada."
-                    disabled
-                  />
-                </ItemContent>
-              </ItemContent>
-            </Item>
-
-            <ItemGroup className="gap-4 opacity-60">
-              <ItemHeader>
-                <ItemContent>
-                  <ItemTitle className="text-lg">Usuários vinculados</ItemTitle>
-                  <ItemDescription>Processo desabilitado temporariamente.</ItemDescription>
-                </ItemContent>
-                <Badge variant="secondary">
-                  <Users className="size-3" />0 usuários
-                </Badge>
-              </ItemHeader>
-            </ItemGroup>
           </ItemGroup>
         )}
       </CardContent>
@@ -156,6 +111,90 @@ function UnitsPage() {
         <TreeNavigation />
       </CardFooter>
     </Card>
+  );
+}
+
+function UnitAssignment() {
+  const [term, setTerm] = useState('');
+  const [submittedTerm, setSubmittedTerm] = useState('');
+  const { results, isLoading } = useSearchUnits(submittedTerm);
+  const assign = useAssignUnits();
+
+  function handleSearch() {
+    setSubmittedTerm(term.trim());
+  }
+
+  function handleAssign(unitId: string) {
+    assign.mutate([unitId], {
+      onSuccess: () => {
+        toast.success('Unidade vinculada com sucesso!');
+      },
+      onError: (err: unknown) => {
+        const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Erro ao vincular unidade.';
+        toast.error(message);
+      },
+    });
+  }
+
+  return (
+    <Item variant="default" className="items-start">
+      <ItemContent className="gap-3">
+        <ItemHeader>
+          <ItemContent>
+            <ItemTitle>Selecionar unidade</ItemTitle>
+            <ItemDescription>Você ainda não possui unidade vinculada. Busque pelo identificador e selecione a sua.</ItemDescription>
+          </ItemContent>
+        </ItemHeader>
+
+        <ItemContent className="gap-2">
+          <Label htmlFor="unit-search">Identificador da unidade</Label>
+          <ItemContent className="flex-row gap-2">
+            <Input
+              id="unit-search"
+              value={term}
+              onChange={(event) => setTerm(event.target.value)}
+              placeholder="Ex.: 101"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  handleSearch();
+                }
+              }}
+            />
+            <Button type="button" onClick={handleSearch} disabled={!term.trim() || isLoading}>
+              <Search className="size-4" />
+              Buscar
+            </Button>
+          </ItemContent>
+        </ItemContent>
+
+        {submittedTerm && (
+          <ItemGroup className="gap-2">
+            {isLoading ? (
+              <DefaultLoading />
+            ) : results.length === 0 ? (
+              <Item variant="default">
+                <ItemContent>
+                  <ItemDescription>Nenhuma unidade encontrada para "{submittedTerm}".</ItemDescription>
+                </ItemContent>
+              </Item>
+            ) : (
+              results.map((unit) => (
+                <Item key={unit.id} variant="default">
+                  <ItemContent>
+                    <ItemTitle>{unit.identifier}</ItemTitle>
+                    {unit.block && <ItemDescription>Bloco {unit.block}</ItemDescription>}
+                  </ItemContent>
+                  <Button size="sm" onClick={() => handleAssign(unit.id)} disabled={assign.isPending}>
+                    Vincular
+                  </Button>
+                </Item>
+              ))
+            )}
+          </ItemGroup>
+        )}
+      </ItemContent>
+    </Item>
   );
 }
 

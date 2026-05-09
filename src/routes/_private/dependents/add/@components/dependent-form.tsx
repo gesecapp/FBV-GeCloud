@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Save } from 'lucide-react';
-import { useEffect } from 'react';
+import { Loader2, Save, Share2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
+import DefaultLoading from '@/components/default-loading';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import ImagePreview from '@/components/ui/image-preview';
@@ -11,13 +12,31 @@ import { ItemActions, ItemContent, ItemGroup } from '@/components/ui/item';
 import { getSyncState, RegistrationStatusAlert } from '@/components/user-sync-alert';
 import { useGetGuestById, useGetUserSyncStatus } from '@/hooks/use-access-user-api';
 import { applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
-import type { CreateGuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
+import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
 import { type DependentFormData, dependentFormSchema } from '../@interface/add-dependent.schema';
 
-export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading }: DependentFormProps) {
-  const { data: existingGuest } = useGetGuestById(guestId || null);
+export function DependentForm({ parentId, guestId, initialData, onSubmit, onCancel, isLoading, requireCpfAndImage = false }: DependentFormProps) {
+  const { data: fetchedGuest, isLoading: isLoadingGuest } = useGetGuestById(guestId || null);
   const { data: syncStatus, isLoading: isLoadingSync } = useGetUserSyncStatus(guestId);
   const syncState = getSyncState(syncStatus, isLoadingSync);
+  const [cooldown, setCooldown] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const guestData = fetchedGuest || initialData;
+
+  useEffect(() => {
+    if (cooldown > 0) {
+      timerRef.current = setInterval(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [cooldown]);
+
   const form = useForm<DependentFormData>({
     resolver: zodResolver(dependentFormSchema),
     defaultValues: {
@@ -32,26 +51,27 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
   });
 
   const urlImages = form.watch('url_image');
+  const isPartialRegistration = !guestId && (!urlImages || urlImages.length === 0);
 
   useEffect(() => {
-    if (existingGuest) {
-      const telephones = existingGuest.telephones || [];
+    if (guestData) {
+      const telephones = guestData.telephones || [];
       form.reset({
-        name: existingGuest.name || '',
-        document: applyCpfMask(existingGuest.document || ''),
-        birthDate: existingGuest.birthday
+        name: guestData.name || '',
+        document: applyCpfMask(guestData.document || ''),
+        birthDate: guestData.birthday
           ? (() => {
-              const d = new Date(existingGuest.birthday);
+              const d = new Date(guestData.birthday);
               return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
             })()
           : '',
-        email: existingGuest.email || '',
+        email: guestData.email || '',
         primaryPhone: telephones[0] ? applyPhoneMask(telephones[0]) : '',
         secondaryPhone: telephones[1] ? applyPhoneMask(telephones[1]) : '',
-        url_image: existingGuest.url_image || [],
+        url_image: guestData.url_image || [],
       });
     }
-  }, [existingGuest, form]);
+  }, [guestData, form]);
 
   function formatDateToISO(dateString: string | undefined): string {
     if (!dateString || dateString.length < 10) return '';
@@ -64,29 +84,78 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
   }
 
   function handleFormSubmit(data: DependentFormData) {
+    if (cooldown > 0) return;
+
+    if (requireCpfAndImage) {
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (!cpfClean || cpfClean.length !== 11) {
+        form.setError('document', { type: 'manual', message: 'CPF é obrigatório e deve ter 11 dígitos' });
+        return;
+      }
+      if (!data.url_image || data.url_image.length === 0) {
+        form.setError('url_image', { type: 'manual', message: 'Pelo menos uma foto é obrigatória' });
+        return;
+      }
+    }
+
     const telephones: string[] = [];
     if (data.primaryPhone?.trim()) telephones.push(data.primaryPhone.replace(/\D/g, ''));
     if (data.secondaryPhone?.trim()) telephones.push(data.secondaryPhone.replace(/\D/g, ''));
 
+    const isoDate = formatDateToISO(data.birthDate);
+
     const payload: CreateGuestProps & { id?: string } = {
-      name: data.name,
-      document: data.document?.replace(/\D/g, ''),
       parentId,
-      birthday: formatDateToISO(data.birthDate),
-      telephones,
-      email: data.email || undefined,
-      url_image: data.url_image,
       user_type: 'dependente',
     };
 
-    if (guestId) payload.id = guestId;
+    if (guestId) {
+      payload.id = guestId;
 
+      const originalImages = JSON.stringify(guestData?.url_image || []);
+      const currentImages = JSON.stringify(data.url_image || []);
+      if (currentImages !== originalImages && data.url_image && data.url_image.length > 0) {
+        payload.url_image = data.url_image;
+      }
+
+      if (data.name !== (guestData?.name || '')) payload.name = data.name;
+
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (cpfClean !== (guestData?.document || '')) payload.document = cpfClean;
+
+      if (isoDate !== (guestData?.birthday || '')) payload.birthday = isoDate;
+      if (data.email !== (guestData?.email || '')) payload.email = data.email;
+
+      const originalPhones = JSON.stringify(guestData?.telephones || []);
+      const currentPhones = JSON.stringify(telephones);
+      if (currentPhones !== originalPhones && telephones.length > 0) {
+        payload.telephones = telephones;
+      }
+    } else {
+      if (data.name) payload.name = data.name;
+
+      const cpfClean = data.document?.replace(/\D/g, '');
+      if (cpfClean) payload.document = cpfClean;
+
+      if (isoDate) payload.birthday = isoDate;
+      if (data.email) payload.email = data.email;
+
+      if (telephones.length > 0) payload.telephones = telephones;
+
+      if (data.url_image && data.url_image.length > 0) {
+        payload.url_image = data.url_image;
+      }
+    }
+
+    setCooldown(5);
     onSubmit(payload);
   }
 
   function handleImageChange(image: string | undefined) {
     form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
+
+  if (isLoadingGuest) return <DefaultLoading />;
 
   const sections: FormSection[] = [
     {
@@ -113,9 +182,15 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
           name="document"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>CPF *</FormLabel>
+              <FormLabel>CPF{requireCpfAndImage || (urlImages && urlImages.length > 0) ? ' *' : ''}</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="000.000.000-00" onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))} maxLength={14} disabled={!!guestId} />
+                <Input
+                  {...field}
+                  placeholder="000.000.000-00"
+                  onChange={(e) => form.setValue('document', applyCpfMask(e.target.value))}
+                  maxLength={14}
+                  disabled={!!guestData?.document}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -216,10 +291,11 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || cooldown > 0} className={isPartialRegistration ? 'bg-blue-600 text-white hover:bg-blue-700' : ''}>
               {isLoading && <Loader2 className="size-4 animate-spin" />}
-              {!isLoading && <Save className="size-4"></Save>}
-              Salvar
+              {!isLoading && isPartialRegistration && <Share2 className="size-4" />}
+              {!isLoading && !isPartialRegistration && <Save className="size-4" />}
+              {cooldown > 0 ? `Aguarde ${cooldown}s` : isPartialRegistration ? 'Salvar e Compartilhar Link' : 'Salvar'}
             </Button>
           </ItemActions>
         </form>
@@ -231,7 +307,9 @@ export function DependentForm({ parentId, guestId, onSubmit, onCancel, isLoading
 interface DependentFormProps {
   parentId: string;
   guestId?: string | null;
+  initialData?: Partial<GuestProps>;
   onSubmit: (data: CreateGuestProps & { id?: string }) => void;
   onCancel: () => void;
   isLoading?: boolean;
+  requireCpfAndImage?: boolean;
 }
