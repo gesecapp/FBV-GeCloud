@@ -103,8 +103,7 @@ export function AccomplishAccessForm({ inviteId, guest, onSubmit, isLoading }: A
   }
 
   function handleFormSubmit(data: AccomplishAccessFormData) {
-    const phones: string[] = [];
-    if (data.primaryPhone?.trim()) phones.push(data.primaryPhone.replace(/\D/g, ''));
+    const phones: string[] = [data.primaryPhone.replace(/\D/g, '')];
     if (data.secondaryPhone?.trim()) phones.push(data.secondaryPhone.replace(/\D/g, ''));
 
     const payload: AccomplishAccessPayload = {
@@ -112,6 +111,8 @@ export function AccomplishAccessForm({ inviteId, guest, onSubmit, isLoading }: A
       password: data.password,
       is_legal_person: !!guest.is_legal_person,
       user_type: data.userType,
+      telephones: phones,
+      url_image: data.url_image,
     };
 
     if ((userTypesNeedingResponsible as readonly string[]).includes(data.userType) && data.parentId?.trim()) {
@@ -120,8 +121,6 @@ export function AccomplishAccessForm({ inviteId, guest, onSubmit, isLoading }: A
 
     const iso = formatDateToIso(data.birthDate);
     if (iso) payload.birthday = iso;
-    if (phones.length > 0) payload.telephones = phones;
-    if (data.url_image && data.url_image.length > 0) payload.url_image = data.url_image;
 
     onSubmit(payload);
   }
@@ -281,7 +280,7 @@ export function AccomplishAccessForm({ inviteId, guest, onSubmit, isLoading }: A
           name="primaryPhone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Telefone Primário</FormLabel>
+              <FormLabel>Telefone Primário *</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -363,7 +362,7 @@ export function AccomplishAccessForm({ inviteId, guest, onSubmit, isLoading }: A
     },
     {
       title: 'Foto',
-      description: 'Imagem de identificação.',
+      description: 'Imagem de identificação (obrigatória).',
       layout: 'vertical',
       fields: [
         <FormField

@@ -22,6 +22,12 @@ function getErrorMessage(err: unknown): string {
   return typeof message === 'string' ? message : 'Erro ao concluir cadastro.';
 }
 
+function guestDocumentIsValid(guest: { document?: string; is_legal_person?: boolean }): boolean {
+  const digits = (guest.document ?? '').replace(/\D/g, '');
+  const expected = guest.is_legal_person ? 14 : 11;
+  return digits.length === expected;
+}
+
 function AccomplishAccessPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
@@ -62,6 +68,22 @@ function AccomplishAccessPage() {
             <ItemTitle className="text-destructive text-xl">Link inválido ou expirado</ItemTitle>
             <ItemDescription className="text-center">Este link de cadastro expirou ou já foi utilizado. Solicite um novo cadastro.</ItemDescription>
             <Button onClick={() => navigate({ to: '/new-access' })}>Iniciar novo cadastro</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!guestDocumentIsValid(guest)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <Card className="max-w-md">
+          <CardContent className="flex flex-col items-center gap-4 py-8">
+            <ItemTitle className="text-destructive text-xl">Cadastro incompleto</ItemTitle>
+            <ItemDescription className="text-center">
+              O documento deste convite não está disponível ou é inválido. Conclua sempre a primeira etapa em Novo Cadastro (CPF/CNPJ e e-mail) e use o link enviado por e-mail.
+            </ItemDescription>
+            <Button onClick={() => navigate({ to: '/new-access' })}>Ir para novo cadastro</Button>
           </CardContent>
         </Card>
       </div>

@@ -17,9 +17,9 @@ export interface AccomplishAccessGuestData {
 export interface AccomplishAccessPayload {
   name: string;
   birthday?: string;
-  telephones?: string[];
+  telephones: string[];
   password: string;
-  url_image?: string[];
+  url_image: string[];
   is_legal_person?: boolean;
   user_type: string;
   parentId?: string;

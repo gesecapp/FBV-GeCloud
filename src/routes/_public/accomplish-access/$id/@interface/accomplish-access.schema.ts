@@ -13,15 +13,33 @@ export const userTypesNeedingResponsible = ['dependente', 'visitante', 'prestado
 
 export const userTypeValues = userTypeOptions.map((option) => option.value) as [string, ...string[]];
 
+function brPhoneDigitCount(value: string): number {
+  return value.replace(/\D/g, '').length;
+}
+
 export const accomplishAccessSchema = z
   .object({
     name: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres'),
     birthDate: z.string().optional(),
-    primaryPhone: z.string().optional(),
-    secondaryPhone: z.string().optional(),
+    primaryPhone: z
+      .string()
+      .min(1, 'Informe o telefone')
+      .refine(
+        (v) => {
+          const n = brPhoneDigitCount(v);
+          return n >= 10 && n <= 11;
+        },
+        { message: 'Informe um telefone válido com DDD (10 ou 11 dígitos)' },
+      ),
+    secondaryPhone: z
+      .string()
+      .optional()
+      .refine((v) => !v?.trim() || (brPhoneDigitCount(v) >= 10 && brPhoneDigitCount(v) <= 11), {
+        message: 'Telefone secundário inválido (use DDD, 10 ou 11 dígitos)',
+      }),
     password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
     confirmPassword: z.string().min(1, 'Confirme a senha'),
-    url_image: z.array(z.string()),
+    url_image: z.array(z.string()).min(1, 'Adicione pelo menos uma foto'),
     userType: z.enum(userTypeValues, { errorMap: () => ({ message: 'Selecione o tipo de usuário' }) }),
     parentId: z.string().optional(),
   })
