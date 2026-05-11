@@ -44,7 +44,7 @@ function NewUserPage() {
     const idToUpdate = guestId ?? data.id;
 
     if (!idToUpdate) {
-      toast.error('ID do visitante não encontrado.');
+      toast.error('Não foi possível identificar o cadastro. Recarregue a página ou use o link novamente.');
       return;
     }
 

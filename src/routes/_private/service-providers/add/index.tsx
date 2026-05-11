@@ -14,9 +14,23 @@ import { useAccessUserApi } from '@/hooks/use-access-user-api';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { getUserPermissions } from '@/lib/permissions';
 import type { CreateGuestProps } from '../../access-user/@interface/access-user.interface';
+import { INVITATION_URL_BASE } from '../../visitors/add/@consts/add-visitor.consts';
 import { ServiceProviderForm } from './@components/service-provider-form';
-import { INVITATION_URL_BASE, WHATSAPP_MESSAGE_PREFIX } from './@consts/add-service-provider.consts';
+import { WHATSAPP_MESSAGE_PREFIX } from './@consts/add-service-provider.consts';
 import { addServiceProviderSearchSchema } from './@interface/add-service-provider.schema';
+
+type ApiError = {
+  response?: {
+    data?: {
+      message?: unknown;
+    };
+  };
+};
+
+function getApiErrorMessage(err: unknown, fallback: string) {
+  const message = (err as ApiError).response?.data?.message;
+  return typeof message === 'string' ? message : fallback;
+}
 
 export const Route = createFileRoute('/_private/service-providers/add/')({
   validateSearch: addServiceProviderSearchSchema,
@@ -63,6 +77,9 @@ function AddServiceProviderPage() {
             toast.success('Prestador atualizado! As alterações podem levar alguns instantes para refletirem no sistema.');
             handleBack();
           },
+          onError: (err: unknown) => {
+            toast.error(getApiErrorMessage(err, 'Erro ao atualizar prestador.'));
+          },
         },
       );
     } else {
@@ -76,6 +93,9 @@ function AddServiceProviderPage() {
             setInvitationLink(url);
             setShowInviteModal(true);
           }
+        },
+        onError: (err: unknown) => {
+          toast.error(getApiErrorMessage(err, 'Erro ao cadastrar prestador.'));
         },
       });
     }
