@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff, Loader2, Save } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Save, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import DefaultFormLayout, { type FormSection } from '@/components/default-form-layout';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -12,9 +13,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { applyCnpjMask, applyCpfMask, applyDateMask, applyPhoneMask } from '@/lib/masks';
 import { cn } from '@/lib/utils';
 import type { AccomplishAccessGuestData, AccomplishAccessPayload } from '../@hooks/use-accomplish-access-api';
-import { type AccomplishAccessFormData, accomplishAccessSchema, userTypeOptions } from '../@interface/accomplish-access.schema';
+import { useLookupAccomplishAccessParent } from '../@hooks/use-accomplish-access-api';
+import { type AccomplishAccessFormData, accomplishAccessSchema, userTypeOptions, userTypesNeedingResponsible } from '../@interface/accomplish-access.schema';
+
+function getLookupErrorMessage(err: unknown): string {
+  const data = (err as { response?: { data?: { originalError?: { message?: unknown }; message?: unknown } } }).response?.data;
+  const message = data?.originalError?.message ?? data?.message;
+  return typeof message === 'string' ? message : 'Não foi possível buscar o responsável.';
+}
 
 interface AccomplishAccessFormProps {
+  inviteId: string;
   guest: AccomplishAccessGuestData;
   onSubmit: (payload: AccomplishAccessPayload) => void;
   isLoading?: boolean;
@@ -38,9 +47,12 @@ function formatDateToIso(value?: string): string | undefined {
   return iso.toISOString();
 }
 
-export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishAccessFormProps) {
+export function AccomplishAccessForm({ inviteId, guest, onSubmit, isLoading }: AccomplishAccessFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [responsibleCpf, setResponsibleCpf] = useState('');
+  const [responsibleLabel, setResponsibleLabel] = useState('');
+  const lookupParent = useLookupAccomplishAccessParent(inviteId);
 
   const form = useForm<AccomplishAccessFormData>({
     resolver: zodResolver(accomplishAccessSchema),
@@ -52,11 +64,43 @@ export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishA
       password: '',
       confirmPassword: '',
       url_image: guest.url_image ?? [],
+      parentId: '',
     },
   });
 
   const urlImages = form.watch('url_image');
+  const userTypeWatch = form.watch('userType');
   const maskedDocument = guest.is_legal_person ? applyCnpjMask(guest.document ?? '') : applyCpfMask(guest.document ?? '');
+  const needsResponsible = (userTypesNeedingResponsible as readonly string[]).includes(userTypeWatch);
+
+  function handleLookupResponsible() {
+    const digits = responsibleCpf.replace(/\D/g, '');
+    if (digits.length !== 11) {
+      form.setError('parentId', { message: 'Informe um CPF válido do responsável' });
+      return;
+    }
+
+    lookupParent.mutate(
+      { document: digits, userType: userTypeWatch },
+      {
+        onSuccess: (res) => {
+          if (res.found && res.parent) {
+            form.setValue('parentId', res.parent.id, { shouldValidate: true });
+            const typeLabel = res.parent.user_type === 'colaborador' ? 'Colaborador' : 'Morador';
+            setResponsibleLabel(`${res.parent.name} (${typeLabel})`);
+            toast.success('Responsável encontrado.');
+          } else {
+            form.setValue('parentId', '', { shouldValidate: true });
+            setResponsibleLabel('');
+            toast.warning('Nenhum responsável encontrado com este CPF na sua instituição.');
+          }
+        },
+        onError: (err) => {
+          toast.error(getLookupErrorMessage(err));
+        },
+      },
+    );
+  }
 
   function handleFormSubmit(data: AccomplishAccessFormData) {
     const phones: string[] = [];
@@ -70,6 +114,10 @@ export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishA
       user_type: data.userType,
     };
 
+    if ((userTypesNeedingResponsible as readonly string[]).includes(data.userType) && data.parentId?.trim()) {
+      payload.parentId = data.parentId.trim();
+    }
+
     const iso = formatDateToIso(data.birthDate);
     if (iso) payload.birthday = iso;
     if (phones.length > 0) payload.telephones = phones;
@@ -81,6 +129,56 @@ export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishA
   function handleImageChange(image: string | undefined) {
     form.setValue('url_image', image ? [image] : [], { shouldValidate: true });
   }
+
+  const responsibleSection: FormSection | null = needsResponsible
+    ? {
+        title: 'Morador responsável',
+        description:
+          userTypeWatch === 'prestador_de_servico'
+            ? 'Informe o CPF do morador ou colaborador responsável pelo seu vínculo.'
+            : 'Informe o CPF do morador responsável pelo seu cadastro.',
+        fields: [
+          <FormField
+            key="parentId"
+            control={form.control}
+            name="parentId"
+            render={({ field }) => (
+              <FormItem>
+                <input type="hidden" {...field} />
+                <FormLabel>CPF do responsável *</FormLabel>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+                  <FormControl className="flex-1">
+                    <Input
+                      placeholder="000.000.000-00"
+                      maxLength={14}
+                      value={responsibleCpf}
+                      onChange={(e) => {
+                        setResponsibleCpf(applyCpfMask(e.target.value));
+                        field.onChange('');
+                        setResponsibleLabel('');
+                      }}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="shrink-0"
+                    onClick={handleLookupResponsible}
+                    disabled={lookupParent.isPending || responsibleCpf.replace(/\D/g, '').length !== 11}
+                  >
+                    {lookupParent.isPending ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
+                    Buscar
+                  </Button>
+                </div>
+                {responsibleLabel ? <p className="text-emerald-700 text-sm dark:text-emerald-400">{responsibleLabel}</p> : null}
+                <FormMessage />
+              </FormItem>
+            )}
+          />,
+        ],
+      }
+    : null;
 
   const sections: FormSection[] = [
     {
@@ -106,7 +204,15 @@ export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishA
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de Usuário *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  form.setValue('parentId', '', { shouldValidate: true });
+                  setResponsibleCpf('');
+                  setResponsibleLabel('');
+                }}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione o tipo de usuário" />
@@ -126,6 +232,7 @@ export function AccomplishAccessForm({ guest, onSubmit, isLoading }: AccomplishA
         />,
       ],
     },
+    ...(responsibleSection ? [responsibleSection] : []),
     {
       title: 'Dados Pessoais',
       description: 'Informações do titular.',

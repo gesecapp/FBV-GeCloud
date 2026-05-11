@@ -22,6 +22,12 @@ export interface AccomplishAccessPayload {
   url_image?: string[];
   is_legal_person?: boolean;
   user_type: string;
+  parentId?: string;
+}
+
+export interface AccomplishAccessParentLookupResult {
+  found: boolean;
+  parent: { id: string; name: string; user_type: string } | null;
 }
 
 export function useGetGuestByInviteId(id: string | null) {
@@ -40,6 +46,18 @@ export function useAccomplishAccess() {
   return useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: AccomplishAccessPayload }) => {
       const response = await api.put<{ data: any; statusCode: number }>(`/app/accomplish-access/${id}`, payload);
+      return response.data.data;
+    },
+  });
+}
+
+export function useLookupAccomplishAccessParent(inviteId: string) {
+  return useMutation({
+    mutationFn: async ({ document, userType }: { document: string; userType: string }) => {
+      const digits = document.replace(/\D/g, '');
+      const response = await api.get<{ data: AccomplishAccessParentLookupResult; statusCode: number }>(`/app/accomplish-access/${inviteId}/parent-lookup`, {
+        params: { document: digits, user_type: userType },
+      });
       return response.data.data;
     },
   });

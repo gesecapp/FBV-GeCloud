@@ -89,7 +89,7 @@ function AccomplishAccessPage() {
           <ItemDescription>Preencha os dados abaixo para concluir seu cadastro.</ItemDescription>
         </CardHeader>
         <CardContent>
-          <AccomplishAccessForm guest={guest} onSubmit={handleSubmit} isLoading={accomplishAccess.isPending} />
+          <AccomplishAccessForm inviteId={id} guest={guest} onSubmit={handleSubmit} isLoading={accomplishAccess.isPending} />
         </CardContent>
       </Card>
     </div>
