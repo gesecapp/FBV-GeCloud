@@ -31,7 +31,10 @@ const PERMISSIONS_BY_TYPE: Record<AppUserType, UserPermissions> = {
   },
   visitante: NO_PERMISSIONS,
   prestador_de_servico: NO_PERMISSIONS,
-  dependente: NO_PERMISSIONS,
+  dependente: {
+    ...NO_PERMISSIONS,
+    canViewUnits: true,
+  },
 };
 
 export function isAppUserType(value: string | null | undefined): value is AppUserType {

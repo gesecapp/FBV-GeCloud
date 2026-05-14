@@ -1,17 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-
 import { api } from '@/lib/api/client';
 import type { CreateGuestProps, GuestProps } from '@/routes/_private/access-user/@interface/access-user.interface';
-
-interface GuestInviteData extends Partial<GuestProps> {
-  id?: string;
-  parentId?: string;
-}
-
-interface FinalizeGuestInviteParams {
-  guestId: string;
-  data: CreateGuestProps & { id?: string };
-}
 
 export function useGetGuestByInviteId(id: string | null) {
   return useQuery({
@@ -31,4 +20,14 @@ export function useFinalizeGuestInvite() {
       await api.put(`/app/guests/${guestId}/invite`, data);
     },
   });
+}
+
+interface GuestInviteData extends Partial<GuestProps> {
+  id?: string;
+  parentId?: string;
+}
+
+interface FinalizeGuestInviteParams {
+  guestId: string;
+  data: CreateGuestProps & { id?: string };
 }

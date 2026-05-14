@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { Building2, Home, Search } from 'lucide-react';
-import { useState } from 'react';
+import { Home, Info, Search, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import DefaultLoading from '@/components/default-loading';
 import { UserAvatarMenu } from '@/components/nav-actions/user-avatar-menu';
@@ -11,9 +11,10 @@ import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from
 import { Input } from '@/components/ui/input';
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAppAuth } from '@/hooks/use-app-auth';
 import { getUserPermissions } from '@/lib/permissions';
+import { cn } from '@/lib/utils';
+import { useParentUnits } from '@/routes/_private/units/@hooks/use-parent-units';
 import { useSearchUnits } from '@/routes/_private/units/@hooks/use-search-units';
 import { useAssignUnits, useUnits } from '@/routes/_private/units/@hooks/use-units';
 import type { Unit } from '@/routes/_private/units/@interface/unit.interface';
@@ -36,8 +37,10 @@ export const Route = createFileRoute('/_private/units/')({
 
 function UnitsPage() {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { units, currentUnit, isLoading } = useUnits();
+  const { userType } = useAppAuth();
+  const { units, isLoading } = useUnits();
 
+  const isDependent = userType === 'dependente';
   const hasUnits = units.length > 0;
 
   return (
@@ -57,52 +60,9 @@ function UnitsPage() {
           <DefaultLoading />
         ) : (
           <ItemGroup className="gap-6">
-            {hasUnits ? (
-              <>
-                <Item variant="default" className="items-start">
-                  <ItemMedia variant="icon" className="size-12 rounded-md bg-muted">
-                    <Building2 className="size-5 text-muted-foreground" />
-                  </ItemMedia>
-                  <ItemContent>
-                    <ItemTitle className="font-medium text-lg">Sua unidade vinculada</ItemTitle>
-                    <ItemDescription>{formatUnitTitle(currentUnit)}</ItemDescription>
-                    {currentUnit?.type && <Badge variant="info">{getUnitTypeLabel(currentUnit.type)}</Badge>}
-                  </ItemContent>
-                </Item>
-
-                <ItemGroup className="gap-4">
-                  <ItemHeader>
-                    <ItemContent>
-                      <ItemTitle className="text-lg">Unidades vinculadas</ItemTitle>
-                      <ItemDescription>Listagem das unidades associadas ao seu usuário.</ItemDescription>
-                    </ItemContent>
-                  </ItemHeader>
-
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Unidade</TableHead>
-                        <TableHead>Bloco</TableHead>
-                        <TableHead>Tipo</TableHead>
-                        <TableHead>Descrição</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {units.map((unit) => (
-                        <TableRow key={unit.id}>
-                          <TableCell className="font-medium">{unit.identifier}</TableCell>
-                          <TableCell>{unit.block || '-'}</TableCell>
-                          <TableCell>{getUnitTypeLabel(unit.type)}</TableCell>
-                          <TableCell>{unit.description || unit.address || '-'}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </ItemGroup>
-              </>
-            ) : (
-              <UnitAssignment />
-            )}
+            {hasUnits && <LinkedUnitsList units={units} />}
+            {!hasUnits && isDependent && <DependentUnitSelection />}
+            {!isDependent && <UnitSearchAssignment hasUnits={hasUnits} />}
           </ItemGroup>
         )}
       </CardContent>
@@ -114,7 +74,126 @@ function UnitsPage() {
   );
 }
 
-function UnitAssignment() {
+function LinkedUnitsList({ units }: { units: Unit[] }) {
+  const defaultId = units[0]?.id;
+
+  return (
+    <ItemGroup className="gap-4">
+      <ItemHeader>
+        <ItemContent>
+          <ItemTitle className="text-lg">Unidades vinculadas</ItemTitle>
+          <ItemDescription>Selecione a unidade que deseja definir como padrão.</ItemDescription>
+        </ItemContent>
+      </ItemHeader>
+
+      <ItemGroup className="gap-3">
+        {units.map((unit) => {
+          const isDefault = unit.id === defaultId;
+          return (
+            <Item key={unit.id} variant="default" className={cn(isDefault && 'ring-2 ring-primary')}>
+              <ItemMedia>
+                <UnitRadioIndicator selected={isDefault} />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle className="font-medium text-base">{unit.identifier}</ItemTitle>
+                <ItemDescription>{getUnitTypeLabel(unit.type)}</ItemDescription>
+              </ItemContent>
+              {isDefault && (
+                <Badge variant="info" className="gap-1">
+                  <Star className="size-3" />
+                  Padrão
+                </Badge>
+              )}
+            </Item>
+          );
+        })}
+      </ItemGroup>
+
+      <Item variant="muted">
+        <ItemMedia>
+          <Info className="size-5 text-primary" />
+        </ItemMedia>
+        <ItemContent>
+          <ItemDescription>A unidade marcada como Padrão será utilizada como referência principal em suas interações no sistema.</ItemDescription>
+        </ItemContent>
+      </Item>
+    </ItemGroup>
+  );
+}
+
+function DependentUnitSelection() {
+  const { results, isLoading } = useParentUnits(true);
+  const assign = useAssignUnits();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedId && results.length > 0) {
+      setSelectedId(results[0].id);
+    }
+  }, [results, selectedId]);
+
+  function handleAssign() {
+    if (!selectedId) return;
+    assign.mutate([selectedId], {
+      onSuccess: () => {
+        toast.success('Unidade vinculada com sucesso!');
+      },
+      onError: (err: unknown) => {
+        const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Erro ao vincular unidade.';
+        toast.error(message);
+      },
+    });
+  }
+
+  if (isLoading) {
+    return <DefaultLoading />;
+  }
+
+  if (results.length === 0) {
+    return (
+      <Item variant="default">
+        <ItemContent>
+          <ItemTitle>Nenhuma unidade disponível</ItemTitle>
+          <ItemDescription>O titular ainda não possui unidades vinculadas.</ItemDescription>
+        </ItemContent>
+      </Item>
+    );
+  }
+
+  return (
+    <ItemGroup className="gap-4">
+      <ItemHeader>
+        <ItemContent>
+          <ItemTitle className="text-lg">Unidades do titular</ItemTitle>
+          <ItemDescription>Selecione uma das unidades vinculadas ao titular para se vincular.</ItemDescription>
+        </ItemContent>
+      </ItemHeader>
+
+      <ItemGroup className="gap-3">
+        {results.map((unit) => {
+          const isSelected = unit.id === selectedId;
+          return (
+            <Item key={unit.id} variant="default" onClick={() => setSelectedId(unit.id)} className={cn('cursor-pointer', isSelected && 'ring-2 ring-primary')}>
+              <ItemMedia>
+                <UnitRadioIndicator selected={isSelected} />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle className="font-medium text-base">{unit.identifier}</ItemTitle>
+                <ItemDescription>{getUnitTypeLabel(unit.type)}</ItemDescription>
+              </ItemContent>
+            </Item>
+          );
+        })}
+      </ItemGroup>
+
+      <Button type="button" onClick={handleAssign} disabled={!selectedId || assign.isPending}>
+        Vincular unidade
+      </Button>
+    </ItemGroup>
+  );
+}
+
+function UnitSearchAssignment({ hasUnits }: { hasUnits: boolean }) {
   const [term, setTerm] = useState('');
   const [submittedTerm, setSubmittedTerm] = useState('');
   const { results, isLoading } = useSearchUnits(submittedTerm);
@@ -128,6 +207,8 @@ function UnitAssignment() {
     assign.mutate([unitId], {
       onSuccess: () => {
         toast.success('Unidade vinculada com sucesso!');
+        setTerm('');
+        setSubmittedTerm('');
       },
       onError: (err: unknown) => {
         const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Erro ao vincular unidade.';
@@ -137,70 +218,73 @@ function UnitAssignment() {
   }
 
   return (
-    <Item variant="default" className="items-start">
-      <ItemContent className="gap-3">
-        <ItemHeader>
-          <ItemContent>
-            <ItemTitle>Selecionar unidade</ItemTitle>
-            <ItemDescription>Você ainda não possui unidade vinculada. Busque pelo identificador e selecione a sua.</ItemDescription>
-          </ItemContent>
-        </ItemHeader>
-
-        <ItemContent className="gap-2">
-          <Label htmlFor="unit-search">Identificador da unidade</Label>
-          <ItemContent className="flex-row gap-2">
-            <Input
-              id="unit-search"
-              value={term}
-              onChange={(event) => setTerm(event.target.value)}
-              placeholder="Ex.: 101"
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  handleSearch();
-                }
-              }}
-            />
-            <Button type="button" onClick={handleSearch} disabled={!term.trim() || isLoading}>
-              <Search className="size-4" />
-              Buscar
-            </Button>
-          </ItemContent>
+    <ItemGroup className="gap-3">
+      <ItemHeader>
+        <ItemContent>
+          <ItemTitle className="text-lg">{hasUnits ? 'Vincular outra unidade' : 'Selecionar unidade'}</ItemTitle>
+          <ItemDescription>
+            {hasUnits ? 'Busque pelo identificador para vincular uma nova unidade.' : 'Você ainda não possui unidade vinculada. Busque pelo identificador e selecione a sua.'}
+          </ItemDescription>
         </ItemContent>
+      </ItemHeader>
 
-        {submittedTerm && (
-          <ItemGroup className="gap-2">
-            {isLoading ? (
-              <DefaultLoading />
-            ) : results.length === 0 ? (
-              <Item variant="default">
-                <ItemContent>
-                  <ItemDescription>Nenhuma unidade encontrada para "{submittedTerm}".</ItemDescription>
-                </ItemContent>
-              </Item>
-            ) : (
-              results.map((unit) => (
-                <Item key={unit.id} variant="default">
-                  <ItemContent>
-                    <ItemTitle>{unit.identifier}</ItemTitle>
-                    {unit.block && <ItemDescription>Bloco {unit.block}</ItemDescription>}
-                  </ItemContent>
-                  <Button size="sm" onClick={() => handleAssign(unit.id)} disabled={assign.isPending}>
-                    Vincular
-                  </Button>
-                </Item>
-              ))
-            )}
-          </ItemGroup>
-        )}
+      <ItemContent className="gap-2">
+        <Label htmlFor="unit-search">Identificador da unidade</Label>
+        <ItemContent className="flex-row gap-2">
+          <Input
+            id="unit-search"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder="Ex.: 101"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearch();
+              }
+            }}
+          />
+          <Button type="button" onClick={handleSearch} disabled={!term.trim() || isLoading}>
+            <Search className="size-4" />
+            Buscar
+          </Button>
+        </ItemContent>
       </ItemContent>
-    </Item>
+
+      {submittedTerm && (
+        <ItemGroup className="gap-2">
+          {isLoading ? (
+            <DefaultLoading />
+          ) : results.length === 0 ? (
+            <Item variant="default">
+              <ItemContent>
+                <ItemDescription>Nenhuma unidade encontrada para "{submittedTerm}".</ItemDescription>
+              </ItemContent>
+            </Item>
+          ) : (
+            results.map((unit) => (
+              <Item key={unit.id} variant="default">
+                <ItemContent>
+                  <ItemTitle>{unit.identifier}</ItemTitle>
+                  {unit.block && <ItemDescription>Bloco {unit.block}</ItemDescription>}
+                </ItemContent>
+                <Button size="sm" onClick={() => handleAssign(unit.id)} disabled={assign.isPending}>
+                  Vincular
+                </Button>
+              </Item>
+            ))
+          )}
+        </ItemGroup>
+      )}
+    </ItemGroup>
   );
 }
 
-function formatUnitTitle(unit?: Unit) {
-  if (!unit) return 'Nenhuma unidade vinculada';
-  return [unit.identifier, unit.block].filter(Boolean).join(' - ');
+function UnitRadioIndicator({ selected }: { selected: boolean }) {
+  return (
+    <div className={cn('flex size-5 items-center justify-center rounded-full border-2', selected ? 'border-primary' : 'border-muted-foreground/40')}>
+      {selected && <div className="size-2.5 rounded-full bg-primary" />}
+    </div>
+  );
 }
 
 function getUnitTypeLabel(type?: string) {
@@ -208,6 +292,7 @@ function getUnitTypeLabel(type?: string) {
     apartment: 'Apartamento',
     house: 'Casa',
     commercial: 'Comercial',
+    cobertura: 'Cobertura',
   };
 
   return type ? (labels[type] ?? type) : '-';
