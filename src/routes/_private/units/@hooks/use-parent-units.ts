@@ -3,22 +3,16 @@ import { useAppAuth } from '@/hooks/use-app-auth';
 import { api } from '@/lib/api/client';
 import type { Unit } from '@/routes/_private/units/@interface/unit.interface';
 
-function authHeaders(token: string | null): Record<string, string> {
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 export function useParentUnits(enabled: boolean) {
-  const { token } = useAppAuth();
+  const { userId } = useAppAuth();
 
   const query = useQuery({
-    queryKey: ['app', 'unities', 'parent'],
+    queryKey: ['app', 'unities', 'parent', userId],
     queryFn: async () => {
-      const response = await api.get<{ data: Unit[]; statusCode: number }>('/app/unities/parent', {
-        headers: authHeaders(token),
-      });
+      const response = await api.get<{ data: Unit[]; statusCode: number }>(`/app/unities/user/${userId}/parent`);
       return response.data.data ?? [];
     },
-    enabled: !!token && enabled,
+    enabled: !!userId && enabled,
   });
 
   return {

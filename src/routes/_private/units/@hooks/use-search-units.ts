@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAppAuth } from '@/hooks/use-app-auth';
 import { api } from '@/lib/api/client';
 
 export interface UnitSearchResult {
@@ -8,12 +7,7 @@ export interface UnitSearchResult {
   block?: string;
 }
 
-function authHeaders(token: string | null): Record<string, string> {
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 export function useSearchUnits(term: string) {
-  const { token } = useAppAuth();
   const trimmed = term.trim();
 
   const query = useQuery({
@@ -21,7 +15,6 @@ export function useSearchUnits(term: string) {
     queryFn: async () => {
       const response = await api.get<{ data: UnitSearchResult[]; statusCode: number }>('/app/unities/search', {
         params: { q: trimmed },
-        headers: authHeaders(token),
       });
       return response.data.data ?? [];
     },

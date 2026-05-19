@@ -16,7 +16,7 @@ import { getUserPermissions } from '@/lib/permissions';
 import { cn } from '@/lib/utils';
 import { useParentUnits } from '@/routes/_private/units/@hooks/use-parent-units';
 import { useSearchUnits } from '@/routes/_private/units/@hooks/use-search-units';
-import { useAssignUnits, useUnits } from '@/routes/_private/units/@hooks/use-units';
+import { useLinkSelfToUnit, useUnits } from '@/routes/_private/units/@hooks/use-units';
 import type { Unit } from '@/routes/_private/units/@interface/unit.interface';
 
 export const Route = createFileRoute('/_private/units/')({
@@ -123,7 +123,7 @@ function LinkedUnitsList({ units }: { units: Unit[] }) {
 
 function DependentUnitSelection() {
   const { results, isLoading } = useParentUnits(true);
-  const assign = useAssignUnits();
+  const link = useLinkSelfToUnit();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -134,7 +134,7 @@ function DependentUnitSelection() {
 
   function handleAssign() {
     if (!selectedId) return;
-    assign.mutate([selectedId], {
+    link.mutate(selectedId, {
       onSuccess: () => {
         toast.success('Unidade vinculada com sucesso!');
       },
@@ -186,7 +186,7 @@ function DependentUnitSelection() {
         })}
       </ItemGroup>
 
-      <Button type="button" onClick={handleAssign} disabled={!selectedId || assign.isPending}>
+      <Button type="button" onClick={handleAssign} disabled={!selectedId || link.isPending}>
         Vincular unidade
       </Button>
     </ItemGroup>
@@ -197,14 +197,14 @@ function UnitSearchAssignment({ hasUnits }: { hasUnits: boolean }) {
   const [term, setTerm] = useState('');
   const [submittedTerm, setSubmittedTerm] = useState('');
   const { results, isLoading } = useSearchUnits(submittedTerm);
-  const assign = useAssignUnits();
+  const link = useLinkSelfToUnit();
 
   function handleSearch() {
     setSubmittedTerm(term.trim());
   }
 
   function handleAssign(unitId: string) {
-    assign.mutate([unitId], {
+    link.mutate(unitId, {
       onSuccess: () => {
         toast.success('Unidade vinculada com sucesso!');
         setTerm('');
@@ -267,7 +267,7 @@ function UnitSearchAssignment({ hasUnits }: { hasUnits: boolean }) {
                   <ItemTitle>{unit.identifier}</ItemTitle>
                   {unit.block && <ItemDescription>Bloco {unit.block}</ItemDescription>}
                 </ItemContent>
-                <Button size="sm" onClick={() => handleAssign(unit.id)} disabled={assign.isPending}>
+                <Button size="sm" onClick={() => handleAssign(unit.id)} disabled={link.isPending}>
                   Vincular
                 </Button>
               </Item>

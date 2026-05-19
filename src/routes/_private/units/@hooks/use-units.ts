@@ -3,27 +3,21 @@ import { useAppAuth } from '@/hooks/use-app-auth';
 import { api } from '@/lib/api/client';
 import type { Unit } from '@/routes/_private/units/@interface/unit.interface';
 
-function authHeaders(token: string | null): Record<string, string> {
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 const unitsKeys = {
   all: ['app', 'unities'] as const,
   current: () => [...unitsKeys.all, 'current'] as const,
 };
 
 export function useUnits() {
-  const { token } = useAppAuth();
+  const { userId } = useAppAuth();
 
   const query = useQuery({
     queryKey: unitsKeys.current(),
     queryFn: async () => {
-      const response = await api.get<{ data: Unit[]; statusCode: number }>('/app/unities/current', {
-        headers: authHeaders(token),
-      });
+      const response = await api.get<{ data: Unit[]; statusCode: number }>(`/app/unities/user/${userId}`);
       return response.data.data;
     },
-    enabled: !!token,
+    enabled: !!userId,
   });
 
   const units = query.data ?? [];
@@ -37,13 +31,13 @@ export function useUnits() {
   };
 }
 
-export function useAssignUnits() {
-  const { token } = useAppAuth();
+export function useLinkSelfToUnit() {
+  const { userId } = useAppAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (unityIds: string[]) => {
-      const response = await api.put<{ data: Unit[]; statusCode: number }>('/app/unities/current', { unityIds }, { headers: authHeaders(token) });
+    mutationFn: async (unitId: string) => {
+      const response = await api.post<{ data: Unit[]; statusCode: number }>(`/app/unities/${unitId}/link-self/${userId}`, {});
       return response.data.data;
     },
     onSuccess: () => {
