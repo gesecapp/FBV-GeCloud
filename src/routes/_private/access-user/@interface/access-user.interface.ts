@@ -62,6 +62,9 @@ export interface UserSyncStatus {
     updatedAt: string;
   } | null;
   synchronized: boolean;
+  all_sensors_sync_users: boolean;
+  all_sensors_sync_images: boolean | null;
+  is_processing: boolean;
 }
 
 export interface GuestResponse {

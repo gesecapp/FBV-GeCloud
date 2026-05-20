@@ -14,6 +14,9 @@ function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
       user: { id: userId, name: '', document: '' },
       sync_status: null,
       synchronized: false,
+      all_sensors_sync_users: false,
+      all_sensors_sync_images: null,
+      is_processing: false,
     };
   }
 
@@ -41,6 +44,9 @@ function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
     user,
     sync_status: { ...syncStatusData, sensors, synchronized },
     synchronized,
+    all_sensors_sync_users: raw.all_sensors_sync_users ?? false,
+    all_sensors_sync_images: raw.all_sensors_sync_images ?? null,
+    is_processing: raw.is_processing ?? false,
   };
 }
 

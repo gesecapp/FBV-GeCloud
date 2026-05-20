@@ -6,6 +6,7 @@ import {
   ChevronRight,
   FileCheck,
   FileClock,
+  ImageIcon,
   ImageOff,
   Mail,
   MoreHorizontal,
@@ -184,23 +185,19 @@ export function VisitorList({ guests, syncStatuses, onAdd, onEdit }: VisitorList
 
                 <div className="flex items-center gap-4">
                   <ItemDescription className="flex items-center gap-2">
-                    {item.registration_complete === true && (
-                      <>
-                        <FileCheck className="size-4 text-green-600" />
-                        <ImageOff className="size-4 text-yellow-600" />
-                      </>
+                    {item.registration_complete === true ? (
+                      <FileCheck className="size-4 text-green-600" />
+                    ) : item.registration_complete === false ? (
+                      <FileClock className="size-4 text-yellow-600" />
+                    ) : (
+                      <FileClock className="size-4 text-gray-400" />
                     )}
-                    {item.registration_complete === false && (
-                      <>
-                        <FileClock className="size-4 text-yellow-600" />
-                        <ImageOff className="size-4 text-yellow-600" />
-                      </>
-                    )}
-                    {item.registration_complete == null && (
-                      <>
-                        <FileClock className="size-4 text-gray-400" />
-                        <ImageOff className="size-4 text-gray-400" />
-                      </>
+                    {item.syncStatus?.all_sensors_sync_images === true ? (
+                      <ImageIcon className="size-4 text-green-600" />
+                    ) : item.syncStatus?.all_sensors_sync_images === false ? (
+                      <ImageOff className="size-4 text-red-600" />
+                    ) : (
+                      <ImageOff className="size-4 text-gray-400" />
                     )}
                   </ItemDescription>
                   <div className="flex items-center justify-end border-l pl-2">
