@@ -257,7 +257,7 @@ export function AuthArea({ onGuestMode }: AuthAreaProps) {
             </Button>
 
             <button className="w-full" onClick={() => navigate({ to: '/forgot-password' })} type="button">
-              <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Esqueceu a senha?asdsad</ItemDescription>
+              <ItemDescription className="text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">Esqueceu a senha?</ItemDescription>
             </button>
           </form>
         </Form>
