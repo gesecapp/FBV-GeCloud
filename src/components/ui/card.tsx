@@ -1,8 +1,22 @@
 import type * as React from 'react';
+import { usePlatform } from '@/hooks/use-platform';
 import { cn } from '@/lib/utils';
 
+const platformPt: Record<ReturnType<typeof usePlatform>, string> = {
+  ios: 'pt-12',
+  android: 'pt-8',
+  other: 'pt-6',
+};
+
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="card" className={cn('mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-6 pt-6 pb-20 text-card-foreground md:max-w-6xl', className)} {...props} />;
+  const platform = usePlatform();
+  return (
+    <div
+      data-slot="card"
+      className={cn('mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-6 pb-20 text-card-foreground md:max-w-6xl', platformPt[platform], className)}
+      {...props}
+    />
+  );
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
