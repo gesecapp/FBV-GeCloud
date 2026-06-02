@@ -1,10 +1,10 @@
 {
-  "name": "GE-Cloud",
-  "short_name": "GE-Cloud",
+  "name": "FBV",
+  "short_name": "FBV",
   "start_url": "/app",
   "scope": "/app",
   "display": "standalone",
-  "background_color": "#fff",
+  "background_color": "#ffffff",
   "theme_color": "#1E3A5F",
   "icons": [
     {
