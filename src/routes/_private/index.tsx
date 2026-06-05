@@ -39,7 +39,7 @@ function DashboardPage() {
     <Card className="min-h-screen rounded-none border-none">
       <CardHeader>
         <CardTitle>
-          <img src="/images/logo.png" alt="Gesec Logo" className="h-12 w-auto" />
+          <img src="/images/logo.png" alt="Gesec Logo" className="h-12 object-contain w-auto" />
         </CardTitle>
         <CardAction>
           <UserAvatarMenu badgeStatus={badgeStatus} />
