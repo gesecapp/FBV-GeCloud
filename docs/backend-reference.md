@@ -1,6 +1,6 @@
 # Referência do Back-End
 
-Back-end do GeCloud. Node.js + Express + MongoDB + Mongoose + Zod + Biome.
+Back-end do FBV. Node.js + Express + MongoDB + Mongoose + Zod + Biome.
 
 ## Rotas Disponíveis
 

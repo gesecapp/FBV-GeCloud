@@ -1,4 +1,4 @@
-# GeCloud Front-End — Regras do Projeto
+# FBV Front-End — Regras do Projeto
 
 Sistema de gerenciamento de acesso de usuários. Permite cadastro, edição, atualização, inserção e exclusão de dados, além de convite de novos usuários.
 
