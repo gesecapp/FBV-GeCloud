@@ -14,13 +14,9 @@ pnpm run build
 
 [capacitor.config](./capacitor.config.ts)
 
-appId: 'com.gesec'
+appId: 'br.com.gecloud.fbv'
 
-> Apple
-
-appId: 'br.com.gecloud'
-
-> Android
+> Apple e Android
 
 ### Syncronize com o Capacitor
 
