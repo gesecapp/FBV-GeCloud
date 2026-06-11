@@ -1,4 +1,4 @@
-package com.gesec;
+package br.com.gecloud.fbv;
 
 import com.getcapacitor.BridgeActivity;
 
