@@ -11,9 +11,9 @@ let package = Package(
             targets: ["CapApp-SPM"])
     ],
     dependencies: [
-        .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", exact: "8.2.0"),
-        .package(name: "CapacitorCamera", path: "../../../node_modules/.pnpm/@capacitor+camera@8.0.2_@capacitor+core@8.2.0/node_modules/@capacitor/camera"),
-        .package(name: "CapgoCameraPreview", path: "../../../node_modules/.pnpm/@capgo+camera-preview@8.1.4_patch_hash=a9e9b3d852e7698cae22865faf4b5bc80b7b2bd42a9647ca_333da2d29ef490b772a7d5d3a01eec1e/node_modules/@capgo/camera-preview")
+        .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", exact: "8.4.0"),
+        .package(name: "CapacitorCamera", path: "../../../node_modules/.pnpm/@capacitor+camera@8.2.0_@capacitor+core@8.4.0/node_modules/@capacitor/camera"),
+        .package(name: "CapgoCameraPreview", path: "../../../node_modules/.pnpm/@capgo+camera-preview@8.4.4_patch_hash=a9e9b3d852e7698cae22865faf4b5bc80b7b2bd42a9647ca_7b35f28dc5f6729ff56ce3b701ba0f47/node_modules/@capgo/camera-preview")
     ],
     targets: [
         .target(

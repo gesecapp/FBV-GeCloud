@@ -7,8 +7,8 @@ android {
         applicationId "br.com.gecloud.fbv"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 214
-        versionName "2.14"
+        versionCode 215
+        versionName "2.15"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
