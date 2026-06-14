@@ -11,7 +11,7 @@ export function decodeToken(token: string): DecodedToken | null {
 export function isTokenValid(token: string): boolean {
   try {
     const decoded = decodeToken(token);
-    if (!decoded || !decoded.exp) return false;
+    if (!decoded?.exp) return false;
 
     const now = Date.now() / 1000;
     return decoded.exp > now;

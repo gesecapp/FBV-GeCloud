@@ -1,6 +1,6 @@
 {
-  "name": "FBV",
-  "short_name": "FBV",
+  "name": "FBV-G",
+  "short_name": "FBV-G",
   "start_url": "/app",
   "scope": "/app",
   "display": "standalone",

@@ -1,10 +1,10 @@
 {
-  "name": "FBV",
+  "name": "FBV-G",
   "version": "2.14.0",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=24.0.0",
+    "node": ">=22.0.0",
     "npm": ">=10.0.0",
     "pnpm": ">=10.0.0"
   },

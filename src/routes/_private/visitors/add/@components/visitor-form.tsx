@@ -102,7 +102,7 @@ export function VisitorForm({ parentId, guestId, initialData, onSubmit, onCancel
 
     if (requireCpfAndImage) {
       const cpfClean = data.document?.replace(/\D/g, '');
-      if (!cpfClean || cpfClean.length !== 11) {
+      if (cpfClean?.length !== 11) {
         form.setError('document', { type: 'manual', message: 'CPF é obrigatório e deve ter 11 dígitos' });
         return;
       }

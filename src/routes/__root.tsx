@@ -1,13 +1,14 @@
-import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { CircleAlert } from 'lucide-react';
+import { lazy } from 'react';
 
 import DefaultEmptyData from '@/components/default-empty-data';
 import DefaultLoading from '@/components/default-loading';
 import { ThemeSwitcher } from '@/components/nav-actions/switch-theme';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
+
+const AppDevtools = import.meta.env.DEV ? lazy(() => import('@/components/app-devtools')) : null;
 
 export const Route = createRootRoute({
   notFoundComponent: () => {
@@ -63,19 +64,7 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <Outlet />
-      {import.meta.env.DEV && (
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
-      )}
+      {AppDevtools && <AppDevtools />}
     </>
   ),
 });
