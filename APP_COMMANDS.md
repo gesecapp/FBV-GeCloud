@@ -10,11 +10,11 @@ pnpm run build
 
 [Package.json](./package.json)
 
-### Atualize a versão
+Confira o ID do app em:
 
 [capacitor.config](./capacitor.config.ts)
 
-appId: 'br.com.gecloud.fbv'
+appId: 'br.com.gecloud.fbv',
 
 > Apple e Android
 

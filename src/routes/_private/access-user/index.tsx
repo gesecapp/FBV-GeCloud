@@ -77,7 +77,7 @@ function AccessUserPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={obliterateSelf.isPending}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction  variant={'destructive'} disabled={obliterateSelf.isPending} onClick={handleDeleteAccount}>
+            <AlertDialogAction variant={'destructive'} disabled={obliterateSelf.isPending} onClick={handleDeleteAccount}>
               {obliterateSelf.isPending ? 'Excluindo...' : 'Excluir conta'}
             </AlertDialogAction>
           </AlertDialogFooter>
