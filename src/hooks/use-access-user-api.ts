@@ -90,7 +90,7 @@ export function useGetGuestById(id: string | null) {
 }
 
 export function useAccessUserApi() {
-  const { token, userId } = useAppAuth();
+  const { token, userId, clearAuth } = useAppAuth();
   const queryClient = useQueryClient();
 
   const updateUser = useMutation({
@@ -151,7 +151,19 @@ export function useAccessUserApi() {
     },
   });
 
-  return { updateUser, createGuest, updateGuest, deleteGuest };
+  const obliterateSelf = useMutation({
+    mutationFn: async () => {
+      await api.delete(`/app/user/${userId}/obliterate`, {
+        params: { deleteDependents: 'true' },
+        headers: authHeaders(token),
+      });
+    },
+    onSuccess: () => {
+      clearAuth();
+    },
+  });
+
+  return { updateUser, createGuest, updateGuest, deleteGuest, obliterateSelf };
 }
 
 function normalizeUserSyncStatus(userId: string, raw: any): UserSyncStatus {
