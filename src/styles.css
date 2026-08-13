@@ -352,22 +352,17 @@
 .dashboard-card-illustration {
   width: 3rem;
   height: 3rem;
-  background-color: var(--muted-foreground);
-  opacity: 0.9;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-  mask-image: var(--dashboard-card-icon);
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-  -webkit-mask-image: var(--dashboard-card-icon);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  -webkit-mask-size: contain;
+  opacity: 0.95;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  background-image: var(--dashboard-card-icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .group:hover .dashboard-card-illustration {
-  background-color: var(--color-sky-500);
   opacity: 1;
+  transform: scale(1.08);
 }
 
 /* =========================================================

@@ -71,7 +71,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Meu cadastro</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/clipboard-pencil-svgrepo-com.svg" alt="Editar cadastro" />
+                <DashboardCardIcon src="/images/icon-user.png" alt="Editar cadastro" />
               </Link>
             </Item>
           )}
@@ -85,7 +85,7 @@ function DashboardPage() {
                     <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                   </ItemContent>
                 </ItemContent>
-                <DashboardCardIcon src="/images/person-silhouette-plus-svgrepo-com.svg" alt="Incluir visitante" />
+                <DashboardCardIcon src="/images/icon-visitors.png" alt="Incluir visitante" />
               </Link>
             </Item>
           )}
@@ -97,7 +97,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Incluir Dependente</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/person-connections-svgrepo-com.svg" alt="Incluir dependente" />
+                <DashboardCardIcon src="/images/icon-dependents.png" alt="Incluir dependente" />
               </Link>
             </Item>
           )}
@@ -109,7 +109,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Meus Visitantes</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/people-group-svgrepo-com.svg" alt="Meus visitantes" />
+                <DashboardCardIcon src="/images/icon-visitors.png" alt="Meus visitantes" />
               </Link>
             </Item>
           )}
@@ -123,7 +123,7 @@ function DashboardPage() {
                     <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                   </ItemContent>
                 </ItemContent>
-                <DashboardCardIcon src="/images/worker-clocking-in-svgrepo-com.svg" alt="Incluir prestador" />
+                <DashboardCardIcon src="/images/icon-service-providers.png" alt="Incluir prestador" />
               </Link>
             </Item>
           )}
@@ -135,7 +135,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Meus Prestadores</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/workers-team-svgrepo-com.svg" alt="Meus prestadores" />
+                <DashboardCardIcon src="/images/icon-service-providers.png" alt="Meus prestadores" />
               </Link>
             </Item>
           )}
@@ -147,7 +147,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Unidades</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/company-svgrepo-com.svg" alt="Unidades" />
+                <DashboardCardIcon src="/images/icon-units.png" alt="Unidades" />
               </Link>
             </Item>
           )}
@@ -159,7 +159,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Meus Dependentes</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/couple-alt-svgrepo-com.svg" alt="Meus dependentes" />
+                <DashboardCardIcon src="/images/icon-dependents.png" alt="Meus dependentes" />
               </Link>
             </Item>
           )}
@@ -171,7 +171,7 @@ function DashboardPage() {
                   <ItemTitle className="font-medium text-base">Sincronizações</ItemTitle>
                   <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
                 </ItemContent>
-                <DashboardCardIcon src="/images/sync-circle-sharp-svgrepo-com.svg" alt="Status de sincronização" />
+                <DashboardCardIcon src="/images/icon-sync.png" alt="Status de sincronização" />
               </Link>
             </Item>
           )}
