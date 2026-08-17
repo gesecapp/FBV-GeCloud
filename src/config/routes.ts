@@ -14,6 +14,7 @@ export const ROUTE_LABELS: Record<string, string> = {
   'sync-status': 'Status de Sincronização',
   visitors: 'Meus Visitantes',
   dependents: 'Meus Dependentes',
+  reservations: 'Reservas de Locais',
   add: 'Adicionar',
 };
 
@@ -26,6 +27,8 @@ const NAV_ROUTES: readonly NavRouteConfig[] = [
   { path: '/visitors/add', allowedUserTypes: ['morador'] },
   { path: '/dependents', allowedUserTypes: ['morador'] },
   { path: '/dependents/add', allowedUserTypes: ['morador'] },
+  { path: '/reservations', allowedUserTypes: ['morador', 'colaborador'] },
+  { path: '/reservations/add', allowedUserTypes: ['morador', 'colaborador'] },
 ];
 
 function isAllowed(route: NavRouteConfig, userType: AppUserType | null): boolean {

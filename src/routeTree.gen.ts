@@ -22,12 +22,15 @@ import { Route as PrivateVisitorsIndexRouteImport } from './routes/_private/visi
 import { Route as PrivateUnitsIndexRouteImport } from './routes/_private/units/index';
 import { Route as PrivateSyncStatusIndexRouteImport } from './routes/_private/sync-status/index';
 import { Route as PrivateServiceProvidersIndexRouteImport } from './routes/_private/service-providers/index';
+import { Route as PrivateReservationsIndexRouteImport } from './routes/_private/reservations/index';
 import { Route as PrivateDependentsIndexRouteImport } from './routes/_private/dependents/index';
 import { Route as PrivateAccessUserIndexRouteImport } from './routes/_private/access-user/index';
 import { Route as PublicNewUserIdRouteImport } from './routes/_public/new-user/$id';
+import { Route as PrivateReservationsDetailsRouteImport } from './routes/_private/reservations/details';
 import { Route as PublicAccomplishAccessIdIndexRouteImport } from './routes/_public/accomplish-access/$id/index';
 import { Route as PrivateVisitorsAddIndexRouteImport } from './routes/_private/visitors/add/index';
 import { Route as PrivateServiceProvidersAddIndexRouteImport } from './routes/_private/service-providers/add/index';
+import { Route as PrivateReservationsAddIndexRouteImport } from './routes/_private/reservations/add/index';
 import { Route as PrivateDependentsAddIndexRouteImport } from './routes/_private/dependents/add/index';
 import { Route as PublicAppAuthResetPasswordTokenRouteImport } from './routes/_public/app-auth/reset-password/$token';
 
@@ -97,6 +100,12 @@ const PrivateServiceProvidersIndexRoute =
     path: '/service-providers/',
     getParentRoute: () => PrivateRoute,
   } as any);
+const PrivateReservationsIndexRoute =
+  PrivateReservationsIndexRouteImport.update({
+    id: '/reservations/',
+    path: '/reservations/',
+    getParentRoute: () => PrivateRoute,
+  } as any);
 const PrivateDependentsIndexRoute = PrivateDependentsIndexRouteImport.update({
   id: '/dependents/',
   path: '/dependents/',
@@ -112,6 +121,12 @@ const PublicNewUserIdRoute = PublicNewUserIdRouteImport.update({
   path: '/new-user/$id',
   getParentRoute: () => PublicRoute,
 } as any);
+const PrivateReservationsDetailsRoute =
+  PrivateReservationsDetailsRouteImport.update({
+    id: '/reservations/details',
+    path: '/reservations/details',
+    getParentRoute: () => PrivateRoute,
+  } as any);
 const PublicAccomplishAccessIdIndexRoute =
   PublicAccomplishAccessIdIndexRouteImport.update({
     id: '/accomplish-access/$id/',
@@ -129,6 +144,12 @@ const PrivateServiceProvidersAddIndexRoute =
     path: '/service-providers/add/',
     getParentRoute: () => PrivateRoute,
   } as any);
+const PrivateReservationsAddIndexRoute =
+  PrivateReservationsAddIndexRouteImport.update({
+    id: '/reservations/add/',
+    path: '/reservations/add/',
+    getParentRoute: () => PrivateRoute,
+  } as any);
 const PrivateDependentsAddIndexRoute =
   PrivateDependentsAddIndexRouteImport.update({
     id: '/dependents/add/',
@@ -144,9 +165,11 @@ const PublicAppAuthResetPasswordTokenRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof PrivateIndexRoute;
+  '/reservations/details': typeof PrivateReservationsDetailsRoute;
   '/new-user/$id': typeof PublicNewUserIdRoute;
   '/access-user/': typeof PrivateAccessUserIndexRoute;
   '/dependents/': typeof PrivateDependentsIndexRoute;
+  '/reservations/': typeof PrivateReservationsIndexRoute;
   '/service-providers/': typeof PrivateServiceProvidersIndexRoute;
   '/sync-status/': typeof PrivateSyncStatusIndexRoute;
   '/units/': typeof PrivateUnitsIndexRoute;
@@ -159,15 +182,18 @@ export interface FileRoutesByFullPath {
   '/privacy-policy/': typeof PublicPrivacyPolicyIndexRoute;
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
   '/dependents/add/': typeof PrivateDependentsAddIndexRoute;
+  '/reservations/add/': typeof PrivateReservationsAddIndexRoute;
   '/service-providers/add/': typeof PrivateServiceProvidersAddIndexRoute;
   '/visitors/add/': typeof PrivateVisitorsAddIndexRoute;
   '/accomplish-access/$id/': typeof PublicAccomplishAccessIdIndexRoute;
 }
 export interface FileRoutesByTo {
   '/': typeof PrivateIndexRoute;
+  '/reservations/details': typeof PrivateReservationsDetailsRoute;
   '/new-user/$id': typeof PublicNewUserIdRoute;
   '/access-user': typeof PrivateAccessUserIndexRoute;
   '/dependents': typeof PrivateDependentsIndexRoute;
+  '/reservations': typeof PrivateReservationsIndexRoute;
   '/service-providers': typeof PrivateServiceProvidersIndexRoute;
   '/sync-status': typeof PrivateSyncStatusIndexRoute;
   '/units': typeof PrivateUnitsIndexRoute;
@@ -180,6 +206,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PublicPrivacyPolicyIndexRoute;
   '/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
   '/dependents/add': typeof PrivateDependentsAddIndexRoute;
+  '/reservations/add': typeof PrivateReservationsAddIndexRoute;
   '/service-providers/add': typeof PrivateServiceProvidersAddIndexRoute;
   '/visitors/add': typeof PrivateVisitorsAddIndexRoute;
   '/accomplish-access/$id': typeof PublicAccomplishAccessIdIndexRoute;
@@ -189,9 +216,11 @@ export interface FileRoutesById {
   '/_private': typeof PrivateRouteWithChildren;
   '/_public': typeof PublicRouteWithChildren;
   '/_private/': typeof PrivateIndexRoute;
+  '/_private/reservations/details': typeof PrivateReservationsDetailsRoute;
   '/_public/new-user/$id': typeof PublicNewUserIdRoute;
   '/_private/access-user/': typeof PrivateAccessUserIndexRoute;
   '/_private/dependents/': typeof PrivateDependentsIndexRoute;
+  '/_private/reservations/': typeof PrivateReservationsIndexRoute;
   '/_private/service-providers/': typeof PrivateServiceProvidersIndexRoute;
   '/_private/sync-status/': typeof PrivateSyncStatusIndexRoute;
   '/_private/units/': typeof PrivateUnitsIndexRoute;
@@ -204,6 +233,7 @@ export interface FileRoutesById {
   '/_public/privacy-policy/': typeof PublicPrivacyPolicyIndexRoute;
   '/_public/app-auth/reset-password/$token': typeof PublicAppAuthResetPasswordTokenRoute;
   '/_private/dependents/add/': typeof PrivateDependentsAddIndexRoute;
+  '/_private/reservations/add/': typeof PrivateReservationsAddIndexRoute;
   '/_private/service-providers/add/': typeof PrivateServiceProvidersAddIndexRoute;
   '/_private/visitors/add/': typeof PrivateVisitorsAddIndexRoute;
   '/_public/accomplish-access/$id/': typeof PublicAccomplishAccessIdIndexRoute;
@@ -212,9 +242,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
+    | '/reservations/details'
     | '/new-user/$id'
     | '/access-user/'
     | '/dependents/'
+    | '/reservations/'
     | '/service-providers/'
     | '/sync-status/'
     | '/units/'
@@ -227,15 +259,18 @@ export interface FileRouteTypes {
     | '/privacy-policy/'
     | '/app-auth/reset-password/$token'
     | '/dependents/add/'
+    | '/reservations/add/'
     | '/service-providers/add/'
     | '/visitors/add/'
     | '/accomplish-access/$id/';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
+    | '/reservations/details'
     | '/new-user/$id'
     | '/access-user'
     | '/dependents'
+    | '/reservations'
     | '/service-providers'
     | '/sync-status'
     | '/units'
@@ -248,6 +283,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/app-auth/reset-password/$token'
     | '/dependents/add'
+    | '/reservations/add'
     | '/service-providers/add'
     | '/visitors/add'
     | '/accomplish-access/$id';
@@ -256,9 +292,11 @@ export interface FileRouteTypes {
     | '/_private'
     | '/_public'
     | '/_private/'
+    | '/_private/reservations/details'
     | '/_public/new-user/$id'
     | '/_private/access-user/'
     | '/_private/dependents/'
+    | '/_private/reservations/'
     | '/_private/service-providers/'
     | '/_private/sync-status/'
     | '/_private/units/'
@@ -271,6 +309,7 @@ export interface FileRouteTypes {
     | '/_public/privacy-policy/'
     | '/_public/app-auth/reset-password/$token'
     | '/_private/dependents/add/'
+    | '/_private/reservations/add/'
     | '/_private/service-providers/add/'
     | '/_private/visitors/add/'
     | '/_public/accomplish-access/$id/';
@@ -374,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateServiceProvidersIndexRouteImport;
       parentRoute: typeof PrivateRoute;
     };
+    '/_private/reservations/': {
+      id: '/_private/reservations/';
+      path: '/reservations';
+      fullPath: '/reservations/';
+      preLoaderRoute: typeof PrivateReservationsIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
+    };
     '/_private/dependents/': {
       id: '/_private/dependents/';
       path: '/dependents';
@@ -394,6 +440,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/new-user/$id';
       preLoaderRoute: typeof PublicNewUserIdRouteImport;
       parentRoute: typeof PublicRoute;
+    };
+    '/_private/reservations/details': {
+      id: '/_private/reservations/details';
+      path: '/reservations/details';
+      fullPath: '/reservations/details';
+      preLoaderRoute: typeof PrivateReservationsDetailsRouteImport;
+      parentRoute: typeof PrivateRoute;
     };
     '/_public/accomplish-access/$id/': {
       id: '/_public/accomplish-access/$id/';
@@ -416,6 +469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateServiceProvidersAddIndexRouteImport;
       parentRoute: typeof PrivateRoute;
     };
+    '/_private/reservations/add/': {
+      id: '/_private/reservations/add/';
+      path: '/reservations/add';
+      fullPath: '/reservations/add/';
+      preLoaderRoute: typeof PrivateReservationsAddIndexRouteImport;
+      parentRoute: typeof PrivateRoute;
+    };
     '/_private/dependents/add/': {
       id: '/_private/dependents/add/';
       path: '/dependents/add';
@@ -435,26 +495,32 @@ declare module '@tanstack/react-router' {
 
 interface PrivateRouteChildren {
   PrivateIndexRoute: typeof PrivateIndexRoute;
+  PrivateReservationsDetailsRoute: typeof PrivateReservationsDetailsRoute;
   PrivateAccessUserIndexRoute: typeof PrivateAccessUserIndexRoute;
   PrivateDependentsIndexRoute: typeof PrivateDependentsIndexRoute;
+  PrivateReservationsIndexRoute: typeof PrivateReservationsIndexRoute;
   PrivateServiceProvidersIndexRoute: typeof PrivateServiceProvidersIndexRoute;
   PrivateSyncStatusIndexRoute: typeof PrivateSyncStatusIndexRoute;
   PrivateUnitsIndexRoute: typeof PrivateUnitsIndexRoute;
   PrivateVisitorsIndexRoute: typeof PrivateVisitorsIndexRoute;
   PrivateDependentsAddIndexRoute: typeof PrivateDependentsAddIndexRoute;
+  PrivateReservationsAddIndexRoute: typeof PrivateReservationsAddIndexRoute;
   PrivateServiceProvidersAddIndexRoute: typeof PrivateServiceProvidersAddIndexRoute;
   PrivateVisitorsAddIndexRoute: typeof PrivateVisitorsAddIndexRoute;
 }
 
 const PrivateRouteChildren: PrivateRouteChildren = {
   PrivateIndexRoute: PrivateIndexRoute,
+  PrivateReservationsDetailsRoute: PrivateReservationsDetailsRoute,
   PrivateAccessUserIndexRoute: PrivateAccessUserIndexRoute,
   PrivateDependentsIndexRoute: PrivateDependentsIndexRoute,
+  PrivateReservationsIndexRoute: PrivateReservationsIndexRoute,
   PrivateServiceProvidersIndexRoute: PrivateServiceProvidersIndexRoute,
   PrivateSyncStatusIndexRoute: PrivateSyncStatusIndexRoute,
   PrivateUnitsIndexRoute: PrivateUnitsIndexRoute,
   PrivateVisitorsIndexRoute: PrivateVisitorsIndexRoute,
   PrivateDependentsAddIndexRoute: PrivateDependentsAddIndexRoute,
+  PrivateReservationsAddIndexRoute: PrivateReservationsAddIndexRoute,
   PrivateServiceProvidersAddIndexRoute: PrivateServiceProvidersAddIndexRoute,
   PrivateVisitorsAddIndexRoute: PrivateVisitorsAddIndexRoute,
 };

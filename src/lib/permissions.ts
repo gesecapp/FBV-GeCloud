@@ -8,6 +8,7 @@ const NO_PERMISSIONS: UserPermissions = {
   canManageVisitors: false,
   canInviteVisitors: false,
   canManageServiceProviders: false,
+  canManageReservations: false,
 };
 
 const PERMISSIONS_BY_TYPE: Record<AppUserType, UserPermissions> = {
@@ -19,6 +20,7 @@ const PERMISSIONS_BY_TYPE: Record<AppUserType, UserPermissions> = {
     canManageVisitors: true,
     canInviteVisitors: true,
     canManageServiceProviders: true,
+    canManageReservations: true,
   },
   colaborador: {
     canEditOwnProfile: true,
@@ -28,6 +30,7 @@ const PERMISSIONS_BY_TYPE: Record<AppUserType, UserPermissions> = {
     canManageVisitors: false,
     canInviteVisitors: false,
     canManageServiceProviders: true,
+    canManageReservations: true,
   },
   visitante: NO_PERMISSIONS,
   prestador_de_servico: NO_PERMISSIONS,
@@ -53,6 +56,7 @@ export interface UserPermissions {
   canManageVisitors: boolean;
   canInviteVisitors: boolean;
   canManageServiceProviders: boolean;
+  canManageReservations: boolean;
 }
 
 export type AppUserType = 'morador' | 'visitante' | 'colaborador' | 'prestador_de_servico' | 'dependente';

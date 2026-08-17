@@ -21,8 +21,12 @@ export default function DefaultFormLayout({ sections, layout = 'horizontal' }: D
 
               <div className={cn(sectionLayout === 'horizontal' && 'md:col-span-2')}>
                 <FieldGroup className="grid grid-cols-1 gap-6 sm:grid-cols-6">
-                  {section.fields.map((field) => (
-                    <div key={`${section.title}-field`} className="col-span-full">
+                  {/* A chave vem do próprio campo (todo chamador passa `key` no elemento); o
+                      índice é só fallback. Antes era `${section.title}-field` para todos, o que
+                      dava chave duplicada e fazia o React avisar que podia omitir ou duplicar
+                      campos numa seção com mais de um. */}
+                  {section.fields.map((field, fieldIndex) => (
+                    <div key={React.isValidElement(field) && field.key ? field.key : `${section.title}-field-${fieldIndex}`} className="col-span-full">
                       {field}
                     </div>
                   ))}

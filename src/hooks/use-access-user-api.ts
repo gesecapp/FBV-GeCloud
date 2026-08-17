@@ -60,14 +60,17 @@ export function useGetAllSyncStatuses() {
   });
 }
 
-export function useGetGuestsByParent(userType?: UserType) {
+// `limit` é opcional para não mexer nas telas existentes: sem ele o back-end pagina em 10, que
+// basta para uma listagem. Quem precisa da lista inteira de uma vez (ex.: seleção de
+// participantes de uma reserva) passa um teto explícito.
+export function useGetGuestsByParent(userType?: UserType, limit?: number) {
   const { token, userId } = useAppAuth();
 
   return useQuery({
-    queryKey: accessUserKeys.guests(userId || '', userType),
+    queryKey: [...accessUserKeys.guests(userId || '', userType), limit ?? null],
     queryFn: async () => {
       const response = await api.get<{ data: { data: GuestProps[] }; statusCode: number }>(`/app/guests/parent/${userId}`, {
-        params: { user_type: userType },
+        params: { user_type: userType, limit },
         headers: authHeaders(token),
       });
       return response.data.data.data || [];

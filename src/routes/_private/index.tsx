@@ -140,6 +140,18 @@ function DashboardPage() {
             </Item>
           )}
 
+          {permissions.canManageReservations && (
+            <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
+              <Link to="/reservations" className="flex h-full w-full flex-col justify-between no-underline">
+                <ItemContent className="flex-row justify-between">
+                  <ItemTitle className="font-medium text-base">Reservas de Locais</ItemTitle>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:stroke-3 group-hover:text-sky-500" />
+                </ItemContent>
+                <DashboardCardIcon src="/images/icon-reservations.png" alt="Reservas de locais" />
+              </Link>
+            </Item>
+          )}
+
           {permissions.canViewUnits && (
             <Item variant="default" className="group h-full items-stretch hover:bg-secondary">
               <Link to="/units" className="flex h-full w-full flex-col justify-between no-underline">

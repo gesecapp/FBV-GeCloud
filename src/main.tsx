@@ -22,8 +22,26 @@ function extractErrorMessage(error: unknown): string {
           }
         })()
       : raw
-  ) as { originalError?: { message?: string }; message?: string } | undefined;
-  return data?.originalError?.message || data?.message || err?.message || 'Ocorreu um erro inesperado';
+  ) as
+    | {
+        originalError?: { message?: string };
+        message?: string;
+        error?: unknown;
+        conflicts?: { message?: string }[];
+      }
+    | undefined;
+
+  // As rotas de reserva não usam o envelope do ErrorHelper: elas respondem { error, conflicts? },
+  // com o motivo real em pt-BR. Sem ler esses dois campos, todo 400/409 de reserva virava
+  // "Ocorreu um erro inesperado".
+  const conflicts = Array.isArray(data?.conflicts)
+    ? data.conflicts
+        .map((conflict) => conflict?.message)
+        .filter(Boolean)
+        .join(' · ')
+    : '';
+
+  return data?.originalError?.message || data?.message || conflicts || (typeof data?.error === 'string' ? data.error : '') || err?.message || 'Ocorreu um erro inesperado';
 }
 
 // Create QueryClient instance
