@@ -1,13 +1,13 @@
-diff --git a/android/build.gradle b/android/build.gradle
-index b3f921e832d1d77fa1d2caaf8044dab6efb36eb1..97cb6beda27aae251c78e89b4d9109fe6d348941 100644
---- a/android/build.gradle
-+++ b/android/build.gradle
-@@ -30,7 +30,7 @@ android {
-     buildTypes {
-         release {
-             minifyEnabled false
--            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-         }
-     }
-     lintOptions {
+diff --git a/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift b/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift
+index 9f054df95da0fffbbc4377809af89841a51c731e..4153a568b825b09ea91fe7d1e10822cf9358b79a 100644
+--- a/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift
++++ b/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift
+@@ -1230,7 +1230,7 @@ public class CameraPreview: CAPPlugin, CAPBridgedPlugin, CLLocationManagerDelega
+         let withExifLocation = call.getBool("withExifLocation", false)
+         let embedTimestamp = call.getBool("embedTimestamp", false) ?? false
+         let embedLocationRequested = call.getBool("embedLocation", false) ?? false
+-        let effectiveEmbedLocation = (withExifLocation ?? false) && embedLocationRequested
++        let effectiveEmbedLocation = withExifLocation && embedLocationRequested
+         let width = call.getInt("width")
+         let height = call.getInt("height")
+         let photoQualityPrioritization = call.getString("photoQualityPrioritization", "speed")

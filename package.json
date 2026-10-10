@@ -13,7 +13,8 @@
       "sharp": "^0.34.5"
     },
     "patchedDependencies": {
-      "@capgo/camera-preview": "patches/@capgo__camera-preview.patch"
+      "@capgo/camera-preview": "patches/@capgo__camera-preview.patch",
+      "@capacitor/camera@8.2.0": "patches/@capacitor__camera@8.2.0.patch"
     }
   },
   "scripts": {

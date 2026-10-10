@@ -1,0 +1,15 @@
+diff --git a/ios/Sources/CameraPlugin/CameraPlugin.swift b/ios/Sources/CameraPlugin/CameraPlugin.swift
+index 968733ea6e427330fcff02dd848ba501958e61c1..2dbab70c892da375cce717d72c18d478c7617b4a 100644
+--- a/ios/Sources/CameraPlugin/CameraPlugin.swift
++++ b/ios/Sources/CameraPlugin/CameraPlugin.swift
+@@ -219,8 +219,8 @@ public class CameraPlugin: CAPPlugin, CAPBridgedPlugin {
+                         }
+                     }
+ 
+-                    group.notify(queue: .global(qos: .utility)) { [weak self] in
+-                        self?.returnImages(processedImages)
++                    group.notify(queue: .global(qos: .utility)) {
++                        self.returnImages(processedImages)
+                     }
+                 }
+             } else {
