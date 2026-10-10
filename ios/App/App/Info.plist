@@ -48,17 +48,15 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Este aplicativo utiliza a câmera exclusivamente para capturar sua foto biométrica, que será usada para autenticação e identificação de acesso em dispositivos de controle de entrada, como catracas e câmeras de reconhecimento facial, em condomínios, edifícios e instituições.</string>
+	<string>Este aplicativo usa a câmera apenas para tirar uma foto do seu rosto, que é enviada aos equipamentos de controle de acesso (catracas e leitoras faciais) do condomínio ou local onde você está cadastrado, para identificar você na entrada.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Este aplicativo salva na galeria a foto biométrica capturada para fins de identificação e controle de acesso.</string>
+	<string>Este aplicativo salva na galeria a foto capturada para o seu cadastro de acesso.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Este aplicativo acessa a galeria para que você possa selecionar sua foto de identificação, utilizada para autenticação biométrica nos dispositivos de controle de acesso.</string>
+	<string>Este aplicativo acessa a galeria para que você possa escolher a foto do rosto usada no seu cadastro de acesso.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Este app precisa de acesso à sua localização enquanto em uso.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Este app precisa de acesso ao microfone para gravar áudio se necessário.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Este app usa Face ID para autenticação segura.</string>
 	<key>UIViewGroupOpacity</key>
 	<false/>
 </dict>
