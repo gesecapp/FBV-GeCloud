@@ -8,12 +8,8 @@ overrides:
   sharp: ^0.34.5
 
 patchedDependencies:
-  '@capacitor/camera@8.2.0':
-    hash: 9f6101d2003f5175dcde9040c93c0a9af0c77b957635801263d70f7c93351732
-    path: patches/@capacitor__camera@8.2.0.patch
-  '@capgo/camera-preview':
-    hash: 8d32ae42b935eb3784c98eb505c82509a9ff16c7ee2b13e41b5614421b13052c
-    path: patches/@capgo__camera-preview.patch
+  '@capacitor/camera@8.2.0': 9f6101d2003f5175dcde9040c93c0a9af0c77b957635801263d70f7c93351732
+  '@capgo/camera-preview': 8d32ae42b935eb3784c98eb505c82509a9ff16c7ee2b13e41b5614421b13052c
 
 importers:
 
@@ -27,7 +23,7 @@ importers:
         version: 8.2.0(patch_hash=9f6101d2003f5175dcde9040c93c0a9af0c77b957635801263d70f7c93351732)(@capacitor/core@8.4.0)
       '@capacitor/cli':
         specifier: ^8
-        version: 8.4.0
+        version: 8.4.0(supports-color@5.5.0)
       '@capacitor/core':
         specifier: ^8
         version: 8.4.0
@@ -214,7 +210,7 @@ importers:
         version: 0.7.0(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(vite@7.3.5(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4))
       '@tanstack/eslint-plugin-query':
         specifier: ^5
-        version: 5.101.0(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.3)
+        version: 5.101.0(eslint@10.5.0(jiti@2.7.0))(supports-color@5.5.0)(typescript@5.9.3)
       '@testing-library/dom':
         specifier: ^10
         version: 10.4.1
@@ -235,10 +231,10 @@ importers:
         version: 5.2.0(vite@7.3.5(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4))
       jsdom:
         specifier: ^27
-        version: 27.4.0(@noble/hashes@1.8.0)
+        version: 27.4.0(@noble/hashes@1.8.0)(supports-color@5.5.0)
       shadcn:
         specifier: ^3
-        version: 3.8.5(@types/node@22.19.21)(typescript@5.9.3)
+        version: 3.8.5(@types/node@22.19.21)(supports-color@5.5.0)(typescript@5.9.3)
       tsx:
         specifier: ^4
         version: 4.22.4
@@ -253,7 +249,7 @@ importers:
         version: 7.3.5(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)
       vitest:
         specifier: ^3
-        version: 3.2.6(@types/node@22.19.21)(jiti@2.7.0)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.19.21)(typescript@5.9.3))(tsx@4.22.4)
+        version: 3.2.6(@types/node@22.19.21)(jiti@2.7.0)(jsdom@27.4.0(@noble/hashes@1.8.0)(supports-color@5.5.0))(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.19.21)(typescript@5.9.3))(supports-color@5.5.0)(tsx@4.22.4)
       web-vitals:
         specifier: ^5
         version: 5.3.0
@@ -2780,6 +2776,7 @@ packages:
   '@xmldom/xmldom@0.9.10':
     resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   JSONStream@1.3.5:
     resolution: {integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==}
@@ -3124,10 +3121,12 @@ packages:
   conventional-changelog-atom@2.0.8:
     resolution: {integrity: sha512-xo6v46icsFTK3bb7dY/8m2qvc8sZemRgdqLb/bjpBsH2UyOS8rKNTgcb5025Hri6IpANPApbXMg15QLb1LJpBw==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-codemirror@2.0.8:
     resolution: {integrity: sha512-z5DAsn3uj1Vfp7po3gpt2Boc+Bdwmw2++ZHa5Ak9k0UKsYAO5mH1UBTN0qSCuJZREIhX6WU4E1p3IW2oRCNzQw==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-conventionalcommits@4.6.3:
     resolution: {integrity: sha512-LTTQV4fwOM4oLPad317V/QNQ1FY4Hju5qeBIM1uTHbrnCE+Eg4CdRZ3gO2pUeR+tzWdp80M2j3qFFEDWVqOV4g==}
@@ -3136,26 +3135,32 @@ packages:
   conventional-changelog-core@4.2.4:
     resolution: {integrity: sha512-gDVS+zVJHE2v4SLc6B0sLsPiloR0ygU7HaDW14aNJE1v4SlqJPILPl/aJC7YdtRE4CybBf8gDwObBvKha8Xlyg==}
     engines: {node: '>=10'}
+    deprecated: Deprecated and no longer maintained. Please use conventional-changelog instead.
 
   conventional-changelog-ember@2.0.9:
     resolution: {integrity: sha512-ulzIReoZEvZCBDhcNYfDIsLTHzYHc7awh+eI44ZtV5cx6LVxLlVtEmcO+2/kGIHGtw+qVabJYjdI5cJOQgXh1A==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-eslint@3.0.9:
     resolution: {integrity: sha512-6NpUCMgU8qmWmyAMSZO5NrRd7rTgErjrm4VASam2u5jrZS0n38V7Y9CzTtLT2qwz5xEChDR4BduoWIr8TfwvXA==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-express@2.0.6:
     resolution: {integrity: sha512-SDez2f3iVJw6V563O3pRtNwXtQaSmEfTCaTBPCqn0oG0mfkq0rX4hHBq5P7De2MncoRixrALj3u3oQsNK+Q0pQ==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-jquery@3.0.11:
     resolution: {integrity: sha512-x8AWz5/Td55F7+o/9LQ6cQIPwrCjfJQ5Zmfqi8thwUEKHstEn4kTIofXub7plf1xvFA2TqhZlq7fy5OmV6BOMw==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-jshint@2.0.9:
     resolution: {integrity: sha512-wMLdaIzq6TNnMHMy31hql02OEQ8nCQfExw1SE0hYL5KvU+JCTuPaDO+7JiogGT2gJAxiUGATdtYYfh+nT+6riA==}
     engines: {node: '>=10'}
+    deprecated: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
 
   conventional-changelog-preset-loader@2.3.4:
     resolution: {integrity: sha512-GEKRWkrSAZeTq5+YjUZOYxdHq+ci4dNwHvpaBC3+ENalzFWuCWa9EZXSuZBpkr72sMdKB+1fyDV4takK1Lf58g==}
@@ -3813,7 +3818,7 @@ packages:
   git-raw-commits@2.0.11:
     resolution: {integrity: sha512-VnctFhw+xfj8Va1xtfEqCUD2XDrbAPSJx+hSrE5K7fGdjZruW7XV+QOrN7LF/RJyvspRiD2I0asWsxFp0ya26A==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   git-remote-origin-url@2.0.0:
@@ -3823,7 +3828,7 @@ packages:
   git-semver-tags@4.1.1:
     resolution: {integrity: sha512-OWyMt5zBe7xFs8vglMmhM9lRQzCWL3WjHtxNNfJTMngGym7pC1kh8sP6jevfydJ6LP3ZvGxfb6ABYgPUM0mtsA==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   gitconfiglocal@1.0.0:
@@ -6170,10 +6175,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@capacitor/cli@8.4.0':
+  '@capacitor/cli@8.4.0(supports-color@5.5.0)':
     dependencies:
       '@ionic/cli-framework-output': 2.2.8
-      '@ionic/utils-subprocess': 3.0.1
+      '@ionic/utils-subprocess': 3.0.1(supports-color@5.5.0)
       '@ionic/utils-terminal': 2.3.5
       commander: 12.1.0
       debug: 4.4.3(supports-color@5.5.0)
@@ -6684,7 +6689,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/utils-process@2.1.12':
+  '@ionic/utils-process@2.1.12(supports-color@5.5.0)':
     dependencies:
       '@ionic/utils-object': 2.1.6
       '@ionic/utils-terminal': 2.3.5
@@ -6702,7 +6707,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/utils-stream@3.1.7':
+  '@ionic/utils-stream@3.1.7(supports-color@5.5.0)':
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
       tslib: 2.8.1
@@ -6722,12 +6727,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/utils-subprocess@3.0.1':
+  '@ionic/utils-subprocess@3.0.1(supports-color@5.5.0)':
     dependencies:
       '@ionic/utils-array': 2.1.6
       '@ionic/utils-fs': 3.1.7
-      '@ionic/utils-process': 2.1.12
-      '@ionic/utils-stream': 3.1.7
+      '@ionic/utils-process': 2.1.12(supports-color@5.5.0)
+      '@ionic/utils-stream': 3.1.7(supports-color@5.5.0)
       '@ionic/utils-terminal': 2.3.5
       cross-spawn: 7.0.6
       debug: 4.4.3(supports-color@5.5.0)
@@ -6791,7 +6796,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':
+  '@modelcontextprotocol/sdk@1.29.0(supports-color@5.5.0)(zod@3.25.76)':
     dependencies:
       '@hono/node-server': 1.19.14(hono@4.12.25)
       ajv: 8.20.0
@@ -6801,8 +6806,8 @@ snapshots:
       cross-spawn: 7.0.6
       eventsource: 3.0.7
       eventsource-parser: 3.1.0
-      express: 5.2.1
-      express-rate-limit: 8.5.2(express@5.2.1)
+      express: 5.2.1(supports-color@5.5.0)
+      express-rate-limit: 8.5.2(express@5.2.1(supports-color@5.5.0))
       hono: 4.12.25
       jose: 6.2.3
       json-schema-typed: 8.0.2
@@ -7918,9 +7923,9 @@ snapshots:
       - csstype
       - utf-8-validate
 
-  '@tanstack/eslint-plugin-query@5.101.0(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.3)':
+  '@tanstack/eslint-plugin-query@5.101.0(eslint@10.5.0(jiti@2.7.0))(supports-color@5.5.0)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.61.0(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.61.0(eslint@10.5.0(jiti@2.7.0))(supports-color@5.5.0)(typescript@5.9.3)
       eslint: 10.5.0(jiti@2.7.0)
     optionalDependencies:
       typescript: 5.9.3
@@ -8213,7 +8218,7 @@ snapshots:
 
   '@types/webrtc@0.0.25': {}
 
-  '@typescript-eslint/project-service@8.61.0(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.61.0(supports-color@5.5.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.9.3)
       '@typescript-eslint/types': 8.61.0
@@ -8233,9 +8238,9 @@ snapshots:
 
   '@typescript-eslint/types@8.61.0': {}
 
-  '@typescript-eslint/typescript-estree@8.61.0(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.61.0(supports-color@5.5.0)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.61.0(typescript@5.9.3)
+      '@typescript-eslint/project-service': 8.61.0(supports-color@5.5.0)(typescript@5.9.3)
       '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.9.3)
       '@typescript-eslint/types': 8.61.0
       '@typescript-eslint/visitor-keys': 8.61.0
@@ -8248,12 +8253,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.61.0(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.3)':
+  '@typescript-eslint/utils@8.61.0(eslint@10.5.0(jiti@2.7.0))(supports-color@5.5.0)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@10.5.0(jiti@2.7.0))
       '@typescript-eslint/scope-manager': 8.61.0
       '@typescript-eslint/types': 8.61.0
-      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.61.0(supports-color@5.5.0)(typescript@5.9.3)
       eslint: 10.5.0(jiti@2.7.0)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -8445,7 +8450,7 @@ snapshots:
 
   big-integer@1.6.52: {}
 
-  body-parser@2.2.2:
+  body-parser@2.2.2(supports-color@5.5.0):
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
@@ -9192,15 +9197,15 @@ snapshots:
 
   expect-type@1.3.0: {}
 
-  express-rate-limit@8.5.2(express@5.2.1):
+  express-rate-limit@8.5.2(express@5.2.1(supports-color@5.5.0)):
     dependencies:
-      express: 5.2.1
+      express: 5.2.1(supports-color@5.5.0)
       ip-address: 10.2.0
 
-  express@5.2.1:
+  express@5.2.1(supports-color@5.5.0):
     dependencies:
       accepts: 2.0.0
-      body-parser: 2.2.2
+      body-parser: 2.2.2(supports-color@5.5.0)
       content-disposition: 1.1.0
       content-type: 1.0.5
       cookie: 0.7.2
@@ -9210,7 +9215,7 @@ snapshots:
       encodeurl: 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
-      finalhandler: 2.1.1
+      finalhandler: 2.1.1(supports-color@5.5.0)
       fresh: 2.0.0
       http-errors: 2.0.1
       merge-descriptors: 2.0.0
@@ -9221,8 +9226,8 @@ snapshots:
       proxy-addr: 2.0.7
       qs: 6.15.2
       range-parser: 1.2.1
-      router: 2.2.0
-      send: 1.2.1
+      router: 2.2.0(supports-color@5.5.0)
+      send: 1.2.1(supports-color@5.5.0)
       serve-static: 2.2.1
       statuses: 2.0.2
       type-is: 2.1.0
@@ -9287,7 +9292,7 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  finalhandler@2.1.1:
+  finalhandler@2.1.1(supports-color@5.5.0):
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
       encodeurl: 2.0.0
@@ -9524,14 +9529,14 @@ snapshots:
       statuses: 2.0.2
       toidentifier: 1.0.1
 
-  http-proxy-agent@7.0.2:
+  http-proxy-agent@7.0.2(supports-color@5.5.0):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.6:
+  https-proxy-agent@7.0.6(supports-color@5.5.0):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@5.5.0)
@@ -9657,7 +9662,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsdom@27.4.0(@noble/hashes@1.8.0):
+  jsdom@27.4.0(@noble/hashes@1.8.0)(supports-color@5.5.0):
     dependencies:
       '@acemir/cssom': 0.9.31
       '@asamuzakjp/dom-selector': 6.8.1
@@ -9666,8 +9671,8 @@ snapshots:
       data-urls: 6.0.1
       decimal.js: 10.6.0
       html-encoding-sniffer: 6.0.0(@noble/hashes@1.8.0)
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
+      http-proxy-agent: 7.0.2(supports-color@5.5.0)
+      https-proxy-agent: 7.0.6(supports-color@5.5.0)
       is-potential-custom-element-name: 1.0.1
       parse5: 8.0.1
       saxes: 6.0.0
@@ -10616,7 +10621,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.62.0
       fsevents: 2.3.3
 
-  router@2.2.0:
+  router@2.2.0(supports-color@5.5.0):
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
       depd: 2.0.0
@@ -10654,7 +10659,7 @@ snapshots:
 
   semver@7.8.4: {}
 
-  send@1.2.1:
+  send@1.2.1(supports-color@5.5.0):
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
       encodeurl: 2.0.0
@@ -10681,7 +10686,7 @@ snapshots:
       encodeurl: 2.0.0
       escape-html: 1.0.3
       parseurl: 1.3.3
-      send: 1.2.1
+      send: 1.2.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10691,7 +10696,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shadcn@3.8.5(@types/node@22.19.21)(typescript@5.9.3):
+  shadcn@3.8.5(@types/node@22.19.21)(supports-color@5.5.0)(typescript@5.9.3):
     dependencies:
       '@antfu/ni': 25.0.0
       '@babel/core': 7.29.7
@@ -10699,7 +10704,7 @@ snapshots:
       '@babel/plugin-transform-typescript': 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript': 7.29.7(@babel/core@7.29.7)
       '@dotenvx/dotenvx': 1.71.3
-      '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
+      '@modelcontextprotocol/sdk': 1.29.0(supports-color@5.5.0)(zod@3.25.76)
       '@types/validate-npm-package-name': 4.0.2
       browserslist: 4.28.2
       commander: 14.0.3
@@ -10711,7 +10716,7 @@ snapshots:
       fast-glob: 3.3.3
       fs-extra: 11.3.5
       fuzzysort: 3.1.0
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@5.5.0)
       kleur: 4.1.5
       msw: 2.14.6(@types/node@22.19.21)(typescript@5.9.3)
       node-fetch: 3.3.2
@@ -11209,7 +11214,7 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  vite-node@3.2.4(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4):
+  vite-node@3.2.4(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(supports-color@5.5.0)(tsx@4.22.4):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3(supports-color@5.5.0)
@@ -11245,7 +11250,7 @@ snapshots:
       lightningcss: 1.32.0
       tsx: 4.22.4
 
-  vitest@3.2.6(@types/node@22.19.21)(jiti@2.7.0)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.19.21)(typescript@5.9.3))(tsx@4.22.4):
+  vitest@3.2.6(@types/node@22.19.21)(jiti@2.7.0)(jsdom@27.4.0(@noble/hashes@1.8.0)(supports-color@5.5.0))(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.19.21)(typescript@5.9.3))(supports-color@5.5.0)(tsx@4.22.4):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.6
@@ -11268,11 +11273,11 @@ snapshots:
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
       vite: 7.3.5(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)
-      vite-node: 3.2.4(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)
+      vite-node: 3.2.4(@types/node@22.19.21)(jiti@2.7.0)(lightningcss@1.32.0)(supports-color@5.5.0)(tsx@4.22.4)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.21
-      jsdom: 27.4.0(@noble/hashes@1.8.0)
+      jsdom: 27.4.0(@noble/hashes@1.8.0)(supports-color@5.5.0)
     transitivePeerDependencies:
       - jiti
       - less
