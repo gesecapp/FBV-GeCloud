@@ -2,8 +2,10 @@ allowBuilds:
   esbuild: true
   msw: true
   sharp: true
+minimumReleaseAgeExclude:
+  - '@capgo/camera-preview@8.12.3'
 overrides:
   sharp: ^0.34.5
 patchedDependencies:
-  '@capgo/camera-preview': patches/@capgo__camera-preview.patch
-  '@capacitor/camera@8.2.0': patches/@capacitor__camera@8.2.0.patch
+  '@capgo/camera-preview@8.12.3': patches/@capgo__camera-preview@8.12.3.patch
+  '@capacitor/camera@8.2.5': patches/@capacitor__camera@8.2.5.patch

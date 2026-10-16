@@ -8,8 +8,8 @@ overrides:
   sharp: ^0.34.5
 
 patchedDependencies:
-  '@capacitor/camera@8.2.0': 9f6101d2003f5175dcde9040c93c0a9af0c77b957635801263d70f7c93351732
-  '@capgo/camera-preview': 8d32ae42b935eb3784c98eb505c82509a9ff16c7ee2b13e41b5614421b13052c
+  '@capacitor/camera@8.2.5': 316244d2d4309b4d94a24b5a957d19b8e36beb5ee01f0b09a37c126f166b6d26
+  '@capgo/camera-preview@8.12.3': 278b32016503e9674a218a4646e3c14a45ed394cc0ecf61068e191cda39677c5
 
 importers:
 
@@ -19,8 +19,8 @@ importers:
         specifier: ^8
         version: 8.4.0(@capacitor/core@8.4.0)
       '@capacitor/camera':
-        specifier: ^8.0.2
-        version: 8.2.0(patch_hash=9f6101d2003f5175dcde9040c93c0a9af0c77b957635801263d70f7c93351732)(@capacitor/core@8.4.0)
+        specifier: 8.2.5
+        version: 8.2.5(patch_hash=316244d2d4309b4d94a24b5a957d19b8e36beb5ee01f0b09a37c126f166b6d26)(@capacitor/core@8.4.0)
       '@capacitor/cli':
         specifier: ^8
         version: 8.4.0(supports-color@5.5.0)
@@ -31,8 +31,8 @@ importers:
         specifier: ^8
         version: 8.4.0(@capacitor/core@8.4.0)
       '@capgo/camera-preview':
-        specifier: ^8.1.4
-        version: 8.4.4(patch_hash=8d32ae42b935eb3784c98eb505c82509a9ff16c7ee2b13e41b5614421b13052c)(@capacitor/core@8.4.0)
+        specifier: 8.12.3
+        version: 8.12.3(patch_hash=278b32016503e9674a218a4646e3c14a45ed394cc0ecf61068e191cda39677c5)(@capacitor/core@8.4.0)
       '@gsap/react':
         specifier: ^2
         version: 2.1.2(gsap@3.15.0)(react@19.2.7)
@@ -484,8 +484,8 @@ packages:
     engines: {node: '>=10.3.0'}
     hasBin: true
 
-  '@capacitor/camera@8.2.0':
-    resolution: {integrity: sha512-hYfrT6xpL936qoEkIpJzSnb0fQCaTkOux1cXzGBfH8QLOGqr6gSLiWZlZz/fqMPmMKJMNRBqlTQkj5fuMhVZog==}
+  '@capacitor/camera@8.2.5':
+    resolution: {integrity: sha512-FPuwY7byjTlBjeUKm17eTjLCPhuqBPJqTF4N3JCQuymLn2FUgfu0SMSN6OUQvCiiz/EVJVyZ9Mmg5GEmDfFoIA==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
@@ -507,8 +507,8 @@ packages:
     peerDependencies:
       '@capacitor/core': ^8.4.0
 
-  '@capgo/camera-preview@8.4.4':
-    resolution: {integrity: sha512-V8p4z7yTVN9uaw+s2/QPHyDoGZk67HGe9mQWSYz53gI48ZRNLqt3dJNr3qbpY/avZyqfhhKLDk2gcDc9u4OqyQ==}
+  '@capgo/camera-preview@8.12.3':
+    resolution: {integrity: sha512-9ucjgwe03aANb2OxAlZLiAC7JLsk3KvUq0ik9VBLQ8BFfrdkQQ/qKwNnft/0SlXSXFwgvEjWfM8aI3gHNSlK9w==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
@@ -6149,7 +6149,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@capacitor/camera@8.2.0(patch_hash=9f6101d2003f5175dcde9040c93c0a9af0c77b957635801263d70f7c93351732)(@capacitor/core@8.4.0)':
+  '@capacitor/camera@8.2.5(patch_hash=316244d2d4309b4d94a24b5a957d19b8e36beb5ee01f0b09a37c126f166b6d26)(@capacitor/core@8.4.0)':
     dependencies:
       '@capacitor/core': 8.4.0
 
@@ -6205,7 +6205,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.4.0
 
-  '@capgo/camera-preview@8.4.4(patch_hash=8d32ae42b935eb3784c98eb505c82509a9ff16c7ee2b13e41b5614421b13052c)(@capacitor/core@8.4.0)':
+  '@capgo/camera-preview@8.12.3(patch_hash=278b32016503e9674a218a4646e3c14a45ed394cc0ecf61068e191cda39677c5)(@capacitor/core@8.4.0)':
     dependencies:
       '@capacitor/core': 8.4.0
 

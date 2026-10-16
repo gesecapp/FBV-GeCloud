@@ -22,11 +22,11 @@
   },
   "dependencies": {
     "@capacitor/android": "^8",
-    "@capacitor/camera": "^8.0.2",
+    "@capacitor/camera": "8.2.5",
     "@capacitor/cli": "^8",
     "@capacitor/core": "^8",
     "@capacitor/ios": "^8",
-    "@capgo/camera-preview": "^8.1.4",
+    "@capgo/camera-preview": "8.12.3",
     "@gsap/react": "^2",
     "@hookform/resolvers": "^5",
     "@ionic/pwa-elements": "^3.4.0",

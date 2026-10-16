@@ -24,6 +24,16 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Este aplicativo usa a câmera apenas para tirar uma foto do seu rosto, que é enviada aos equipamentos de controle de acesso (catracas e leitoras faciais) do condomínio ou local onde você está cadastrado, para identificar você na entrada.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Este app precisa de acesso à sua localização enquanto em uso.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Este app precisa de acesso ao microfone para gravar áudio se necessário.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Este aplicativo salva na galeria a foto capturada para o seu cadastro de acesso.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Este aplicativo acessa a galeria para que você possa escolher a foto do rosto usada no seu cadastro de acesso.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -47,16 +57,6 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Este aplicativo usa a câmera apenas para tirar uma foto do seu rosto, que é enviada aos equipamentos de controle de acesso (catracas e leitoras faciais) do condomínio ou local onde você está cadastrado, para identificar você na entrada.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Este aplicativo salva na galeria a foto capturada para o seu cadastro de acesso.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Este aplicativo acessa a galeria para que você possa escolher a foto do rosto usada no seu cadastro de acesso.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Este app precisa de acesso à sua localização enquanto em uso.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Este app precisa de acesso ao microfone para gravar áudio se necessário.</string>
 	<key>UIViewGroupOpacity</key>
 	<false/>
 </dict>
