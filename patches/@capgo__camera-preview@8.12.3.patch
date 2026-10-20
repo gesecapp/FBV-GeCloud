@@ -1,3 +1,64 @@
+diff --git a/ios/Sources/CapgoCameraPreviewPlugin/CameraController.swift b/ios/Sources/CapgoCameraPreviewPlugin/CameraController.swift
+--- a/ios/Sources/CapgoCameraPreviewPlugin/CameraController.swift
++++ b/ios/Sources/CapgoCameraPreviewPlugin/CameraController.swift
+@@ -4,24 +4,8 @@
+ import CoreLocation
+ import UniformTypeIdentifiers
+ import CoreMotion
+-import CallKit
+-
+-class CameraController: NSObject, CXCallObserverDelegate {
+-    override init() {
+-        super.init()
+-        self.callObserver.setDelegate(self, queue: nil)
+-    }
+-
+-    func callObserver(_ callObserver: CXCallObserver, callChanged call: CXCall) {
+-        guard call.hasEnded,
+-              callObserver.calls.allSatisfy({ $0.hasEnded }),
+-              let session = self.captureSession else { return }
+-        self.sessionRecoveryQueue.async { [weak self] in
+-            guard let self = self, self.captureSession === session else { return }
+-            self.restoreAudioInputIfNeeded(for: session)
+-        }
+-    }
+-
++
++class CameraController: NSObject {
+     private func getVideoOrientation() -> AVCaptureVideoOrientation {
+         var orientation: AVCaptureVideoOrientation = .portrait
+         if Thread.isMainThread {
+@@ -171,7 +155,6 @@
+     var onCameraInterruptionEnded: (() -> Void)?
+     var onStartFailure: ((Error) -> Void)?
+ 
+-    private let callObserver = CXCallObserver()
+     private weak var observedCaptureSession: AVCaptureSession?
+     private let sessionRecoveryQueue = DispatchQueue(label: "com.capgo.camera.sessionRecovery")
+     private var activePrepareToken: UInt = 0
+@@ -2636,12 +2619,8 @@
+         self.updateVideoOrientation()
+     }
+ 
+-    private func isPhoneCallActive() -> Bool {
+-        self.callObserver.calls.contains { !$0.hasEnded }
+-    }
+-
+     private func shouldAttachAudioInput(disableAudio: Bool) -> Bool {
+-        return !disableAudio && !self.isPhoneCallActive()
++        return !disableAudio
+     }
+ 
+     private static let insufficientAudioPriorityOSStatus = 561017449
+@@ -2689,7 +2668,7 @@
+     }
+ 
+     private func restoreAudioInputIfNeeded(for session: AVCaptureSession) {
+-        guard self.audioInputEnabledByUser, self.audioInput == nil, !self.isPhoneCallActive() else { return }
++        guard self.audioInputEnabledByUser, self.audioInput == nil else { return }
+         guard self.captureSession === session else { return }
+ 
+         do {
 diff --git a/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift b/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift
 index 83c148e..7d46215 100644
 --- a/ios/Sources/CapgoCameraPreviewPlugin/Plugin.swift

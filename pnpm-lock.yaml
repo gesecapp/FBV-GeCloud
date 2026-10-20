@@ -9,7 +9,7 @@ overrides:
 
 patchedDependencies:
   '@capacitor/camera@8.2.5': 316244d2d4309b4d94a24b5a957d19b8e36beb5ee01f0b09a37c126f166b6d26
-  '@capgo/camera-preview@8.12.3': 278b32016503e9674a218a4646e3c14a45ed394cc0ecf61068e191cda39677c5
+  '@capgo/camera-preview@8.12.3': 82819eabb4736efffa11f518f5cd84193d3a61ae4ffb7fd8db97f823949d410c
 
 importers:
 
@@ -32,7 +32,7 @@ importers:
         version: 8.4.0(@capacitor/core@8.4.0)
       '@capgo/camera-preview':
         specifier: 8.12.3
-        version: 8.12.3(patch_hash=278b32016503e9674a218a4646e3c14a45ed394cc0ecf61068e191cda39677c5)(@capacitor/core@8.4.0)
+        version: 8.12.3(patch_hash=82819eabb4736efffa11f518f5cd84193d3a61ae4ffb7fd8db97f823949d410c)(@capacitor/core@8.4.0)
       '@gsap/react':
         specifier: ^2
         version: 2.1.2(gsap@3.15.0)(react@19.2.7)
@@ -6205,7 +6205,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.4.0
 
-  '@capgo/camera-preview@8.12.3(patch_hash=278b32016503e9674a218a4646e3c14a45ed394cc0ecf61068e191cda39677c5)(@capacitor/core@8.4.0)':
+  '@capgo/camera-preview@8.12.3(patch_hash=82819eabb4736efffa11f518f5cd84193d3a61ae4ffb7fd8db97f823949d410c)(@capacitor/core@8.4.0)':
     dependencies:
       '@capacitor/core': 8.4.0
 
